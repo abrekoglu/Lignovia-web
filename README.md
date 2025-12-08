@@ -214,4 +214,10 @@ Detaylı plan için [ROADMAP.md](./ROADMAP.md) dosyasına bakın.
 
 Detaylı ilerleme durumu için [PROGRESS.md](./PROGRESS.md) dosyasına bakın.
 
-**Güncel Durum:** Faz 1 - Adım 1.3 (Git Repository Kurulumu) sırada
+**Güncel Durum:** Faz 1 - Adım 1.5 (Font Kurulumu) sırada
+
+### ✅ Tamamlanan Adımlar (Faz 1)
+- Adım 1.1: Next.js Projesi ✅
+- Adım 1.2: TypeScript, ESLint, Prettier ✅
+- Adım 1.3: Git Repository ✅
+- Adım 1.4: Tailwind CSS, shadcn/ui, LIGNOVIA Renk Paleti ✅

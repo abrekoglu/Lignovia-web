@@ -289,7 +289,7 @@ Modern, performanslı, güvenli ve ölçeklenebilir e-ticaret platformu için te
 - **Husky** (Git hooks) ✅
 - **lint-staged** (Pre-commit checks) ✅
 - **eslint-config-prettier** (ESLint-Prettier entegrasyonu) ✅
-- **prettier-plugin-tailwindcss** (Tailwind class sıralama - şu an devre dışı, Tailwind kurulumunda aktif edilecek)
+- **prettier-plugin-tailwindcss** (Tailwind class sıralama) ✅
 
 ### Testing (Future)
 

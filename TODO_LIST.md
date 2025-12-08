@@ -449,66 +449,28 @@ main (veya master)
 
 ---
 
-### Adım 1.6: Font Kurulumu
+### Adım 1.6: Font Kurulumu ✅ TAMAMLANDI
 
-**Hedef:** Inter ve Raleway Thin fontları aktif
+**Hedef:** Inter ve Raleway Thin fontları + Logo aktif
 
-#### 📋 Adımdan Önce - Senin Yapman Gerekenler:
-
-- [ ] Adım 1.5 tamamlandı ve onaylandı mı?
-
-#### 🔧 Adım İçeriği (Ben Yapacağım):
-
-- [ ] Inter font kurulumu (next/font)
-- [ ] Raleway Thin font kurulumu
-- [ ] Font'ları layout'a ekle
-- [ ] Test sayfasında kullan
-
-#### ✅ Adımdan Sonra - Senin Yapman Gerekenler:
-
-**1. Görsel Test:**
-
-- [ ] Test sayfasında Inter font görünüyor mu? (Body text)
-- [ ] Raleway Thin font görünüyor mu? (Logo için)
-- [ ] Font'lar doğru yükleniyor mu? (Network tab'da kontrol et)
-
-**2. Performans Testi:**
-
-- [ ] Network tab'ı aç (F12 > Network)
-- [ ] Sayfayı yenile
-- [ ] Font dosyalarının yüklendiğini kontrol et
-- [ ] Font loading süresi makul mu? (< 1s hedef)
-- [ ] Font display: swap kullanıldı mı? (Network tab > Headers kontrol et)
-
-**3. Lighthouse Testi:**
-
-- [ ] Chrome DevTools > Lighthouse
-- [ ] Yeni report oluştur
-- [ ] Performance skorunu kontrol et
-- [ ] Font loading performansı iyi mi?
-
-**4. Code Review:**
-
-- [ ] Font konfigürasyonu doğru mu?
-- [ ] Font preload yapıldı mı?
-
-**5. Onay Ver:**
-
-- [ ] Font'lar doğru çalışıyor mu?
-- [ ] Performans iyi mi?
-- [ ] Devam edebilir miyiz?
-
-**✅ Onay:** Bu adım tamamlandı mı? Devam edelim mi?
+#### Tamamlandı:
+- [x] Inter font kurulumu (next/font) ✅
+- [x] Raleway font kurulumu (thin dahil tüm weight'ler) ✅
+- [x] CSS variables (--font-inter, --font-raleway) ✅
+- [x] Tailwind font-family (font-sans, font-display) ✅
+- [x] Logo SVG dosyaları (light/dark versiyonlar) ✅
+- [x] Logo component (otomatik tema değişimi) ✅
+- [x] Design System sayfası güncellendi ✅
 
 ---
 
-### Adım 1.7: Supabase ve Prisma Kurulumu
+### Adım 1.7: Supabase ve Prisma Kurulumu (SIRADAKİ ADIM)
 
 **Hedef:** Veritabanı bağlantısı hazır
 
 #### 📋 Adımdan Önce - Senin Yapman Gerekenler:
 
-- [ ] Adım 1.6 tamamlandı ve onaylandı mı?
+- [x] Adım 1.6 tamamlandı ve onaylandı mı? ✅
 - [ ] **Supabase hesabı oluştur** (https://supabase.com)
 - [ ] Supabase'de yeni proje oluştur
 - [ ] Database connection string'i hazırla (Settings > Database > Connection string)

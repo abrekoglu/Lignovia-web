@@ -2,20 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  /* ================================================
+     LIGNOVIA DESIGN SYSTEM - CSS Variables
+     ================================================ */
 
-@media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* ---- Light Theme (Default) ---- */
+
+    /* Brand Colors */
+    --lignovia-primary: #4a3a2c;
+    --lignovia-secondary: #d6c2b5;
+    --lignovia-accent: #c97a5a;
+
+    /* Background Colors */
+    --background: #faf7f2;
+    --background-alt: #f1efec;
+    --surface: #ffffff;
+
+    /* Text Colors */
+    --foreground: #3e342b;
+    --text-primary: #3e342b;
+    --text-secondary: #6e6256;
+
+    /* Border Colors */
+    --border: #e4ded7;
+    --border-soft: #e4ded7;
+    --border-medium: #c7b8a9;
+
+    /* UI Component Colors (shadcn/ui compatible) */
+    --card: #ffffff;
+    --card-foreground: #3e342b;
+
+    --popover: #ffffff;
+    --popover-foreground: #3e342b;
+
+    --primary: #4a3a2c;
+    --primary-foreground: #faf7f2;
+
+    --secondary: #d6c2b5;
+    --secondary-foreground: #3e342b;
+
+    --muted: #f1efec;
+    --muted-foreground: #6e6256;
+
+    --accent: #c97a5a;
+    --accent-foreground: #ffffff;
+
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+
+    --input: #e4ded7;
+    --ring: #c97a5a;
+
+    /* Border Radius */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* ---- Dark Theme ---- */
+
+    /* Background Colors */
+    --background: #1e1a17;
+    --background-alt: #252220;
+    --surface: #2a2521;
+
+    /* Text Colors */
+    --foreground: #e7dfd9;
+    --text-primary: #e7dfd9;
+    --text-secondary: #b7ada6;
+
+    /* Border Colors */
+    --border: #3a332e;
+    --border-soft: #3a332e;
+    --border-medium: #5a514a;
+
+    /* UI Component Colors */
+    --card: #2a2521;
+    --card-foreground: #e7dfd9;
+
+    --popover: #2a2521;
+    --popover-foreground: #e7dfd9;
+
+    --primary: #d6c2b5;
+    --primary-foreground: #1e1a17;
+
+    --secondary: #4a3a2c;
+    --secondary-foreground: #e7dfd9;
+
+    --muted: #2a2521;
+    --muted-foreground: #b7ada6;
+
+    --accent: #c97a5a;
+    --accent-foreground: #ffffff;
+
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+
+    --input: #3a332e;
+    --ring: #c97a5a;
+  }
+
+  /* ---- Base Styles ---- */
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Text balance for better typography */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

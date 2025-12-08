@@ -32,18 +32,20 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [x] TypeScript konfigürasyonu
 - [x] ESLint ve Prettier kurulumu
 - [x] Husky ve lint-staged kurulumu
-- [ ] Git repository kurulumu (Adım 1.3'te)
+- [x] Git repository kurulumu ✅
 - [x] .gitignore dosyası oluşturma
+- [x] GitHub'a push yapıldı ✅
 
-### 1.2 Styling ve UI Framework
+### 1.2 Styling ve UI Framework ✅ TAMAMLANDI
 
 - [x] Tailwind CSS kurulumu (temel)
-- [ ] shadcn/ui kurulumu
-- [ ] LIGNOVIA renk paletinin Tailwind'e eklenmesi
-- [ ] Custom CSS variables tanımlama
-- [ ] Dark mode konfigürasyonu
-- [ ] Inter ve Raleway Thin font kurulumu
-- [ ] prettier-plugin-tailwindcss aktif edilecek
+- [x] shadcn/ui kurulumu ✅
+- [x] LIGNOVIA renk paletinin Tailwind'e eklenmesi ✅
+- [x] Custom CSS variables tanımlama ✅
+- [x] Dark mode konfigürasyonu ✅
+- [x] Inter ve Raleway Thin font kurulumu ✅
+- [x] Logo SVG dosyaları ve Logo component ✅
+- [x] prettier-plugin-tailwindcss aktif edildi ✅
 
 ### 1.3 Veritabanı Kurulumu
 

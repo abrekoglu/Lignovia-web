@@ -8,7 +8,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 **Başlangıç Tarihi:** 8 Aralık 2024
 **Güncel Faz:** Faz 1 - Proje Kurulumu ve Altyapı
-**Güncel Adım:** Adım 1.3 - Git Repository Kurulumu
+**Güncel Adım:** Adım 1.6 - Supabase + Prisma Kurulumu
 
 ---
 
@@ -54,31 +54,89 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ---
 
+#### Adım 1.3: Git Repository Kurulumu ✅
+- **Durum:** Tamamlandı
+- **Tarih:** 8 Aralık 2024
+- **Yapılanlar:**
+  - Git repository oluşturuldu (`git init`)
+  - Remote origin eklendi: `https://github.com/abrekoglu/Lignovia-web.git`
+  - 26 dosya commit edildi
+  - GitHub'a push yapıldı
+  - main branch origin/main'i track ediyor
+- **Notlar:**
+  - LF/CRLF uyarıları Windows'ta normal, sorun değil
+  - `node_modules` commit edilmedi (.gitignore çalışıyor)
+
+#### Adım 1.4: Tailwind CSS + LIGNOVIA Renk Paleti + shadcn/ui ✅
+- **Durum:** Tamamlandı
+- **Tarih:** 8 Aralık 2024
+- **Yapılanlar:**
+  - ✅ LIGNOVIA renk paleti Tailwind'e eklendi (tailwind.config.ts)
+  - ✅ CSS Variables tanımlandı (Light & Dark theme)
+  - ✅ Dark mode "class" stratejisi ile yapılandırıldı
+  - ✅ shadcn/ui manuel kurulumu tamamlandı
+  - ✅ prettier-plugin-tailwindcss aktif edildi
+  - ✅ İlk component'ler oluşturuldu: Button, Card, Input
+  - ✅ Design System sayfası oluşturuldu (/design-system)
+  - ✅ Light theme test edildi
+  - ✅ Dark theme test edildi
+- **Eklenen Paketler:**
+  - @radix-ui/react-slot
+  - class-variance-authority
+  - clsx
+  - tailwind-merge
+  - lucide-react
+- **Oluşturulan Dosyalar:**
+  - components.json (shadcn/ui config)
+  - lib/utils.ts (cn helper)
+  - components/ui/button.tsx
+  - components/ui/card.tsx
+  - components/ui/input.tsx
+  - app/design-system/page.tsx (Theme Preview sayfası)
+- **Renk Kullanımı:**
+  - `bg-brand-primary` → #4A3A2C (koyu kahve)
+  - `bg-brand-secondary` → #D6C2B5 (açık bej)
+  - `bg-brand-accent` → #C97A5A (terracotta)
+
+---
+
+#### Adım 1.5: Font Kurulumu (Inter, Raleway) + Logo ✅
+- **Durum:** Tamamlandı
+- **Tarih:** 8 Aralık 2024
+- **Yapılanlar:**
+  - ✅ Inter font kurulumu (body text) - next/font ile
+  - ✅ Raleway font kurulumu (display/heading) - next/font ile
+  - ✅ CSS variables tanımlandı (--font-inter, --font-raleway)
+  - ✅ Tailwind font-family konfigürasyonu (font-sans, font-display)
+  - ✅ Logo SVG dosyaları eklendi (public/images/)
+  - ✅ Logo component oluşturuldu (Dark mode otomatik geçiş)
+  - ✅ Design System sayfası güncellendi (Logo bölümü eklendi)
+- **Oluşturulan Dosyalar:**
+  - public/images/logo.svg (Light tema için - koyu yazı)
+  - public/images/logo-dark.svg (Dark tema için - açık yazı)
+  - components/ui/logo.tsx (Otomatik tema değişimi)
+- **Font Kullanımı:**
+  - `font-sans` → Inter (body text)
+  - `font-display` → Raleway (headings, logo text)
+  - Raleway weight'ler: 100 (thin), 200, 300, 400, 500, 600, 700
+
+---
+
 ## 🔄 Devam Eden Adımlar
 
-### Adım 1.3: Git Repository Kurulumu (Sırada)
+### Adım 1.6: Supabase + Prisma Kurulumu (Sırada)
 - **Durum:** Beklemede
 - **Yapılacaklar:**
-  - Git repository başlat (`git init`)
-  - İlk commit yap
-  - Remote repository bağla (GitHub/GitLab)
+  - Supabase projesi oluşturma
+  - PostgreSQL bağlantısı
+  - Prisma kurulumu ve konfigürasyonu
+  - Environment variables ayarlama
 
 ---
 
 ## 📋 Bekleyen Adımlar (Faz 1)
 
-### Adım 1.4: Tailwind CSS ve LIGNOVIA Renk Paleti
-- shadcn/ui kurulumu
-- LIGNOVIA renk paletinin Tailwind'e eklenmesi
-- Custom CSS variables tanımlama
-- Dark mode konfigürasyonu
-- `prettier-plugin-tailwindcss` aktif edilecek
-
-### Adım 1.5: Font Kurulumu
-- Inter font kurulumu (Body)
-- Raleway Thin font kurulumu (Logo)
-
-### Adım 1.6: Supabase ve Prisma Kurulumu
+### Adım 1.6: Supabase ve Prisma Kurulumu (Sırada)
 - Supabase projesi oluşturma
 - PostgreSQL bağlantısı
 - Prisma kurulumu ve konfigürasyonu
@@ -96,7 +154,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 | Metrik | Değer |
 |--------|-------|
-| Tamamlanan Adımlar | 2 / 12 (Faz 1) |
+| Tamamlanan Adımlar | 5 / 12 (Faz 1) |
 | Toplam Fazlar | 1 / 6 |
 | Tahmini Tamamlanma | Faz 1: 1-2 hafta |
 
@@ -104,7 +162,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ## 🐛 Bilinen Sorunlar
 
-1. **prettier-plugin-tailwindcss:** Şu an devre dışı. Tailwind kurulumunda (Adım 1.4) aktif edilecek.
+Şu an bilinen kritik sorun yok. ✅
 
 ---
 
