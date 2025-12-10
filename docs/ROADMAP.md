@@ -6,21 +6,76 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ---
 
-## 📅 Fazlar ve Süre Tahminleri
+## 📅 MILESTONE TAKVİMİ
 
-### Faz 1: Proje Kurulumu ve Altyapı (1-2 hafta)
+| Faz | Başlangıç | Bitiş | Durum | Hedef |
+|-----|-----------|-------|-------|-------|
+| **Faz 1** | 8 Aralık 2024 | 22 Aralık 2024 | 🟡 Devam | Altyapı ve kurulumların tamamlanması |
+| **Faz 2** | 23 Aralık 2024 | 19 Ocak 2025 | ⏳ Bekliyor | Backend API'lerin çalışır hale gelmesi |
+| **Faz 3** | 20 Ocak 2025 | 23 Şubat 2025 | ⏳ Bekliyor | Müşteri arayüzünün tamamlanması |
+| **Faz 4** | 24 Şubat 2025 | 23 Mart 2025 | ⏳ Bekliyor | Admin panelinin tamamlanması |
+| **Faz 5** | 24 Mart 2025 | 13 Nisan 2025 | ⏳ Bekliyor | Tüm entegrasyonların çalışması |
+| **Faz 6** | 14 Nisan 2025 | 27 Nisan 2025 | ⏳ Bekliyor | Production'a deploy |
 
-### Faz 2: Temel Backend ve Veritabanı (3-4 hafta) ⬆️ (Yeni özellikler nedeniyle artırıldı)
+**Proje Başlangıcı:** 8 Aralık 2024  
+**Tahmini Bitiş:** 27 Nisan 2025  
+**Toplam Süre:** ~20 hafta
 
-### Faz 3: Frontend - Müşteri Tarafı (4-5 hafta) ⬆️ (Yeni özellikler nedeniyle artırıldı)
+---
 
-### Faz 4: Admin Paneli (3-4 hafta) ⬆️ (Yeni özellikler nedeniyle artırıldı)
+## 🎯 FAZ HEDEFLERİ
 
-### Faz 5: Entegrasyonlar ve Optimizasyon (2-3 hafta) ⬆️ (Yeni entegrasyonlar nedeniyle artırıldı)
+### Faz 1 Hedefleri (✅ Büyük kısmı tamamlandı)
+- [x] Next.js + TypeScript projesi çalışır durumda
+- [x] Design system (Tailwind + shadcn/ui) hazır
+- [x] Veritabanı şeması (31 tablo) tamamlandı
+- [ ] External services hesapları hazır
+- [ ] CI/CD pipeline aktif
 
-### Faz 6: Test ve Deployment (1-2 hafta) ⬆️ (Kapsamlı test nedeniyle artırıldı)
+### Faz 2 Hedefleri
+- [ ] NextAuth.js authentication sistemi çalışıyor
+- [ ] Tüm temel API endpoints çalışıyor
+- [ ] Rate limiting ve security middleware aktif
+- [ ] Email/SMS utility fonksiyonları hazır
 
-**Toplam Tahmini Süre: 14-20 hafta** ⬆️ (Yeni özellikler ve yasal gereksinimler nedeniyle artırıldı)
+### Faz 3 Hedefleri
+- [ ] Ana sayfa ve ürün kataloğu çalışıyor
+- [ ] Sepet ve checkout akışı tamamlandı
+- [ ] Kullanıcı paneli aktif
+- [ ] i18n (TR/EN) çalışıyor
+
+### Faz 4 Hedefleri
+- [ ] Admin dashboard çalışıyor
+- [ ] Ürün/kategori yönetimi aktif
+- [ ] Sipariş yönetimi tamamlandı
+- [ ] Kargo entegrasyonu çalışıyor
+
+### Faz 5 Hedefleri
+- [ ] iyzico ödeme sistemi aktif
+- [ ] E-fatura entegrasyonu çalışıyor
+- [ ] SEO optimizasyonu tamamlandı
+- [ ] Lighthouse skoru 90+
+
+### Faz 6 Hedefleri
+- [ ] E2E testler geçiyor
+- [ ] Production deployment yapıldı
+- [ ] Monitoring aktif (Sentry)
+- [ ] Backup stratejisi çalışıyor
+
+---
+
+## 📊 Fazlar ve Süre Tahminleri
+
+| Faz | Süre | Açıklama |
+|-----|------|----------|
+| Faz 1 | 2 hafta | Proje Kurulumu ve Altyapı |
+| Faz 2 | 4 hafta | Temel Backend ve Veritabanı |
+| Faz 3 | 5 hafta | Frontend - Müşteri Tarafı |
+| Faz 4 | 4 hafta | Admin Paneli |
+| Faz 5 | 3 hafta | Entegrasyonlar ve Optimizasyon |
+| Faz 6 | 2 hafta | Test ve Deployment |
+
+**Toplam Tahmini Süre: ~20 hafta**
 
 ---
 

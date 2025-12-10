@@ -6,11 +6,19 @@ Modern, performanslı, güvenli ve ölçeklenebilir e-ticaret platformu. Ahşap 
 
 ## 📚 Dokümantasyon
 
-Bu proje için hazırlanmış detaylı dokümantasyon:
+Tüm dokümantasyon dosyaları [`docs/`](./docs/) klasöründe:
 
-1. **[TECHNOLOGY_STACK.md](./TECHNOLOGY_STACK.md)** - Kullanılan teknolojiler, kütüphaneler ve altyapı
-2. **[SCOPE_DOCUMENT.md](./SCOPE_DOCUMENT.md)** - Proje kapsamı, özellikler ve gereksinimler
-3. **[ROADMAP.md](./ROADMAP.md)** - Adım adım geliştirme planı ve yol haritası
+| Dosya | Açıklama |
+|-------|----------|
+| [TECHNOLOGY_STACK.md](./docs/TECHNOLOGY_STACK.md) | Kullanılan teknolojiler, kütüphaneler ve altyapı |
+| [SCOPE_DOCUMENT.md](./docs/SCOPE_DOCUMENT.md) | Proje kapsamı, özellikler ve gereksinimler |
+| [ROADMAP.md](./docs/ROADMAP.md) | Adım adım geliştirme planı ve yol haritası |
+| [PROGRESS.md](./docs/PROGRESS.md) | Güncel ilerleme durumu |
+| [TODO_LIST.md](./docs/TODO_LIST.md) | Yapılacaklar listesi |
+| [DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) | Veritabanı şema dokümantasyonu |
+| [STEP_WORKFLOW.md](./docs/STEP_WORKFLOW.md) | Her adım için iş akışı |
+| [BRANCH_STRATEGY.md](./docs/BRANCH_STRATEGY.md) | Git branch stratejisi |
+| [MISSING_FEATURES.md](./docs/MISSING_FEATURES.md) | Eksik özellikler listesi |
 
 ---
 
@@ -123,7 +131,7 @@ Proje 6 ana fazda geliştirilecek:
 
 **Toplam Tahmini Süre: 14-20 hafta**
 
-Detaylı plan için [ROADMAP.md](./ROADMAP.md) dosyasına bakın.
+Detaylı plan için [ROADMAP.md](./docs/ROADMAP.md) dosyasına bakın.
 
 ---
 
@@ -212,7 +220,7 @@ Detaylı plan için [ROADMAP.md](./ROADMAP.md) dosyasına bakın.
 
 ## 📈 İlerleme Durumu
 
-Detaylı ilerleme durumu için [PROGRESS.md](./PROGRESS.md) dosyasına bakın.
+Detaylı ilerleme durumu için [PROGRESS.md](./docs/PROGRESS.md) dosyasına bakın.
 
 **Güncel Durum:** Faz 1 - Adım 1.7 (External Services) sırada
 
