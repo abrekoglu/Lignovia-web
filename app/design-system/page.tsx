@@ -20,7 +20,7 @@ export default function DesignSystemPage() {
         <div className="mb-4 flex justify-center">
           <Logo width={250} height={44} />
         </div>
-        <h1 className="font-display text-4xl font-light text-brand-primary">
+        <h1 className="font-display text-4xl font-light text-primary">
           Design System
         </h1>
         <p className="mt-2 text-text-secondary">
@@ -121,12 +121,12 @@ export default function DesignSystemPage() {
           <div className="mb-8">
             <h3 className="mb-4 text-xl font-semibold">Marka Renkleri</h3>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-              <ColorCard name="Primary" hex="#4A3A2C" className="bg-brand-primary" />
-              <ColorCard name="Secondary" hex="#D6C2B5" className="bg-brand-secondary" />
-              <ColorCard name="Accent" hex="#C97A5A" className="bg-brand-accent" />
-              <ColorCard name="Background" hex="#FAF7F2" className="bg-background border" />
-              <ColorCard name="Foreground" hex="#3E342B" className="bg-foreground" />
-              <ColorCard name="Surface" hex="#FFFFFF" className="bg-surface border" />
+              <ColorCard name="Primary" hex="#4A3A2C" />
+              <ColorCard name="Secondary" hex="#D6C2B5" />
+              <ColorCard name="Accent" hex="#C97A5A" />
+              <ColorCard name="Background" hex="#FAF7F2" />
+              <ColorCard name="Foreground" hex="#3E342B" />
+              <ColorCard name="Surface" hex="#FFFFFF" />
             </div>
           </div>
 
@@ -134,10 +134,10 @@ export default function DesignSystemPage() {
           <div>
             <h3 className="mb-4 text-xl font-semibold">UI Renkleri</h3>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <ColorCard name="Destructive" hex="#DC2626" className="bg-destructive" />
-              <ColorCard name="Muted" hex="#F1EFEC" className="bg-muted" />
-              <ColorCard name="Border" hex="#E4DED7" className="bg-border" />
-              <ColorCard name="Ring" hex="#C97A5A" className="bg-ring" />
+              <ColorCard name="Destructive" hex="#DC2626" />
+              <ColorCard name="Muted" hex="#F1EFEC" />
+              <ColorCard name="Border" hex="#E4DED7" />
+              <ColorCard name="Ring" hex="#C97A5A" />
             </div>
           </div>
         </section>
@@ -302,13 +302,13 @@ export default function DesignSystemPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Product Card */}
             <Card>
-              <div className="h-48 rounded-t-lg bg-brand-secondary"></div>
+              <div className="h-48 rounded-t-lg bg-secondary"></div>
               <CardHeader>
                 <CardTitle>Ahşap Kesme Tahtası</CardTitle>
                 <CardDescription>El yapımı ceviz ağacı</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-brand-accent">₺299,00</p>
+                <p className="text-2xl font-bold text-accent">₺299,00</p>
                 <Button className="mt-4 w-full" variant="accent">
                   Sepete Ekle
                 </Button>
@@ -327,9 +327,9 @@ export default function DesignSystemPage() {
             </Card>
 
             {/* Info Card */}
-            <Card className="border-brand-accent">
+            <Card className="border-accent">
               <CardHeader>
-                <CardTitle className="text-brand-accent">Bilgi Kartı</CardTitle>
+                <CardTitle className="text-accent">Bilgi Kartı</CardTitle>
                 <CardDescription>Accent border ile</CardDescription>
               </CardHeader>
               <CardContent>
@@ -395,11 +395,14 @@ function ColorCard({
 }: {
   name: string;
   hex: string;
-  className: string;
+  className?: string;
 }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border">
-      <div className={`h-16 ${className}`}></div>
+      <div 
+        className={`h-16 ${className || ""}`}
+        style={{ backgroundColor: hex }}
+      ></div>
       <div className="bg-card p-2 text-center">
         <p className="text-sm font-medium">{name}</p>
         <p className="text-xs text-text-secondary">{hex}</p>

@@ -125,7 +125,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ## 🔄 Devam Eden Adımlar
 
 ### Adım 1.6: Supabase + Prisma Kurulumu (Sırada)
-- **Durum:** Beklemede
+- **Durum:** Beklemede - Kullanıcı Supabase hesabı oluşturmalı
 - **Yapılacaklar:**
   - Supabase projesi oluşturma
   - PostgreSQL bağlantısı
@@ -135,11 +135,6 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ---
 
 ## 📋 Bekleyen Adımlar (Faz 1)
-
-### Adım 1.6: Supabase ve Prisma Kurulumu (Sırada)
-- Supabase projesi oluşturma
-- PostgreSQL bağlantısı
-- Prisma kurulumu ve konfigürasyonu
 
 ### Adım 1.7-1.12: External Services
 - Cloudinary hesabı ve konfigürasyonu
@@ -171,8 +166,9 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 - Her adım sonrası Lighthouse testi yapılıyor
 - Her adım sonrası commit yapılacak
 - Güvenlik kontrolleri her adımda yapılıyor
+- Design System sayfası (/design-system) tüm UI bileşenlerini gösteriyor
 
 ---
 
-**Son Güncelleme:** 8 Aralık 2024
+**Son Güncelleme:** 10 Aralık 2024
 
