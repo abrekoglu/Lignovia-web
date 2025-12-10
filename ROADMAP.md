@@ -47,14 +47,17 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [x] Logo SVG dosyaları ve Logo component ✅
 - [x] prettier-plugin-tailwindcss aktif edildi ✅
 
-### 1.3 Veritabanı Kurulumu
+### 1.3 Veritabanı Kurulumu ✅ TAMAMLANDI
 
-- [ ] Supabase projesi oluşturma
-- [ ] PostgreSQL bağlantısı
-- [ ] Prisma kurulumu ve konfigürasyonu
-- [ ] Environment variables ayarlama
+- [x] Supabase projesi oluşturma ✅
+- [x] PostgreSQL bağlantısı ✅
+- [x] Prisma 7.x kurulumu ve konfigürasyonu ✅
+- [x] Environment variables ayarlama (.env) ✅
+- [x] Veritabanı şeması (31 tablo) ✅
+- [x] Prisma client singleton (lib/prisma.ts) ✅
+- [x] Database scripts (package.json) ✅
 
-### 1.4 External Services Kurulumu
+### 1.4 External Services Kurulumu (SIRADAKİ ADIM)
 
 - [ ] Cloudinary hesabı ve konfigürasyonu
 - [ ] Resend hesabı ve API key
@@ -66,14 +69,23 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [ ] Google Analytics 4 kurulumu
 - [ ] Web Push Notification service setup
 
-### 1.5 Development Environment
+### 1.5 Development Environment & DevOps
 
 - [ ] Vercel projesi oluşturma (development)
 - [ ] Environment variables (local + Vercel)
 - [ ] Database migration setup
 - [ ] Development scripts (package.json)
 
-**Çıktı:** Çalışan Next.js projesi, veritabanı bağlantısı, external servisler hazır
+### 1.6 CI/CD & Security (YENİ EKLENDİ)
+
+- [ ] GitHub Actions CI/CD pipeline
+  - [ ] Lint & Type check on PR
+  - [ ] Build test on PR
+  - [ ] Auto deploy to Vercel
+- [ ] Dependabot konfigürasyonu (dependency security)
+- [ ] Branch protection rules (main)
+
+**Çıktı:** Çalışan Next.js projesi, veritabanı bağlantısı, external servisler hazır, CI/CD pipeline aktif
 
 ---
 
