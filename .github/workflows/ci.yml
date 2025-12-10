@@ -55,13 +55,14 @@ jobs:
       - name: Generate Prisma Client
         run: npm run db:generate
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # Prisma generate için dummy DATABASE_URL yeterli (schema'yı okur)
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
 
       - name: Build Next.js
         run: npm run build
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          # Test için minimal env vars (gerçek değerler gerekmez build için)
+          # Build için minimal env vars (gerçek değerler gerekmez build için)
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
           CLOUDINARY_CLOUD_NAME: test
           CLOUDINARY_API_KEY: test
           CLOUDINARY_API_SECRET: test
@@ -72,5 +73,5 @@ jobs:
           GOOGLE_CLIENT_ID: test
           GOOGLE_CLIENT_SECRET: test
           NEXTAUTH_URL: http://localhost:3000
-          NEXTAUTH_SECRET: test-secret
+          NEXTAUTH_SECRET: test-secret-for-ci
 
