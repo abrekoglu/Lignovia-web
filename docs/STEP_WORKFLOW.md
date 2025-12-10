@@ -179,14 +179,14 @@ Bu doküman, her adımın nasıl ilerleyeceğini detaylı olarak açıklar.
 
 Her adımda hangi .md dosyaları güncellenir:
 
-| Adım Türü | PROGRESS | ROADMAP | TODO_LIST | DB_SCHEMA | TECH_STACK |
-|-----------|:--------:|:-------:|:---------:|:---------:|:----------:|
-| Kurulum adımları | ✅ | ✅ | ✅ | - | ✅ |
-| Veritabanı değişiklikleri | ✅ | - | ✅ | ✅ | - |
-| Yeni özellik | ✅ | ✅ | ✅ | - | - |
-| Bug fix | ✅ | - | - | - | - |
-| Konfigürasyon | ✅ | - | ✅ | - | ✅ |
-| Entegrasyon | ✅ | ✅ | ✅ | - | ✅ |
+| Adım Türü                 | PROGRESS | ROADMAP | TODO_LIST | DB_SCHEMA | TECH_STACK |
+| ------------------------- | :------: | :-----: | :-------: | :-------: | :--------: |
+| Kurulum adımları          |    ✅    |   ✅    |    ✅     |     -     |     ✅     |
+| Veritabanı değişiklikleri |    ✅    |    -    |    ✅     |    ✅     |     -      |
+| Yeni özellik              |    ✅    |   ✅    |    ✅     |     -     |     -      |
+| Bug fix                   |    ✅    |    -    |     -     |     -     |     -      |
+| Konfigürasyon             |    ✅    |    -    |    ✅     |     -     |     ✅     |
+| Entegrasyon               |    ✅    |   ✅    |    ✅     |     -     |     ✅     |
 
 ### Güncelleme Kuralları:
 
@@ -203,34 +203,40 @@ Her adımda hangi .md dosyaları güncellenir:
 Bir adımın "tamamlandı" sayılabilmesi için:
 
 ### 🔧 Kod Kriterleri
+
 - [ ] Kod yazıldı ve çalışıyor
 - [ ] Lint hataları yok (`npm run lint`)
 - [ ] Type hataları yok (`npm run type-check`)
 - [ ] Build başarılı (`npm run build`)
 
 ### 📝 Dokümantasyon Kriterleri
+
 - [ ] İlgili .md dosyaları güncellendi
 - [ ] Kod yorumları eklendi (gerekirse)
 - [ ] README güncel
 
 ### 🧪 Test Kriterleri
+
 - [ ] Manuel test yapıldı
 - [ ] Edge case'ler kontrol edildi
 - [ ] Cross-browser test (gerekirse)
 - [ ] Mobile test (gerekirse)
 
 ### 🔒 Güvenlik Kriterleri
+
 - [ ] Hassas veri .env'de
 - [ ] Input validation var
 - [ ] XSS koruması var
 - [ ] SQL injection koruması var (Prisma)
 
 ### 🚀 Performans Kriterleri
+
 - [ ] Gereksiz re-render yok
 - [ ] Image optimization var
 - [ ] Bundle size kontrol edildi
 
 ### 📦 Git Kriterleri
+
 - [ ] Anlamlı commit mesajı
 - [ ] Branch isimlendirmesi doğru
 - [ ] Push yapıldı
@@ -239,14 +245,14 @@ Bir adımın "tamamlandı" sayılabilmesi için:
 
 ## 🚦 ADIM DURUMU GÖSTERGELERİ
 
-| Emoji | Durum | Açıklama |
-|-------|-------|----------|
-| ⏳ | Bekliyor | Henüz başlanmadı |
-| 🟡 | Devam Ediyor | Üzerinde çalışılıyor |
-| 🟠 | Review Bekliyor | Kod tamamlandı, test bekleniyor |
-| ✅ | Tamamlandı | DoD kriterleri karşılandı |
-| ❌ | Bloklandı | Bir engel var |
-| 🔄 | Revizyon | Düzeltme gerekiyor |
+| Emoji | Durum           | Açıklama                        |
+| ----- | --------------- | ------------------------------- |
+| ⏳    | Bekliyor        | Henüz başlanmadı                |
+| 🟡    | Devam Ediyor    | Üzerinde çalışılıyor            |
+| 🟠    | Review Bekliyor | Kod tamamlandı, test bekleniyor |
+| ✅    | Tamamlandı      | DoD kriterleri karşılandı       |
+| ❌    | Bloklandı       | Bir engel var                   |
+| 🔄    | Revizyon        | Düzeltme gerekiyor              |
 
 ---
 

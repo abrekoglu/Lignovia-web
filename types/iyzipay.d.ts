@@ -1,4 +1,4 @@
-declare module 'iyzipay' {
+declare module "iyzipay" {
   interface IyzipayConfig {
     apiKey: string;
     secretKey: string;
@@ -94,4 +94,3 @@ declare module 'iyzipay' {
 
   export = Iyzipay;
 }
-

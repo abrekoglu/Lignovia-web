@@ -17,6 +17,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ### Faz 1: Proje Kurulumu ve Altyapı
 
 #### Adım 1.1: Next.js Projesi Oluşturma ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 8 Aralık 2024
 - **Yapılanlar:**
@@ -34,6 +35,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
   - Next.js versiyonu: package.json'da 14.2.5 belirtildi, npm 14.2.33 yükledi (minor version farkı, sorun değil)
 
 #### Adım 1.2: TypeScript ve ESLint Konfigürasyonu ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 8 Aralık 2024
 - **Yapılanlar:**
@@ -55,6 +57,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ---
 
 #### Adım 1.3: Git Repository Kurulumu ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 8 Aralık 2024
 - **Yapılanlar:**
@@ -68,6 +71,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
   - `node_modules` commit edilmedi (.gitignore çalışıyor)
 
 #### Adım 1.4: Tailwind CSS + LIGNOVIA Renk Paleti + shadcn/ui ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 8 Aralık 2024
 - **Yapılanlar:**
@@ -101,6 +105,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ---
 
 #### Adım 1.5: Font Kurulumu (Inter, Raleway) + Logo ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 8 Aralık 2024
 - **Yapılanlar:**
@@ -123,6 +128,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ---
 
 #### Adım 1.6: Supabase + Prisma Kurulumu ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 10 Aralık 2024
 - **Yapılanlar:**
@@ -157,6 +163,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
   - `npm run db:reset` - Veritabanını sıfırla
 
 #### Adım 1.7: External Services ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 10 Aralık 2024
 - **Yapılanlar:**
@@ -200,6 +207,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
   - NEXTAUTH_URL, NEXTAUTH_SECRET
 
 #### Adım 1.8: Vercel Deployment ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 10 Aralık 2024
 - **Yapılanlar:**
@@ -228,6 +236,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ## 🔄 Devam Eden Adımlar
 
 ### Adım 1.9: CI/CD & Security (ROADMAP: 1.6)
+
 - [ ] GitHub Actions CI/CD pipeline
   - [ ] Lint & Type check on PR
   - [ ] Build test on PR
@@ -239,11 +248,11 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ## 📊 İstatistikler
 
-| Metrik | Değer |
-|--------|-------|
+| Metrik             | Değer               |
+| ------------------ | ------------------- |
 | Tamamlanan Adımlar | 8 / 9 (Faz 1) - %89 |
-| Toplam Fazlar | 1 / 6 |
-| Tahmini Tamamlanma | Faz 1: 1-2 hafta |
+| Toplam Fazlar      | 1 / 6               |
+| Tahmini Tamamlanma | Faz 1: 1-2 hafta    |
 
 ---
 
@@ -263,4 +272,3 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ---
 
 **Son Güncelleme:** 10 Aralık 2024 (Adım 1.8 tamamlandı)
-

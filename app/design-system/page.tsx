@@ -79,9 +79,12 @@ export default function DesignSystemPage() {
 
             {/* Auto Theme Logo (using Logo component) */}
             <div>
-              <h3 className="mb-4 text-xl font-semibold">Auto Theme Logo (Component)</h3>
+              <h3 className="mb-4 text-xl font-semibold">
+                Auto Theme Logo (Component)
+              </h3>
               <p className="mb-4 text-sm text-text-secondary">
-                Bu component dark mode açıldığında otomatik olarak logo versiyonunu değiştirir.
+                Bu component dark mode açıldığında otomatik olarak logo
+                versiyonunu değiştirir.
               </p>
               <div className="flex items-center justify-center rounded-lg border border-border bg-background p-8">
                 <Logo width={300} height={53} variant="auto" />
@@ -94,15 +97,21 @@ export default function DesignSystemPage() {
               <div className="flex flex-wrap items-end gap-8 rounded-lg border border-border bg-background p-8">
                 <div className="text-center">
                   <Logo width={400} height={70} />
-                  <p className="mt-2 text-sm text-text-secondary">400px (Large)</p>
+                  <p className="mt-2 text-sm text-text-secondary">
+                    400px (Large)
+                  </p>
                 </div>
                 <div className="text-center">
                   <Logo width={250} height={44} />
-                  <p className="mt-2 text-sm text-text-secondary">250px (Medium)</p>
+                  <p className="mt-2 text-sm text-text-secondary">
+                    250px (Medium)
+                  </p>
                 </div>
                 <div className="text-center">
                   <Logo width={150} height={26} />
-                  <p className="mt-2 text-sm text-text-secondary">150px (Small)</p>
+                  <p className="mt-2 text-sm text-text-secondary">
+                    150px (Small)
+                  </p>
                 </div>
               </div>
             </div>
@@ -161,10 +170,18 @@ export default function DesignSystemPage() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="font-display text-3xl font-thin">Thin (100)</p>
-                  <p className="font-display text-3xl font-light">Light (300)</p>
-                  <p className="font-display text-3xl font-normal">Regular (400)</p>
-                  <p className="font-display text-3xl font-medium">Medium (500)</p>
-                  <p className="font-display text-3xl font-semibold">Semibold (600)</p>
+                  <p className="font-display text-3xl font-light">
+                    Light (300)
+                  </p>
+                  <p className="font-display text-3xl font-normal">
+                    Regular (400)
+                  </p>
+                  <p className="font-display text-3xl font-medium">
+                    Medium (500)
+                  </p>
+                  <p className="font-display text-3xl font-semibold">
+                    Semibold (600)
+                  </p>
                 </CardContent>
               </Card>
 
@@ -188,31 +205,47 @@ export default function DesignSystemPage() {
               <h3 className="mb-4 text-xl font-semibold">Başlık Hiyerarşisi</h3>
               <div className="space-y-4 rounded-lg border border-border p-6">
                 <div>
-                  <p className="font-display text-5xl font-thin">Display - font-display text-5xl font-thin</p>
+                  <p className="font-display text-5xl font-thin">
+                    Display - font-display text-5xl font-thin
+                  </p>
                 </div>
                 <div>
-                  <p className="text-4xl font-bold">Heading 1 - text-4xl font-bold</p>
+                  <p className="text-4xl font-bold">
+                    Heading 1 - text-4xl font-bold
+                  </p>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold">Heading 2 - text-3xl font-bold</p>
+                  <p className="text-3xl font-bold">
+                    Heading 2 - text-3xl font-bold
+                  </p>
                 </div>
                 <div>
-                  <p className="text-2xl font-semibold">Heading 3 - text-2xl font-semibold</p>
+                  <p className="text-2xl font-semibold">
+                    Heading 3 - text-2xl font-semibold
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xl font-semibold">Heading 4 - text-xl font-semibold</p>
+                  <p className="text-xl font-semibold">
+                    Heading 4 - text-xl font-semibold
+                  </p>
                 </div>
                 <div>
-                  <p className="text-lg font-medium">Heading 5 - text-lg font-medium</p>
+                  <p className="text-lg font-medium">
+                    Heading 5 - text-lg font-medium
+                  </p>
                 </div>
                 <div>
                   <p className="text-base">Body - text-base (16px)</p>
                 </div>
                 <div>
-                  <p className="text-sm text-text-secondary">Small - text-sm text-text-secondary</p>
+                  <p className="text-sm text-text-secondary">
+                    Small - text-sm text-text-secondary
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-text-secondary">Extra Small - text-xs</p>
+                  <p className="text-xs text-text-secondary">
+                    Extra Small - text-xs
+                  </p>
                 </div>
               </div>
             </div>
@@ -271,21 +304,33 @@ export default function DesignSystemPage() {
           </h2>
           <div className="max-w-md space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-medium">Text Input</label>
+              <label className="mb-2 block text-sm font-medium">
+                Text Input
+              </label>
               <Input type="text" placeholder="E-posta adresinizi girin" />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Password Input</label>
+              <label className="mb-2 block text-sm font-medium">
+                Password Input
+              </label>
               <Input type="password" placeholder="Şifrenizi girin" />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Disabled Input</label>
+              <label className="mb-2 block text-sm font-medium">
+                Disabled Input
+              </label>
               <Input type="text" placeholder="Disabled" disabled />
             </div>
             <div>
-              <label className="mb-2 block text-sm font-medium">Search with Button</label>
+              <label className="mb-2 block text-sm font-medium">
+                Search with Button
+              </label>
               <div className="flex gap-2">
-                <Input type="text" placeholder="Ürün ara..." className="flex-1" />
+                <Input
+                  type="text"
+                  placeholder="Ürün ara..."
+                  className="flex-1"
+                />
                 <Button>Ara</Button>
               </div>
             </div>
@@ -342,7 +387,10 @@ export default function DesignSystemPage() {
         {/* ================================================
             PLACEHOLDER: DAHA FAZLA COMPONENT
             ================================================ */}
-        <section id="coming-soon" className="rounded-lg border-2 border-dashed border-border p-8 text-center">
+        <section
+          id="coming-soon"
+          className="rounded-lg border-2 border-dashed border-border p-8 text-center"
+        >
           <h2 className="mb-4 text-2xl font-bold text-text-secondary">
             🚧 Yakında Eklenecek Component&apos;ler
           </h2>
@@ -399,7 +447,7 @@ function ColorCard({
 }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border">
-      <div 
+      <div
         className={`h-16 ${className || ""}`}
         style={{ backgroundColor: hex }}
       ></div>
@@ -410,4 +458,3 @@ function ColorCard({
     </div>
   );
 }
-

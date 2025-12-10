@@ -8,14 +8,14 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ## 📅 MILESTONE TAKVİMİ
 
-| Faz | Başlangıç | Bitiş | Durum | Hedef |
-|-----|-----------|-------|-------|-------|
-| **Faz 1** | 8 Aralık 2024 | 22 Aralık 2024 | 🟡 Devam | Altyapı ve kurulumların tamamlanması |
-| **Faz 2** | 23 Aralık 2024 | 19 Ocak 2025 | ⏳ Bekliyor | Backend API'lerin çalışır hale gelmesi |
-| **Faz 3** | 20 Ocak 2025 | 23 Şubat 2025 | ⏳ Bekliyor | Müşteri arayüzünün tamamlanması |
-| **Faz 4** | 24 Şubat 2025 | 23 Mart 2025 | ⏳ Bekliyor | Admin panelinin tamamlanması |
-| **Faz 5** | 24 Mart 2025 | 13 Nisan 2025 | ⏳ Bekliyor | Tüm entegrasyonların çalışması |
-| **Faz 6** | 14 Nisan 2025 | 27 Nisan 2025 | ⏳ Bekliyor | Production'a deploy |
+| Faz       | Başlangıç      | Bitiş          | Durum       | Hedef                                  |
+| --------- | -------------- | -------------- | ----------- | -------------------------------------- |
+| **Faz 1** | 8 Aralık 2024  | 22 Aralık 2024 | 🟡 Devam    | Altyapı ve kurulumların tamamlanması   |
+| **Faz 2** | 23 Aralık 2024 | 19 Ocak 2025   | ⏳ Bekliyor | Backend API'lerin çalışır hale gelmesi |
+| **Faz 3** | 20 Ocak 2025   | 23 Şubat 2025  | ⏳ Bekliyor | Müşteri arayüzünün tamamlanması        |
+| **Faz 4** | 24 Şubat 2025  | 23 Mart 2025   | ⏳ Bekliyor | Admin panelinin tamamlanması           |
+| **Faz 5** | 24 Mart 2025   | 13 Nisan 2025  | ⏳ Bekliyor | Tüm entegrasyonların çalışması         |
+| **Faz 6** | 14 Nisan 2025  | 27 Nisan 2025  | ⏳ Bekliyor | Production'a deploy                    |
 
 **Proje Başlangıcı:** 8 Aralık 2024  
 **Tahmini Bitiş:** 27 Nisan 2025  
@@ -26,6 +26,7 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 ## 🎯 FAZ HEDEFLERİ
 
 ### Faz 1 Hedefleri (✅ Büyük kısmı tamamlandı)
+
 - [x] Next.js + TypeScript projesi çalışır durumda
 - [x] Design system (Tailwind + shadcn/ui) hazır
 - [x] Veritabanı şeması (31 tablo) tamamlandı
@@ -37,30 +38,35 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [ ] CI/CD pipeline aktif
 
 ### Faz 2 Hedefleri
+
 - [ ] NextAuth.js authentication sistemi çalışıyor
 - [ ] Tüm temel API endpoints çalışıyor
 - [ ] Rate limiting ve security middleware aktif
 - [ ] Email/SMS utility fonksiyonları hazır
 
 ### Faz 3 Hedefleri
+
 - [ ] Ana sayfa ve ürün kataloğu çalışıyor
 - [ ] Sepet ve checkout akışı tamamlandı
 - [ ] Kullanıcı paneli aktif
 - [ ] i18n (TR/EN) çalışıyor
 
 ### Faz 4 Hedefleri
+
 - [ ] Admin dashboard çalışıyor
 - [ ] Ürün/kategori yönetimi aktif
 - [ ] Sipariş yönetimi tamamlandı
 - [ ] Kargo entegrasyonu çalışıyor
 
 ### Faz 5 Hedefleri
+
 - [ ] iyzico ödeme sistemi aktif
 - [ ] E-fatura entegrasyonu çalışıyor
 - [ ] SEO optimizasyonu tamamlandı
 - [ ] Lighthouse skoru 90+
 
 ### Faz 6 Hedefleri
+
 - [ ] E2E testler geçiyor
 - [ ] Production deployment yapıldı
 - [ ] Monitoring aktif (Sentry)
@@ -70,14 +76,14 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ## 📊 Fazlar ve Süre Tahminleri
 
-| Faz | Süre | Açıklama |
-|-----|------|----------|
-| Faz 1 | 2 hafta | Proje Kurulumu ve Altyapı |
-| Faz 2 | 4 hafta | Temel Backend ve Veritabanı |
-| Faz 3 | 5 hafta | Frontend - Müşteri Tarafı |
-| Faz 4 | 4 hafta | Admin Paneli |
+| Faz   | Süre    | Açıklama                       |
+| ----- | ------- | ------------------------------ |
+| Faz 1 | 2 hafta | Proje Kurulumu ve Altyapı      |
+| Faz 2 | 4 hafta | Temel Backend ve Veritabanı    |
+| Faz 3 | 5 hafta | Frontend - Müşteri Tarafı      |
+| Faz 4 | 4 hafta | Admin Paneli                   |
 | Faz 5 | 3 hafta | Entegrasyonlar ve Optimizasyon |
-| Faz 6 | 2 hafta | Test ve Deployment |
+| Faz 6 | 2 hafta | Test ve Deployment             |
 
 **Toplam Tahmini Süre: ~20 hafta**
 
@@ -130,13 +136,17 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ### 1.5 Development Environment & DevOps ✅ TAMAMLANDI
 
+**Not:** PROGRESS.md'de bu adım **Adım 1.8** olarak numaralandırılmıştır (daha detaylı adım takibi için).
+
 - [x] Vercel projesi oluşturma (development) ✅
 - [x] Environment variables (local + Vercel) ✅
 - [x] Database migration setup ✅
 - [x] Development scripts (package.json) ✅
 - [x] Production deployment başarılı ✅
 
-### 1.6 CI/CD & Security (YENİ EKLENDİ)
+### 1.6 CI/CD & Security (SIRADAKİ ADIM)
+
+**Not:** PROGRESS.md'de bu adım **Adım 1.9** olarak numaralandırılmıştır.
 
 - [ ] GitHub Actions CI/CD pipeline
   - [ ] Lint & Type check on PR

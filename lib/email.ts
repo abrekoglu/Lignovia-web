@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { Resend } from "resend";
 
 // Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -16,8 +16,9 @@ interface SendEmailOptions {
 // Send email
 export async function sendEmail(options: SendEmailOptions) {
   try {
-    const fromEmail = options.from || process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-    
+    const fromEmail =
+      options.from || process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+
     // Build email payload (only include defined fields)
     const emailPayload: {
       from: string;
@@ -47,13 +48,13 @@ export async function sendEmail(options: SendEmailOptions) {
     const { data, error } = await resend.emails.send(emailPayload as any);
 
     if (error) {
-      console.error('Resend error:', error);
+      console.error("Resend error:", error);
       throw new Error(error.message);
     }
 
     return { success: true, id: data?.id };
   } catch (error) {
-    console.error('Email send error:', error);
+    console.error("Email send error:", error);
     throw error;
   }
 }
@@ -61,7 +62,11 @@ export async function sendEmail(options: SendEmailOptions) {
 // Email templates for LIGNOVIA
 export const emailTemplates = {
   // Order confirmation email
-  orderConfirmation: (data: { orderNumber: string; customerName: string; total: string }) => ({
+  orderConfirmation: (data: {
+    orderNumber: string;
+    customerName: string;
+    total: string;
+  }) => ({
     subject: `LIGNOVIA - Sipariş Onayı #${data.orderNumber}`,
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -87,7 +92,7 @@ export const emailTemplates = {
 
   // Welcome email
   welcome: (data: { customerName: string }) => ({
-    subject: 'LIGNOVIA\'ya Hoş Geldiniz!',
+    subject: "LIGNOVIA'ya Hoş Geldiniz!",
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A3A2C; padding: 20px; text-align: center;">
@@ -111,7 +116,7 @@ export const emailTemplates = {
 
   // Password reset email
   passwordReset: (data: { resetLink: string }) => ({
-    subject: 'LIGNOVIA - Şifre Sıfırlama',
+    subject: "LIGNOVIA - Şifre Sıfırlama",
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A3A2C; padding: 20px; text-align: center;">
@@ -133,7 +138,11 @@ export const emailTemplates = {
   }),
 
   // Shipping notification
-  shippingNotification: (data: { orderNumber: string; trackingNumber: string; carrierName: string }) => ({
+  shippingNotification: (data: {
+    orderNumber: string;
+    trackingNumber: string;
+    carrierName: string;
+  }) => ({
     subject: `LIGNOVIA - Siparişiniz Kargoya Verildi #${data.orderNumber}`,
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -158,20 +167,22 @@ export const emailTemplates = {
 };
 
 // Test connection
-export async function testEmailConnection(): Promise<{ success: boolean; error?: string }> {
+export async function testEmailConnection(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
   try {
     if (!process.env.RESEND_API_KEY) {
-      return { success: false, error: 'RESEND_API_KEY not configured' };
+      return { success: false, error: "RESEND_API_KEY not configured" };
     }
 
     // Send a test email to verify the API key works
     // Note: In production, you'd want to use a verified domain
     return { success: true };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
-

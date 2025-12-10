@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { sendEmail, emailTemplates, testEmailConnection } from '@/lib/email';
+import { NextResponse } from "next/server";
+import { sendEmail, emailTemplates, testEmailConnection } from "@/lib/email";
 
 // GET: Test Resend connection
 export async function GET() {
@@ -10,8 +10,8 @@ export async function GET() {
       return NextResponse.json(
         {
           success: false,
-          error: 'RESEND_API_KEY not configured',
-          hint: 'Add RESEND_API_KEY to your .env file',
+          error: "RESEND_API_KEY not configured",
+          hint: "Add RESEND_API_KEY to your .env file",
         },
         { status: 500 }
       );
@@ -31,16 +31,16 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: 'Resend API key configured!',
+      message: "Resend API key configured!",
       templates: Object.keys(emailTemplates),
-      hint: 'Use POST to send a test email',
+      hint: "Use POST to send a test email",
     });
   } catch (error) {
-    console.error('Resend test error:', error);
+    console.error("Resend test error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
@@ -57,22 +57,23 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Email address (to) is required',
+          error: "Email address (to) is required",
         },
         { status: 400 }
       );
     }
 
     // Use welcome template for test
-    const emailTemplate = template === 'order' 
-      ? emailTemplates.orderConfirmation({
-          orderNumber: 'TEST-001',
-          customerName: 'Test Kullanıcı',
-          total: '₺999,00',
-        })
-      : emailTemplates.welcome({
-          customerName: 'Test Kullanıcı',
-        });
+    const emailTemplate =
+      template === "order"
+        ? emailTemplates.orderConfirmation({
+            orderNumber: "TEST-001",
+            customerName: "Test Kullanıcı",
+            total: "₺999,00",
+          })
+        : emailTemplates.welcome({
+            customerName: "Test Kullanıcı",
+          });
 
     const result = await sendEmail({
       to,
@@ -82,19 +83,18 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Test email sent successfully!',
+      message: "Test email sent successfully!",
       emailId: result.id,
       sentTo: to,
     });
   } catch (error) {
-    console.error('Resend send test error:', error);
+    console.error("Resend send test error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
   }
 }
-

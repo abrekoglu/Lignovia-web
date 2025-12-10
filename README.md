@@ -8,17 +8,17 @@ Modern, performanslı, güvenli ve ölçeklenebilir e-ticaret platformu. Ahşap 
 
 Tüm dokümantasyon dosyaları [`docs/`](./docs/) klasöründe:
 
-| Dosya | Açıklama |
-|-------|----------|
+| Dosya                                             | Açıklama                                         |
+| ------------------------------------------------- | ------------------------------------------------ |
 | [TECHNOLOGY_STACK.md](./docs/TECHNOLOGY_STACK.md) | Kullanılan teknolojiler, kütüphaneler ve altyapı |
-| [SCOPE_DOCUMENT.md](./docs/SCOPE_DOCUMENT.md) | Proje kapsamı, özellikler ve gereksinimler |
-| [ROADMAP.md](./docs/ROADMAP.md) | Adım adım geliştirme planı ve yol haritası |
-| [PROGRESS.md](./docs/PROGRESS.md) | Güncel ilerleme durumu |
-| [TODO_LIST.md](./docs/TODO_LIST.md) | Yapılacaklar listesi |
-| [DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) | Veritabanı şema dokümantasyonu |
-| [STEP_WORKFLOW.md](./docs/STEP_WORKFLOW.md) | Her adım için iş akışı |
-| [BRANCH_STRATEGY.md](./docs/BRANCH_STRATEGY.md) | Git branch stratejisi |
-| [MISSING_FEATURES.md](./docs/MISSING_FEATURES.md) | Eksik özellikler listesi |
+| [SCOPE_DOCUMENT.md](./docs/SCOPE_DOCUMENT.md)     | Proje kapsamı, özellikler ve gereksinimler       |
+| [ROADMAP.md](./docs/ROADMAP.md)                   | Adım adım geliştirme planı ve yol haritası       |
+| [PROGRESS.md](./docs/PROGRESS.md)                 | Güncel ilerleme durumu                           |
+| [TODO_LIST.md](./docs/TODO_LIST.md)               | Yapılacaklar listesi                             |
+| [DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md)   | Veritabanı şema dokümantasyonu                   |
+| [STEP_WORKFLOW.md](./docs/STEP_WORKFLOW.md)       | Her adım için iş akışı                           |
+| [BRANCH_STRATEGY.md](./docs/BRANCH_STRATEGY.md)   | Git branch stratejisi                            |
+| [MISSING_FEATURES.md](./docs/MISSING_FEATURES.md) | Eksik özellikler listesi                         |
 
 ---
 
@@ -225,6 +225,7 @@ Detaylı ilerleme durumu için [PROGRESS.md](./docs/PROGRESS.md) dosyasına bak�
 **Güncel Durum:** Faz 1 - Adım 1.9 (CI/CD Pipeline) sırada
 
 ### ✅ Tamamlanan Adımlar (Faz 1)
+
 - Adım 1.1: Next.js Projesi ✅
 - Adım 1.2: TypeScript, ESLint, Prettier ✅
 - Adım 1.3: Git Repository ✅

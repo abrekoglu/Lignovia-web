@@ -454,6 +454,7 @@ main (veya master)
 **Hedef:** Inter ve Raleway Thin fontları + Logo aktif
 
 #### Tamamlandı:
+
 - [x] Inter font kurulumu (next/font) ✅
 - [x] Raleway font kurulumu (thin dahil tüm weight'ler) ✅
 - [x] CSS variables (--font-inter, --font-raleway) ✅

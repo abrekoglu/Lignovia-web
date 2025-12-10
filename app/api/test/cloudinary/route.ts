@@ -1,5 +1,10 @@
-import { NextResponse } from 'next/server';
-import { testConnection, uploadImage, getOptimizedUrl, imagePresets } from '@/lib/cloudinary';
+import { NextResponse } from "next/server";
+import {
+  testConnection,
+  uploadImage,
+  getOptimizedUrl,
+  imagePresets,
+} from "@/lib/cloudinary";
 
 // GET: Test Cloudinary connection
 export async function GET() {
@@ -13,7 +18,7 @@ export async function GET() {
       return NextResponse.json(
         {
           success: false,
-          error: 'Cloudinary credentials not configured',
+          error: "Cloudinary credentials not configured",
           details: {
             cloud_name: !!cloudName,
             api_key: !!apiKey,
@@ -31,9 +36,9 @@ export async function GET() {
       return NextResponse.json(
         {
           success: false,
-          error: 'Failed to connect to Cloudinary',
+          error: "Failed to connect to Cloudinary",
           details: connectionResult.error,
-          hint: 'Check your CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env file',
+          hint: "Check your CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env file",
         },
         { status: 500 }
       );
@@ -41,16 +46,16 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: 'Cloudinary connection successful!',
+      message: "Cloudinary connection successful!",
       cloud_name: cloudName,
       presets: Object.keys(imagePresets),
     });
   } catch (error) {
-    console.error('Cloudinary test error:', error);
+    console.error("Cloudinary test error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
@@ -65,38 +70,39 @@ export async function POST(request: Request) {
 
     // Use a default test image if none provided
     const testImageUrl =
-      imageUrl ||
-      'https://res.cloudinary.com/demo/image/upload/sample.jpg';
+      imageUrl || "https://res.cloudinary.com/demo/image/upload/sample.jpg";
 
     // Upload the image
     const result = await uploadImage(testImageUrl, {
-      folder: 'lignovia/test',
+      folder: "lignovia/test",
     });
 
     // Generate optimized URLs with different presets
     const optimizedUrls = {
-      thumbnail: getOptimizedUrl(result.public_id, imagePresets.productThumbnail),
+      thumbnail: getOptimizedUrl(
+        result.public_id,
+        imagePresets.productThumbnail
+      ),
       card: getOptimizedUrl(result.public_id, imagePresets.productCard),
       main: getOptimizedUrl(result.public_id, imagePresets.productMain),
     };
 
     return NextResponse.json({
       success: true,
-      message: 'Image uploaded successfully!',
+      message: "Image uploaded successfully!",
       result: {
         original: result,
         optimized: optimizedUrls,
       },
     });
   } catch (error) {
-    console.error('Cloudinary upload test error:', error);
+    console.error("Cloudinary upload test error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
   }
 }
-

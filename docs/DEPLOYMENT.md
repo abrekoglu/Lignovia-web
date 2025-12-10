@@ -39,11 +39,13 @@ Vercel Dashboard > Project Settings > Environment Variables
 **Tüm environment variables'ları ekle:**
 
 #### Database
+
 ```
 DATABASE_URL=postgresql://...
 ```
 
 #### Cloudinary
+
 ```
 CLOUDINARY_CLOUD_NAME=dn0x34z9t
 CLOUDINARY_API_KEY=xxx
@@ -51,11 +53,13 @@ CLOUDINARY_API_SECRET=xxx
 ```
 
 #### Resend
+
 ```
 RESEND_API_KEY=re_xxx
 ```
 
 #### iyzico (Sandbox)
+
 ```
 IYZICO_API_KEY=sandbox-xxx
 IYZICO_SECRET_KEY=sandbox-xxx
@@ -63,6 +67,7 @@ IYZICO_BASE_URL=https://sandbox-api.iyzipay.com
 ```
 
 #### Google OAuth
+
 ```
 GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=xxx
@@ -71,6 +76,7 @@ NEXTAUTH_SECRET=goBIeqAVcQ9obs6xLuQ2Ws6Pf9XCCB/SV6bFdHJko8Q=
 ```
 
 **Önemli:**
+
 - Her variable için **Environment** seç: `Production`, `Preview`, `Development`
 - `NEXTAUTH_URL` için production URL'ini kullan: `https://your-project.vercel.app`
 
@@ -95,14 +101,17 @@ NEXTAUTH_SECRET=goBIeqAVcQ9obs6xLuQ2Ws6Pf9XCCB/SV6bFdHJko8Q=
 ### 5. Deployment Sonrası Kontroller
 
 #### ✅ Build Kontrolü
+
 - [ ] Build başarılı mı? (Vercel Dashboard > Deployments)
 - [ ] Build log'larında hata var mı?
 
 #### ✅ Environment Variables Kontrolü
+
 - [ ] Tüm environment variables eklendi mi?
 - [ ] `NEXTAUTH_URL` production URL'ine güncellendi mi?
 
 #### ✅ Site Kontrolü
+
 - [ ] Site açılıyor mu?
 - [ ] Console'da hata var mı? (Browser DevTools)
 - [ ] API endpoints çalışıyor mu?
@@ -112,6 +121,7 @@ NEXTAUTH_SECRET=goBIeqAVcQ9obs6xLuQ2Ws6Pf9XCCB/SV6bFdHJko8Q=
   - `/api/test/google-oauth`
 
 #### ✅ Database Kontrolü
+
 - [ ] Prisma client generate edildi mi?
 - [ ] Database connection çalışıyor mu?
 
@@ -158,19 +168,21 @@ vercel --prod
 ## 🐛 Sorun Giderme
 
 ### Build Hatası
+
 - Build log'larını kontrol et
 - Environment variables eksik olabilir
 - Prisma generate hatası olabilir
 
 ### Database Connection Hatası
+
 - `DATABASE_URL` doğru mu?
 - Supabase connection pooling aktif mi?
 
 ### API Endpoint Hatası
+
 - Environment variables eklendi mi?
 - API key'ler doğru mu?
 
 ---
 
 **Son Güncelleme:** 10 Aralık 2024
-
