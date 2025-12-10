@@ -122,21 +122,34 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ---
 
-## 🔄 Devam Eden Adımlar
-
-### Adım 1.6: Supabase + Prisma Kurulumu (Sırada)
-- **Durum:** Beklemede - Kullanıcı Supabase hesabı oluşturmalı
-- **Yapılacaklar:**
-  - Supabase projesi oluşturma
-  - PostgreSQL bağlantısı
-  - Prisma kurulumu ve konfigürasyonu
-  - Environment variables ayarlama
+#### Adım 1.6: Supabase + Prisma Kurulumu ✅
+- **Durum:** Tamamlandı
+- **Tarih:** 10 Aralık 2024
+- **Yapılanlar:**
+  - ✅ Supabase projesi oluşturuldu (PostgreSQL)
+  - ✅ Prisma 7.x kurulumu yapıldı
+  - ✅ prisma/schema.prisma oluşturuldu (User, Product, Category, Order modelleri)
+  - ✅ prisma.config.ts konfigürasyonu yapıldı
+  - ✅ lib/prisma.ts client singleton oluşturuldu
+  - ✅ Veritabanı senkronize edildi (db push)
+  - ✅ package.json'a db script'leri eklendi
+- **Oluşturulan Dosyalar:**
+  - prisma/schema.prisma
+  - prisma.config.ts
+  - lib/prisma.ts
+  - .env (DATABASE_URL)
+- **Script'ler:**
+  - `npm run db:generate` - Prisma client oluştur
+  - `npm run db:push` - Schema'yı veritabanına uygula
+  - `npm run db:studio` - Prisma Studio aç
+  - `npm run db:migrate` - Migration oluştur
+  - `npm run db:reset` - Veritabanını sıfırla
 
 ---
 
-## 📋 Bekleyen Adımlar (Faz 1)
+## 🔄 Devam Eden Adımlar
 
-### Adım 1.7-1.12: External Services
+### Adım 1.7-1.12: External Services (Sırada)
 - Cloudinary hesabı ve konfigürasyonu
 - Resend hesabı ve API key
 - iyzico test hesabı
@@ -149,7 +162,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 | Metrik | Değer |
 |--------|-------|
-| Tamamlanan Adımlar | 5 / 12 (Faz 1) |
+| Tamamlanan Adımlar | 6 / 12 (Faz 1) |
 | Toplam Fazlar | 1 / 6 |
 | Tahmini Tamamlanma | Faz 1: 1-2 hafta |
 
