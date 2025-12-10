@@ -511,7 +511,7 @@ main (veya master)
 
 ---
 
-### Adım 1.8: Vercel Deployment Setup (SIRADAKİ ADIM)
+### Adım 1.8: Vercel Deployment Setup ✅ TAMAMLANDI
 
 **Not:** ROADMAP.md'de bu adım 1.5 olarak numaralandırılmış (Development Environment & DevOps).
 
@@ -794,6 +794,29 @@ main (veya master)
 - [ ] Devam edebilir miyiz?
 
 **✅ Onay:** Bu adım tamamlandı mı? Devam edelim mi?
+
+### Adım 1.9: CI/CD Pipeline (Kısmen Tamamlandı) 🟡
+
+**Hedef:** GitHub Actions CI/CD pipeline + Dependabot + Branch Protection
+
+#### ✅ Tamamlanan İşlemler:
+
+- [x] GitHub Actions CI/CD workflow oluşturuldu ✅
+  - [x] .github/workflows/ci.yml dosyası oluşturuldu
+  - [x] Lint & Type Check job (ESLint, TypeScript, Prettier)
+  - [x] Build job (Prisma generate + Next.js build)
+  - [x] PR ve push event'lerinde otomatik çalışıyor
+  - [x] CI workflow başarılı çalışıyor ✅
+
+#### 📋 Sıradaki İşlemler:
+
+- [ ] Dependabot konfigürasyonu
+  - [ ] .github/dependabot.yml dosyası oluştur
+  - [ ] npm dependencies için otomatik güncellemeler
+  - [ ] GitHub Actions için otomatik güncellemeler
+- [ ] Branch protection rules (GitHub'da manuel yapılacak)
+  - [ ] main branch için protection rules
+  - [ ] PR gereksinimleri (CI geçmeli, review gerekli)
 
 ---
 

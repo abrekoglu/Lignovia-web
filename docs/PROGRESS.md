@@ -233,14 +233,36 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ---
 
+#### Adım 1.9: CI/CD Pipeline (Kısmen Tamamlandı) 🟡
+- **Durum:** Kısmen Tamamlandı
+- **Tarih:** 10 Aralık 2024
+- **Yapılanlar:**
+  - ✅ GitHub Actions CI/CD pipeline oluşturuldu
+    - ✅ Lint & Type check job (ESLint, TypeScript, Prettier)
+    - ✅ Build job (Prisma generate + Next.js build)
+    - ✅ PR ve push event'lerinde otomatik çalışıyor
+    - ✅ CI workflow başarılı çalışıyor
+  - ❌ Dependabot konfigürasyonu (sırada)
+  - ❌ Branch protection rules (sırada)
+- **Oluşturulan Dosyalar:**
+  - .github/workflows/ci.yml
+- **CI Pipeline Özellikleri:**
+  - Lint kontrolü (ESLint)
+  - Type check (TypeScript)
+  - Format kontrolü (Prettier)
+  - Build testi (Next.js + Prisma)
+  - Her PR'da otomatik çalışır
+  - Her push'ta otomatik çalışır
+
+---
+
 ## 🔄 Devam Eden Adımlar
 
-### Adım 1.9: CI/CD & Security (ROADMAP: 1.6)
-
-- [ ] GitHub Actions CI/CD pipeline
-  - [ ] Lint & Type check on PR
-  - [ ] Build test on PR
-  - [ ] Auto deploy to Vercel
+### Adım 1.9: CI/CD & Security (Devam Ediyor)
+- [x] GitHub Actions CI/CD pipeline ✅
+  - [x] Lint & Type check on PR ✅
+  - [x] Build test on PR ✅
+  - [ ] Auto deploy to Vercel (Vercel otomatik yapıyor, ayrı workflow gerekmez)
 - [ ] Dependabot konfigürasyonu (dependency security)
 - [ ] Branch protection rules (main)
 
@@ -250,7 +272,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 | Metrik             | Değer               |
 | ------------------ | ------------------- |
-| Tamamlanan Adımlar | 8 / 9 (Faz 1) - %89 |
+| Tamamlanan Adımlar | 8.5 / 9 (Faz 1) - %94 |
 | Toplam Fazlar      | 1 / 6               |
 | Tahmini Tamamlanma | Faz 1: 1-2 hafta    |
 
@@ -271,4 +293,4 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ---
 
-**Son Güncelleme:** 10 Aralık 2024 (Adım 1.8 tamamlandı)
+**Son Güncelleme:** 10 Aralık 2024 (Adım 1.9 - GitHub Actions CI/CD pipeline tamamlandı)
