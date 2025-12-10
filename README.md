@@ -214,7 +214,7 @@ Detaylı plan için [ROADMAP.md](./ROADMAP.md) dosyasına bakın.
 
 Detaylı ilerleme durumu için [PROGRESS.md](./PROGRESS.md) dosyasına bakın.
 
-**Güncel Durum:** Faz 1 - Adım 1.6 (Supabase + Prisma Kurulumu) sırada
+**Güncel Durum:** Faz 1 - Adım 1.7 (External Services) sırada
 
 ### ✅ Tamamlanan Adımlar (Faz 1)
 - Adım 1.1: Next.js Projesi ✅
@@ -222,3 +222,4 @@ Detaylı ilerleme durumu için [PROGRESS.md](./PROGRESS.md) dosyasına bakın.
 - Adım 1.3: Git Repository ✅
 - Adım 1.4: Tailwind CSS, shadcn/ui, LIGNOVIA Renk Paleti ✅
 - Adım 1.5: Font Kurulumu (Inter, Raleway) + Logo Entegrasyonu ✅
+- Adım 1.6: Supabase + Prisma (31 tablo) ✅

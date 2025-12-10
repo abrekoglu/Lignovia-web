@@ -464,7 +464,9 @@ main (veya master)
 
 ---
 
-### Adım 1.7: Supabase ve Prisma Kurulumu ✅ TAMAMLANDI
+### Adım 1.6: Supabase ve Prisma Kurulumu ✅ TAMAMLANDI
+
+**Not:** ROADMAP.md'de bu adım 1.3 olarak numaralandırılmış, ancak kronolojik sıra 1.6'dır.
 
 **Hedef:** Veritabanı bağlantısı hazır
 
@@ -481,11 +483,13 @@ main (veya master)
 
 ---
 
-### Adım 1.8: External Services - Cloudinary (SIRADAKİ ADIM)
+### Adım 1.7: External Services - Cloudinary (SIRADAKİ ADIM)
+
+**Not:** ROADMAP.md'de bu adım 1.4 olarak numaralandırılmış.
 
 ---
 
-### Adım 1.8: External Services - Cloudinary
+### Adım 1.7a: External Services - Cloudinary
 
 **Hedef:** Cloudinary hesabı ve konfigürasyonu
 
@@ -544,7 +548,7 @@ main (veya master)
 
 ---
 
-### Adım 1.9: External Services - Resend
+### Adım 1.7b: External Services - Resend
 
 **Hedef:** Resend hesabı ve konfigürasyonu
 
@@ -598,7 +602,7 @@ main (veya master)
 
 ---
 
-### Adım 1.10: External Services - iyzico (Test)
+### Adım 1.7c: External Services - iyzico (Test)
 
 **Hedef:** iyzico test hesabı hazır
 
@@ -649,7 +653,7 @@ main (veya master)
 
 ---
 
-### Adım 1.11: Google OAuth Setup
+### Adım 1.7d: Google OAuth Setup
 
 **Hedef:** Google OAuth credentials hazır
 
@@ -703,7 +707,7 @@ main (veya master)
 
 ---
 
-### Adım 1.12: Vercel Development Setup
+### Adım 1.8: Vercel Development Setup
 
 **Hedef:** Vercel'de development environment hazır
 

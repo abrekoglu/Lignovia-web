@@ -8,7 +8,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 **Başlangıç Tarihi:** 8 Aralık 2024
 **Güncel Faz:** Faz 1 - Proje Kurulumu ve Altyapı
-**Güncel Adım:** Adım 1.6 - Supabase + Prisma Kurulumu
+**Güncel Adım:** Adım 1.7 - External Services (Cloudinary, Resend, iyzico, Google OAuth)
 
 ---
 
@@ -160,12 +160,19 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ## 🔄 Devam Eden Adımlar
 
-### Adım 1.7-1.12: External Services (Sırada)
-- Cloudinary hesabı ve konfigürasyonu
-- Resend hesabı ve API key
-- iyzico test hesabı
-- Google OAuth credentials
-- Vercel deployment setup
+### Adım 1.7: External Services (Sırada)
+- [ ] Cloudinary hesabı ve konfigürasyonu
+- [ ] Resend hesabı ve API key
+- [ ] iyzico test hesabı
+- [ ] Google OAuth credentials
+
+### Adım 1.8: Vercel Deployment
+- [ ] Vercel projesi oluşturma
+- [ ] Environment variables ayarlama
+
+### Adım 1.9: CI/CD & Security
+- [ ] GitHub Actions pipeline
+- [ ] Dependabot konfigürasyonu
 
 ---
 

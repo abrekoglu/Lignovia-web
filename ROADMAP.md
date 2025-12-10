@@ -91,39 +91,21 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ## 🗄️ Faz 2: Temel Backend ve Veritabanı
 
-### 2.1 Veritabanı Şeması Tasarımı
+### 2.1 Veritabanı Şeması Tasarımı ✅ TAMAMLANDI (Faz 1.3'te yapıldı)
 
-- [ ] Prisma schema oluşturma
-  - [ ] User model
-  - [ ] Product model
-  - [ ] Category model (hierarchical)
-  - [ ] ProductVariant model
-  - [ ] ProductImage model
-  - [ ] Order model
-  - [ ] OrderItem model
-  - [ ] Address model
-  - [ ] CartItem model
-  - [ ] Review model
-  - [ ] Coupon model
-  - [ ] Notification model
-  - [ ] HeroSlide model
-  - [ ] Session model (NextAuth)
-  - [ ] Return model (İade talepleri)
-  - [ ] ReturnItem model
-  - [ ] ReturnReason model
-  - [ ] AbandonedCart model
-  - [ ] RecentlyViewed model
-  - [ ] UserConsent model (KVKK izinleri)
-  - [ ] AuditLog model
-  - [ ] Invoice model
-  - [ ] SmsLog model
-  - [ ] SupportTicket model
-  - [ ] Faq model
-  - [ ] ShippingZone model
-  - [ ] ShippingRate model
-- [ ] İlişkilerin tanımlanması
-- [ ] Index'lerin eklenmesi (performance)
-- [ ] Migration dosyalarının oluşturulması
+- [x] Prisma schema oluşturma (31 tablo) ✅
+  - [x] User, Account, Session, VerificationToken, UserConsent ✅
+  - [x] Product, ProductVariant, Category, ProductCategory, ProductImage ✅
+  - [x] Order, OrderItem, Address, CartItem ✅
+  - [x] Coupon, Invoice ✅
+  - [x] Return, ReturnItem, ReturnReason ✅
+  - [x] Review, Favorite, RecentlyViewed ✅
+  - [x] Notification, SmsLog, AuditLog ✅
+  - [x] SupportTicket, ShippingZone, ShippingRate ✅
+  - [x] HeroSlide, FAQ ✅
+- [x] İlişkilerin tanımlanması ✅
+- [x] Index'lerin eklenmesi (performance) ✅
+- [ ] Migration dosyalarının oluşturulması (production için)
 
 ### 2.2 Authentication Sistemi
 
