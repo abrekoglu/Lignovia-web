@@ -128,11 +128,22 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 - **Yapılanlar:**
   - ✅ Supabase projesi oluşturuldu (PostgreSQL)
   - ✅ Prisma 7.x kurulumu yapıldı
-  - ✅ prisma/schema.prisma oluşturuldu (User, Product, Category, Order modelleri)
+  - ✅ prisma/schema.prisma oluşturuldu (31 tablo)
   - ✅ prisma.config.ts konfigürasyonu yapıldı
   - ✅ lib/prisma.ts client singleton oluşturuldu
   - ✅ Veritabanı senkronize edildi (db push)
   - ✅ package.json'a db script'leri eklendi
+  - ✅ **Eksik tablolar eklendi (10 Aralık 2024)**
+- **Veritabanı Tabloları (31 adet):**
+  - User, Account, Session, VerificationToken, UserConsent
+  - Product, ProductVariant, Category, ProductCategory, ProductImage
+  - Order, OrderItem, Address, CartItem
+  - Coupon, Invoice
+  - Return, ReturnItem, ReturnReason
+  - Review, Favorite, RecentlyViewed
+  - Notification, SmsLog, AuditLog
+  - SupportTicket, ShippingZone, ShippingRate
+  - HeroSlide, FAQ
 - **Oluşturulan Dosyalar:**
   - prisma/schema.prisma
   - prisma.config.ts
