@@ -25,6 +25,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          # postinstall script'i (prisma generate) için DATABASE_URL gerekli
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
 
       - name: Run ESLint
         run: npm run lint
@@ -51,6 +54,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          # postinstall script'i (prisma generate) için DATABASE_URL gerekli
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
 
       - name: Generate Prisma Client
         run: npm run db:generate
