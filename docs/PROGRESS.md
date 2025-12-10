@@ -234,6 +234,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 ---
 
 #### Adım 1.9: CI/CD Pipeline ✅
+
 - **Durum:** Tamamlandı
 - **Tarih:** 10 Aralık 2024
 - **Yapılanlar:**
@@ -273,11 +274,11 @@ Tüm adımlar başarıyla tamamlandı. Faz 2'ye geçmeye hazırız!
 
 ## 📊 İstatistikler
 
-| Metrik             | Değer               |
-| ------------------ | ------------------- |
+| Metrik             | Değer                   |
+| ------------------ | ----------------------- |
 | Tamamlanan Adımlar | 9 / 9 (Faz 1) - %100 ✅ |
-| Toplam Fazlar      | 1 / 6               |
-| Tahmini Tamamlanma | Faz 1: 1-2 hafta    |
+| Toplam Fazlar      | 1 / 6                   |
+| Tahmini Tamamlanma | Faz 1: 1-2 hafta        |
 
 ---
 

@@ -8,14 +8,14 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ## 📅 MILESTONE TAKVİMİ
 
-| Faz       | Başlangıç      | Bitiş          | Durum       | Hedef                                  |
-| --------- | -------------- | -------------- | ----------- | -------------------------------------- |
+| Faz       | Başlangıç      | Bitiş          | Durum         | Hedef                                  |
+| --------- | -------------- | -------------- | ------------- | -------------------------------------- |
 | **Faz 1** | 8 Aralık 2024  | 10 Aralık 2024 | ✅ Tamamlandı | Altyapı ve kurulumların tamamlanması   |
-| **Faz 2** | 23 Aralık 2024 | 19 Ocak 2025   | ⏳ Bekliyor | Backend API'lerin çalışır hale gelmesi |
-| **Faz 3** | 20 Ocak 2025   | 23 Şubat 2025  | ⏳ Bekliyor | Müşteri arayüzünün tamamlanması        |
-| **Faz 4** | 24 Şubat 2025  | 23 Mart 2025   | ⏳ Bekliyor | Admin panelinin tamamlanması           |
-| **Faz 5** | 24 Mart 2025   | 13 Nisan 2025  | ⏳ Bekliyor | Tüm entegrasyonların çalışması         |
-| **Faz 6** | 14 Nisan 2025  | 27 Nisan 2025  | ⏳ Bekliyor | Production'a deploy                    |
+| **Faz 2** | 23 Aralık 2024 | 19 Ocak 2025   | ⏳ Bekliyor   | Backend API'lerin çalışır hale gelmesi |
+| **Faz 3** | 20 Ocak 2025   | 23 Şubat 2025  | ⏳ Bekliyor   | Müşteri arayüzünün tamamlanması        |
+| **Faz 4** | 24 Şubat 2025  | 23 Mart 2025   | ⏳ Bekliyor   | Admin panelinin tamamlanması           |
+| **Faz 5** | 24 Mart 2025   | 13 Nisan 2025  | ⏳ Bekliyor   | Tüm entegrasyonların çalışması         |
+| **Faz 6** | 14 Nisan 2025  | 27 Nisan 2025  | ⏳ Bekliyor   | Production'a deploy                    |
 
 **Proje Başlangıcı:** 8 Aralık 2024  
 **Tahmini Bitiş:** 27 Nisan 2025  
