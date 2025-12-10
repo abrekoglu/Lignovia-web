@@ -8,7 +8,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 **Başlangıç Tarihi:** 8 Aralık 2024
 **Güncel Faz:** Faz 1 - Proje Kurulumu ve Altyapı
-**Güncel Adım:** Adım 1.8 - Vercel Deployment Setup
+**Güncel Adım:** Adım 1.9 - CI/CD Pipeline (GitHub Actions)
 
 ---
 
@@ -199,15 +199,33 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
   - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
   - NEXTAUTH_URL, NEXTAUTH_SECRET
 
+#### Adım 1.8: Vercel Deployment ✅
+- **Durum:** Tamamlandı
+- **Tarih:** 10 Aralık 2024
+- **Yapılanlar:**
+  - ✅ Vercel projesi oluşturuldu
+  - ✅ vercel.json konfigürasyonu yapıldı
+  - ✅ .vercelignore dosyası oluşturuldu
+  - ✅ next.config.js Cloudinary image optimization ile güncellendi
+  - ✅ Environment variables Vercel'e eklendi
+  - ✅ Build hataları düzeltildi (ESLint, TypeScript, Resend API)
+  - ✅ Production deployment başarılı
+  - ✅ Google OAuth Client ID oluşturuldu ve yapılandırıldı
+  - ✅ NEXTAUTH_URL production URL'ine güncellendi
+- **Oluşturulan Dosyalar:**
+  - vercel.json
+  - .vercelignore
+  - docs/DEPLOYMENT.md
+- **Düzeltilen Hatalar:**
+  - lib/iyzico.ts: ESLint kural hatası
+  - components/ui/logo.tsx: useEffect return hatası
+  - lib/email.ts: Resend API type hatası
+- **Deployment URL:**
+  - Production: `https://lignovia-web-xxx.vercel.app` (Vercel'deki gerçek URL)
+
 ---
 
 ## 🔄 Devam Eden Adımlar
-
-### Adım 1.8: Vercel Deployment (ROADMAP: 1.5)
-- [ ] Vercel projesi oluşturma (development)
-- [ ] Environment variables (local + Vercel)
-- [ ] Database migration setup
-- [ ] Development scripts (package.json)
 
 ### Adım 1.9: CI/CD & Security (ROADMAP: 1.6)
 - [ ] GitHub Actions CI/CD pipeline
@@ -223,7 +241,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 | Metrik | Değer |
 |--------|-------|
-| Tamamlanan Adımlar | 7 / 9 (Faz 1) - %78 |
+| Tamamlanan Adımlar | 8 / 9 (Faz 1) - %89 |
 | Toplam Fazlar | 1 / 6 |
 | Tahmini Tamamlanma | Faz 1: 1-2 hafta |
 
@@ -244,5 +262,5 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ---
 
-**Son Güncelleme:** 10 Aralık 2024 (Adım 1.7 tamamlandı)
+**Son Güncelleme:** 10 Aralık 2024 (Adım 1.8 tamamlandı)
 
