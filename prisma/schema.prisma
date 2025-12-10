@@ -1,0 +1,236 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ===========================================
+// LIGNOVIA Database Schema
+// ===========================================
+
+// --- User & Authentication ---
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?
+  name          String?
+  image         String?
+  role          UserRole  @default(USER)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  sessions   Session[]
+  accounts   Account[]
+  addresses  Address[]
+  orders     Order[]
+  cartItems  CartItem[]
+  reviews    Review[]
+  favorites  Favorite[]
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// --- Product & Category ---
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true)
+  sku         String?  @unique
+  weight      Decimal? @db.Decimal(10, 2)
+  dimensions  String?
+  material    String?
+
+  // Relations
+  category   Category       @relation(fields: [categoryId], references: [id])
+  images     ProductImage[]
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+  reviews    Review[]
+  favorites  Favorite[]
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?    @db.Text
+  imageUrl    String?
+  parentId    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  isActive    Boolean    @default(true)
+
+  // Relations
+  parent        Category?  @relation("Subcategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subcategories Category[] @relation("Subcategories")
+  products      Product[]
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  altText   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// --- Order & Cart ---
+model Order {
+  id                String        @id @default(cuid())
+  userId            String
+  orderNumber       String        @unique
+  totalAmount       Decimal       @db.Decimal(10, 2)
+  status            OrderStatus   @default(PENDING)
+  shippingAddressId String
+  billingAddressId  String
+  paymentMethod     String?
+  paymentStatus     PaymentStatus @default(PENDING)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  notes             String?       @db.Text
+
+  // Relations
+  user            User        @relation(fields: [userId], references: [id])
+  shippingAddress Address     @relation("ShippingOrders", fields: [shippingAddressId], references: [id])
+  billingAddress  Address     @relation("BillingOrders", fields: [billingAddressId], references: [id])
+  items           OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  fullName  String
+  address1  String
+  address2  String?
+  city      String
+  state     String?
+  zipCode   String
+  country   String
+  phone     String?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shippingOrders Order[] @relation("ShippingOrders")
+  billingOrders  Order[] @relation("BillingOrders")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+}
+
+// --- Reviews & Favorites ---
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  userId     String
+  rating     Int      @db.SmallInt
+  comment    String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isApproved Boolean  @default(false)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}

@@ -4,14 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "npx prettier --write .",
     "format:check": "npx prettier --check .",
     "type-check": "tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma db push --force-reset",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
@@ -24,10 +30,12 @@
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
+    "@prisma/client": "^7.1.0",
     "@types/node": "^20.14.12",
     "@types/react": "18.3.27",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
+    "dotenv": "^17.2.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.2",
@@ -36,6 +44,7 @@
     "postcss": "^8.4.40",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
+    "prisma": "^7.1.0",
     "tailwindcss": "^3.4.7",
     "typescript": "^5.5.4"
   }
