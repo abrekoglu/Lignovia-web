@@ -29,7 +29,11 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [x] Next.js + TypeScript projesi çalışır durumda
 - [x] Design system (Tailwind + shadcn/ui) hazır
 - [x] Veritabanı şeması (31 tablo) tamamlandı
-- [ ] External services hesapları hazır
+- [x] External services hesapları hazır ✅
+  - [x] Cloudinary ✅
+  - [x] Resend ✅
+  - [x] iyzico (Sandbox) ✅
+  - [x] Google OAuth ✅
 - [ ] CI/CD pipeline aktif
 
 ### Faz 2 Hedefleri
@@ -112,17 +116,17 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [x] Prisma client singleton (lib/prisma.ts) ✅
 - [x] Database scripts (package.json) ✅
 
-### 1.4 External Services Kurulumu (SIRADAKİ ADIM)
+### 1.4 External Services Kurulumu ✅ TAMAMLANDI
 
-- [ ] Cloudinary hesabı ve konfigürasyonu
-- [ ] Resend hesabı ve API key
-- [ ] iyzico test hesabı ve API key
-- [ ] SMS Gateway hesabı (Netgsm, İleti Merkezi, vs.) ve API key
-- [ ] Google OAuth credentials (Google Cloud Console)
-- [ ] Facebook OAuth credentials (opsiyonel)
-- [ ] Apple Sign In credentials (opsiyonel)
-- [ ] Google Analytics 4 kurulumu
-- [ ] Web Push Notification service setup
+- [x] Cloudinary hesabı ve konfigürasyonu ✅
+- [x] Resend hesabı ve API key ✅
+- [x] iyzico test hesabı ve API key (Sandbox) ✅
+- [x] Google OAuth credentials (Google Cloud Console) ✅
+- [ ] SMS Gateway hesabı (Netgsm, İleti Merkezi, vs.) ve API key (Faz 2'de)
+- [ ] Facebook OAuth credentials (opsiyonel - Faz 2'de)
+- [ ] Apple Sign In credentials (opsiyonel - Faz 2'de)
+- [ ] Google Analytics 4 kurulumu (Faz 5'te)
+- [ ] Web Push Notification service setup (Faz 5'te)
 
 ### 1.5 Development Environment & DevOps
 

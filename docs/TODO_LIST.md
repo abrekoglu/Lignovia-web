@@ -483,32 +483,49 @@ main (veya master)
 
 ---
 
-### Adım 1.7: External Services - Cloudinary (SIRADAKİ ADIM)
+### Adım 1.7: External Services ✅ TAMAMLANDI
 
 **Not:** ROADMAP.md'de bu adım 1.4 olarak numaralandırılmış.
 
+#### ✅ Tamamlanan İşlemler:
+
+- [x] Cloudinary hesabı ve konfigürasyonu ✅
+  - [x] cloudinary ve next-cloudinary paketleri kuruldu
+  - [x] lib/cloudinary.ts oluşturuldu
+  - [x] Image presets tanımlandı
+  - [x] Test endpoint: /api/test/cloudinary
+- [x] Resend hesabı ve API key ✅
+  - [x] resend paketi kuruldu
+  - [x] lib/email.ts oluşturuldu
+  - [x] Email templates hazırlandı
+  - [x] Test endpoint: /api/test/resend
+- [x] iyzico test hesabı (Sandbox) ✅
+  - [x] iyzipay paketi kuruldu
+  - [x] lib/iyzico.ts oluşturuldu
+  - [x] Test cards tanımlandı
+  - [x] Test endpoint: /api/test/iyzico
+- [x] Google OAuth credentials ✅
+  - [x] Test endpoint: /api/test/google-oauth
+  - [x] NEXTAUTH_SECRET oluşturuldu
+
 ---
 
-### Adım 1.7a: External Services - Cloudinary
+### Adım 1.8: Vercel Deployment Setup (SIRADAKİ ADIM)
 
-**Hedef:** Cloudinary hesabı ve konfigürasyonu
+**Hedef:** Vercel'de development environment hazır
 
 #### 📋 Adımdan Önce - Senin Yapman Gerekenler:
 
-- [ ] Adım 1.7 tamamlandı ve onaylandı mı?
-- [ ] **Cloudinary hesabı oluştur** (https://cloudinary.com)
-- [ ] Cloudinary Dashboard'dan API credentials al:
-  - Cloud Name
-  - API Key
-  - API Secret
-- [ ] Credentials'ları not al
+- [ ] Adım 1.7 tamamlandı ve onaylandı mı? ✅
+- [ ] **Vercel hesabı oluştur** (https://vercel.com)
+- [ ] GitHub/GitLab hesabını Vercel'e bağla
+- [ ] Git repository'yi push et (eğer henüz push etmediysen)
+- [ ] `.env` dosyasındaki tüm environment variables'ları not al
 
 #### 🔧 Adım İçeriği (Ben Yapacağım):
 
-- [ ] Environment variables ekle (`.env.local`)
-- [ ] Cloudinary SDK kurulumu
-- [ ] Test upload utility oluştur
-- [ ] Test upload yap
+- [ ] Vercel CLI kurulumu (opsiyonel - dashboard'dan da yapılabilir)
+- [ ] Vercel proje konfigürasyonu
 
 #### ✅ Adımdan Sonra - Senin Yapman Gerekenler:
 

@@ -8,7 +8,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 **Başlangıç Tarihi:** 8 Aralık 2024
 **Güncel Faz:** Faz 1 - Proje Kurulumu ve Altyapı
-**Güncel Adım:** Adım 1.7 - External Services (Cloudinary, Resend, iyzico, Google OAuth)
+**Güncel Adım:** Adım 1.8 - Vercel Deployment Setup
 
 ---
 
@@ -156,15 +156,52 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
   - `npm run db:migrate` - Migration oluştur
   - `npm run db:reset` - Veritabanını sıfırla
 
+#### Adım 1.7: External Services ✅
+- **Durum:** Tamamlandı
+- **Tarih:** 10 Aralık 2024
+- **Yapılanlar:**
+  - ✅ Cloudinary hesabı ve konfigürasyonu
+    - ✅ cloudinary ve next-cloudinary paketleri kuruldu
+    - ✅ lib/cloudinary.ts oluşturuldu (upload, delete, optimization utilities)
+    - ✅ Image presets tanımlandı (product, hero, category, avatar)
+    - ✅ Test endpoint: /api/test/cloudinary
+  - ✅ Resend hesabı ve API key
+    - ✅ resend paketi kuruldu
+    - ✅ lib/email.ts oluşturuldu (email sending utilities)
+    - ✅ LIGNOVIA branded email templates (order, welcome, password reset, shipping)
+    - ✅ Test endpoint: /api/test/resend
+  - ✅ iyzico test hesabı (Sandbox)
+    - ✅ iyzipay paketi kuruldu
+    - ✅ lib/iyzico.ts oluşturuldu (payment utilities)
+    - ✅ TypeScript definitions eklendi (types/iyzipay.d.ts)
+    - ✅ Test cards tanımlandı (success, failure, 3D Secure)
+    - ✅ Test endpoint: /api/test/iyzico
+  - ✅ Google OAuth credentials
+    - ✅ Test endpoint: /api/test/google-oauth
+    - ✅ NEXTAUTH_SECRET oluşturuldu
+- **Oluşturulan Dosyalar:**
+  - lib/cloudinary.ts
+  - lib/email.ts
+  - lib/iyzico.ts
+  - types/iyzipay.d.ts
+  - app/api/test/cloudinary/route.ts
+  - app/api/test/resend/route.ts
+  - app/api/test/iyzico/route.ts
+  - app/api/test/google-oauth/route.ts
+- **Eklenen Paketler:**
+  - cloudinary, next-cloudinary
+  - resend
+  - iyzipay
+- **Environment Variables:**
+  - CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+  - RESEND_API_KEY
+  - IYZICO_API_KEY, IYZICO_SECRET_KEY, IYZICO_BASE_URL
+  - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+  - NEXTAUTH_URL, NEXTAUTH_SECRET
+
 ---
 
 ## 🔄 Devam Eden Adımlar
-
-### Adım 1.7: External Services (Sırada)
-- [ ] Cloudinary hesabı ve konfigürasyonu
-- [ ] Resend hesabı ve API key
-- [ ] iyzico test hesabı
-- [ ] Google OAuth credentials
 
 ### Adım 1.8: Vercel Deployment
 - [ ] Vercel projesi oluşturma
@@ -180,7 +217,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 | Metrik | Değer |
 |--------|-------|
-| Tamamlanan Adımlar | 6 / 12 (Faz 1) |
+| Tamamlanan Adımlar | 7 / 9 (Faz 1) |
 | Toplam Fazlar | 1 / 6 |
 | Tahmini Tamamlanma | Faz 1: 1-2 hafta |
 
@@ -201,5 +238,5 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ---
 
-**Son Güncelleme:** 10 Aralık 2024
+**Son Güncelleme:** 10 Aralık 2024 (Adım 1.7 tamamlandı)
 
