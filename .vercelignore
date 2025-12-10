@@ -1,0 +1,49 @@
+# Vercel ignore file
+# Files and directories that should not be deployed
+
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Environment files (should be set in Vercel dashboard)
+.env
+.env.local
+.env.*.local
+
+# Development files
+.vscode/
+.idea/
+*.log
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.nyc_output/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Prisma
+prisma/migrations/
+

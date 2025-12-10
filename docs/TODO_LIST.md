@@ -512,6 +512,8 @@ main (veya master)
 
 ### Adım 1.8: Vercel Deployment Setup (SIRADAKİ ADIM)
 
+**Not:** ROADMAP.md'de bu adım 1.5 olarak numaralandırılmış (Development Environment & DevOps).
+
 **Hedef:** Vercel'de development environment hazır
 
 #### 📋 Adımdan Önce - Senin Yapman Gerekenler:

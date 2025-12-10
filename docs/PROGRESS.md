@@ -203,13 +203,19 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 ## 🔄 Devam Eden Adımlar
 
-### Adım 1.8: Vercel Deployment
-- [ ] Vercel projesi oluşturma
-- [ ] Environment variables ayarlama
+### Adım 1.8: Vercel Deployment (ROADMAP: 1.5)
+- [ ] Vercel projesi oluşturma (development)
+- [ ] Environment variables (local + Vercel)
+- [ ] Database migration setup
+- [ ] Development scripts (package.json)
 
-### Adım 1.9: CI/CD & Security
-- [ ] GitHub Actions pipeline
-- [ ] Dependabot konfigürasyonu
+### Adım 1.9: CI/CD & Security (ROADMAP: 1.6)
+- [ ] GitHub Actions CI/CD pipeline
+  - [ ] Lint & Type check on PR
+  - [ ] Build test on PR
+  - [ ] Auto deploy to Vercel
+- [ ] Dependabot konfigürasyonu (dependency security)
+- [ ] Branch protection rules (main)
 
 ---
 
@@ -217,7 +223,7 @@ Bu doküman, projenin güncel ilerleme durumunu takip eder.
 
 | Metrik | Değer |
 |--------|-------|
-| Tamamlanan Adımlar | 7 / 9 (Faz 1) |
+| Tamamlanan Adımlar | 7 / 9 (Faz 1) - %78 |
 | Toplam Fazlar | 1 / 6 |
 | Tahmini Tamamlanma | Faz 1: 1-2 hafta |
 
