@@ -1,5 +1,7 @@
 # 🌳 LIGNOVIA E-Ticaret Platformu
 
+<!-- Test: Branch Protection Rules -->
+
 Modern, performanslı, güvenli ve ölçeklenebilir e-ticaret platformu. Ahşap mutfak ürünleri ve ahşap dekorasyon ürünleri satışı için tasarlanmıştır.
 
 ---
