@@ -35,6 +35,8 @@ export function Logo({
       observer.observe(document.documentElement, { attributes: true });
       return () => observer.disconnect();
     }
+    // Return undefined for non-auto variant (TypeScript requirement)
+    return undefined;
   }, [variant]);
 
   const logoSrc =

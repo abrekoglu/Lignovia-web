@@ -18,14 +18,33 @@ export async function sendEmail(options: SendEmailOptions) {
   try {
     const fromEmail = options.from || process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
     
-    const { data, error } = await resend.emails.send({
+    // Build email payload (only include defined fields)
+    const emailPayload: {
+      from: string;
+      to: string | string[];
+      subject: string;
+      html?: string;
+      text?: string;
+      replyTo?: string;
+    } = {
       from: fromEmail,
       to: options.to,
       subject: options.subject,
-      html: options.html,
-      text: options.text,
-      replyTo: options.replyTo,
-    });
+    };
+
+    if (options.html) {
+      emailPayload.html = options.html;
+    }
+
+    if (options.text) {
+      emailPayload.text = options.text;
+    }
+
+    if (options.replyTo) {
+      emailPayload.replyTo = options.replyTo;
+    }
+
+    const { data, error } = await resend.emails.send(emailPayload as any);
 
     if (error) {
       console.error('Resend error:', error);
