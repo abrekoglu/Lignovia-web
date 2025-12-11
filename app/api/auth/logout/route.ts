@@ -1,6 +1,25 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+// Helper to check if a cookie is auth-related (NextAuth/Auth.js)
+function isAuthCookie(cookieName: string): boolean {
+  const authPatterns = [
+    "authjs",
+    "next-auth",
+    "__Secure-authjs",
+    "__Secure-next-auth",
+    "__Host-authjs",
+    "__Host-next-auth",
+    "session-token",
+    "callback-url",
+    "csrf-token",
+  ];
+  const lowerName = cookieName.toLowerCase();
+  return authPatterns.some((pattern) =>
+    lowerName.includes(pattern.toLowerCase())
+  );
+}
+
 export async function POST() {
   const cookieStore = await cookies();
   const allCookies = cookieStore.getAll();
@@ -11,8 +30,18 @@ export async function POST() {
 
   const response = NextResponse.redirect(new URL("/", baseUrl));
 
-  // Delete all cookies with proper flags for both dev and production
+  // Delete all auth-related cookies dynamically
+  // This approach handles any cookie name configuration
   for (const cookie of allCookies) {
+    // Only delete auth-related cookies to avoid affecting other app cookies
+    if (!isAuthCookie(cookie.name)) {
+      continue;
+    }
+
+    // Determine if this is a __Secure- or __Host- prefixed cookie
+    const isSecurePrefixed =
+      cookie.name.startsWith("__Secure-") || cookie.name.startsWith("__Host-");
+
     // Build cookie deletion string with appropriate security flags
     const cookieParts = [
       `${cookie.name}=`,
@@ -22,31 +51,14 @@ export async function POST() {
       "SameSite=Lax",
     ];
 
-    // Add Secure flag for production HTTPS environments
-    if (isProduction || isSecure) {
+    // Add Secure flag for:
+    // 1. Production/HTTPS environments
+    // 2. Cookies with __Secure- or __Host- prefix (required by spec)
+    if (isProduction || isSecure || isSecurePrefixed) {
       cookieParts.push("Secure");
     }
 
     response.headers.append("Set-Cookie", cookieParts.join("; "));
-  }
-
-  // Also explicitly delete NextAuth specific cookies with __Secure- prefix for production
-  if (isProduction || isSecure) {
-    const secureAuthCookies = [
-      "__Secure-authjs.session-token",
-      "__Secure-authjs.callback-url",
-      "__Secure-authjs.csrf-token",
-      "__Secure-next-auth.session-token",
-      "__Secure-next-auth.callback-url",
-      "__Secure-next-auth.csrf-token",
-    ];
-
-    for (const cookieName of secureAuthCookies) {
-      response.headers.append(
-        "Set-Cookie",
-        `${cookieName}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax; Secure`
-      );
-    }
   }
 
   return response;
