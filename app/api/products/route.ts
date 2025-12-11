@@ -207,8 +207,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Validation
-    if (!body.name || body.name.trim() === "") {
-      return NextResponse.json({ error: "Ürün adı gerekli." }, { status: 400 });
+    // Validate name is a string and not empty
+    if (typeof body.name !== "string" || body.name.trim() === "") {
+      return NextResponse.json(
+        { error: "Ürün adı gerekli ve string olmalıdır." },
+        { status: 400 }
+      );
     }
 
     // Validate name contains at least one alphanumeric character
@@ -245,8 +249,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!body.categoryId || body.categoryId.trim() === "") {
-      return NextResponse.json({ error: "Kategori gerekli." }, { status: 400 });
+    // Validate categoryId is a string and not empty
+    if (typeof body.categoryId !== "string" || body.categoryId.trim() === "") {
+      return NextResponse.json(
+        { error: "Kategori gerekli ve string olmalıdır." },
+        { status: 400 }
+      );
     }
 
     // Validate category exists

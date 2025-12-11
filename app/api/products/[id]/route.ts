@@ -110,10 +110,10 @@ export async function PATCH(
     const updateData: any = {};
 
     if (body.name !== undefined) {
-      // Validate name is not empty
-      if (!body.name || body.name.trim() === "") {
+      // Validate name is a string and not empty
+      if (typeof body.name !== "string" || body.name.trim() === "") {
         return NextResponse.json(
-          { error: "Ürün adı boş olamaz." },
+          { error: "Ürün adı boş olamaz ve string olmalıdır." },
           { status: 400 }
         );
       }
@@ -209,10 +209,13 @@ export async function PATCH(
     }
 
     if (body.categoryId !== undefined) {
-      // Validate category exists
-      if (!body.categoryId || body.categoryId.trim() === "") {
+      // Validate categoryId is a string and not empty
+      if (
+        typeof body.categoryId !== "string" ||
+        body.categoryId.trim() === ""
+      ) {
         return NextResponse.json(
-          { error: "Kategori gerekli." },
+          { error: "Kategori gerekli ve string olmalıdır." },
           { status: 400 }
         );
       }
@@ -233,8 +236,11 @@ export async function PATCH(
 
     if (body.sku !== undefined) {
       // Normalize empty string to null (consistent with POST endpoint)
+      // Validate SKU is a string if provided
       const normalizedSku =
-        body.sku && body.sku.trim() !== "" ? body.sku : null;
+        typeof body.sku === "string" && body.sku.trim() !== ""
+          ? body.sku
+          : null;
 
       // Check SKU uniqueness if provided (and different from current)
       if (normalizedSku && normalizedSku !== existingProduct.sku) {

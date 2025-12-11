@@ -737,6 +737,211 @@ export default function TestAPIPage() {
     }
   };
 
+  const testPostNameNonString = async () => {
+    setIsLoading("post-name-non-string");
+    try {
+      const productData = {
+        name: 123, // Non-string value
+        description: "Test description",
+        price: 299.99,
+        categoryId,
+        stock: 10,
+        sku: `TEST-NON-STRING-${Date.now()}`,
+      };
+
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (Name Non-String)",
+        res.status,
+        {
+          ...data,
+          note: "Should return 400 Bad Request (name must be string)",
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "POST /api/products (Name Non-String)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchNameNonString = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Name Non-String)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-name-non-string");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: 123 }), // Non-string value
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Name Non-String)",
+        res.status,
+        {
+          ...data,
+          note: "Should return 400 Bad Request (name must be string)",
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Name Non-String)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPostCategoryIdNonString = async () => {
+    setIsLoading("post-category-id-non-string");
+    try {
+      const productData = {
+        name: `Test Ürün Non-String CategoryId ${Date.now()}`,
+        description: "Test description",
+        price: 299.99,
+        categoryId: 456, // Non-string value
+        stock: 10,
+        sku: `TEST-CAT-NON-STRING-${Date.now()}`,
+      };
+
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (CategoryId Non-String)",
+        res.status,
+        {
+          ...data,
+          note: "Should return 400 Bad Request (categoryId must be string)",
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "POST /api/products (CategoryId Non-String)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchCategoryIdNonString = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (CategoryId Non-String)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-category-id-non-string");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categoryId: 456 }), // Non-string value
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (CategoryId Non-String)",
+        res.status,
+        {
+          ...data,
+          note: "Should return 400 Bad Request (categoryId must be string)",
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (CategoryId Non-String)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchSkuNonString = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (SKU Non-String)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-sku-non-string");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sku: 789 }), // Non-string value
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (SKU Non-String)",
+        res.status,
+        {
+          ...data,
+          note: "Should normalize non-string SKU to null",
+          expectedSku: null,
+          actualSku: data.data?.sku,
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (SKU Non-String)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -1239,6 +1444,41 @@ export default function TestAPIPage() {
                   "PATCH Empty SKU",
                   testPatchEmptySku,
                   "patch-empty-sku",
+                  false,
+                  productId ? "Should normalize to null" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "POST Name Non-String",
+                  testPostNameNonString,
+                  "post-name-non-string",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "PATCH Name Non-String",
+                  testPatchNameNonString,
+                  "patch-name-non-string",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "POST CategoryId Non-String",
+                  testPostCategoryIdNonString,
+                  "post-category-id-non-string",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "PATCH CategoryId Non-String",
+                  testPatchCategoryIdNonString,
+                  "patch-category-id-non-string",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "PATCH SKU Non-String",
+                  testPatchSkuNonString,
+                  "patch-sku-non-string",
                   false,
                   productId ? "Should normalize to null" : "Önce ürün oluştur"
                 )}
