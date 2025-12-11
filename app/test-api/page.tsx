@@ -15,7 +15,37 @@ export default function TestAPIPage() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [productId, setProductId] = useState("");
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [expandedResults, setExpandedResults] = useState<Set<number>>(
+    new Set()
+  );
   const categoryId = "cmj1os0xc000010zivy6v8wwe"; // Test category ID
+
+  const toggleResult = (index: number) => {
+    setExpandedResults((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      // You could add a toast notification here
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  const clearResults = () => {
+    setResults([]);
+    setExpandedResults(new Set());
+    setProductId("");
+  };
 
   const addResult = (test: string, status: number, data: any) => {
     const newResult: TestResult = {
@@ -24,12 +54,7 @@ export default function TestAPIPage() {
       data,
       timestamp: new Date().toLocaleTimeString("tr-TR"),
     };
-    console.log("Adding result:", newResult);
-    setResults((prev) => {
-      const updated = [...prev, newResult];
-      console.log("Updated results:", updated.length, updated);
-      return updated;
-    });
+    setResults((prev) => [newResult, ...prev]); // En yeni üstte
   };
 
   const testGetProducts = async () => {
@@ -143,117 +168,216 @@ export default function TestAPIPage() {
     }
   };
 
+  const getStatusBadge = (status: number) => {
+    if (status === 200 || status === 201) {
+      return (
+        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-300">
+          {status} OK
+        </span>
+      );
+    } else if (status === 0) {
+      return (
+        <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900/30 dark:text-red-300">
+          Error
+        </span>
+      );
+    } else {
+      return (
+        <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">
+          {status}
+        </span>
+      );
+    }
+  };
+
   return (
-    <div className="container mx-auto p-8">
+    <div className="container mx-auto p-4 md:p-8">
       <Card>
         <CardHeader>
-          <CardTitle>API Test Sayfası</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Bu sayfa API endpoint&apos;lerini test etmek için kullanılır. Admin
-            yetkisi gerektiren endpoint&apos;ler için önce giriş yapın.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>API Test Sayfası</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Bu sayfa API endpoint&apos;lerini test etmek için kullanılır.
+                Admin yetkisi gerektiren endpoint&apos;ler için önce giriş
+                yapın.
+              </p>
+            </div>
+            {results.length > 0 && (
+              <Button
+                onClick={clearResults}
+                variant="outline"
+                size="sm"
+                className="shrink-0"
+              >
+                Sonuçları Temizle
+              </Button>
+            )}
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <CardContent className="space-y-6">
+          {/* Test Buttons */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <Button
               onClick={testGetProducts}
               variant="outline"
               disabled={isLoading === "get-products"}
+              className="h-auto flex-col py-3"
             >
-              {isLoading === "get-products"
-                ? "Test ediliyor..."
-                : "1. GET Products (List)"}
+              <span className="font-semibold">
+                {isLoading === "get-products"
+                  ? "Test ediliyor..."
+                  : "1. GET Products"}
+              </span>
+              <span className="text-xs text-muted-foreground">List</span>
             </Button>
             <Button
               onClick={testCreateProduct}
               variant="outline"
               disabled={isLoading === "create-product"}
+              className="h-auto flex-col py-3"
             >
-              {isLoading === "create-product"
-                ? "Test ediliyor..."
-                : "2. POST Product (Admin)"}
+              <span className="font-semibold">
+                {isLoading === "create-product"
+                  ? "Test ediliyor..."
+                  : "2. POST Product"}
+              </span>
+              <span className="text-xs text-muted-foreground">Admin</span>
             </Button>
             <Button
               onClick={testGetProduct}
               variant="outline"
               disabled={!productId || isLoading === "get-product"}
+              className="h-auto flex-col py-3"
             >
-              {isLoading === "get-product"
-                ? "Test ediliyor..."
-                : "3. GET Product (Detail)"}
+              <span className="font-semibold">
+                {isLoading === "get-product"
+                  ? "Test ediliyor..."
+                  : "3. GET Product"}
+              </span>
+              <span className="text-xs text-muted-foreground">Detail</span>
             </Button>
             <Button
               onClick={testUpdateProduct}
               variant="outline"
               disabled={!productId || isLoading === "update-product"}
+              className="h-auto flex-col py-3"
             >
-              {isLoading === "update-product"
-                ? "Test ediliyor..."
-                : "4. PATCH Product (Admin)"}
+              <span className="font-semibold">
+                {isLoading === "update-product"
+                  ? "Test ediliyor..."
+                  : "4. PATCH Product"}
+              </span>
+              <span className="text-xs text-muted-foreground">Admin</span>
             </Button>
             <Button
               onClick={testDeleteProduct}
               variant="outline"
               disabled={!productId || isLoading === "delete-product"}
+              className="h-auto flex-col py-3"
             >
-              {isLoading === "delete-product"
-                ? "Test ediliyor..."
-                : "5. DELETE Product (Admin)"}
+              <span className="font-semibold">
+                {isLoading === "delete-product"
+                  ? "Test ediliyor..."
+                  : "5. DELETE Product"}
+              </span>
+              <span className="text-xs text-muted-foreground">Admin</span>
             </Button>
           </div>
 
+          {/* Product ID Display */}
           {productId && (
             <div className="rounded-md bg-blue-50 p-3 text-sm text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-              <strong>Product ID:</strong> {productId}
+              <strong>Product ID:</strong>{" "}
+              <code className="rounded bg-blue-100 px-1.5 py-0.5 dark:bg-blue-900/40">
+                {productId}
+              </code>
             </div>
           )}
 
+          {/* Results Section */}
           <div className="space-y-2">
-            <h3 className="font-semibold">
-              Test Sonuçları ({results.length}):
-            </h3>
-            <div className="mb-2 text-xs text-muted-foreground">
-              Debug: results.length = {results.length}
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">
+                Test Sonuçları{" "}
+                {results.length > 0 && (
+                  <span className="text-muted-foreground">
+                    ({results.length})
+                  </span>
+                )}
+              </h3>
             </div>
+
             {results.length === 0 ? (
-              <div className="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-muted-foreground dark:border-gray-700">
+              <div className="rounded-md border border-dashed border-gray-300 p-8 text-center text-sm text-muted-foreground dark:border-gray-700">
                 Henüz test yapılmadı. Yukarıdaki butonlara tıklayarak test edin.
               </div>
             ) : (
-              <div className="max-h-96 space-y-2 overflow-y-auto">
-                {results.map((result, idx) => (
-                  <div
-                    key={`result-${idx}-${result.timestamp}`}
-                    className={`rounded-md border p-3 text-sm ${
-                      result.status === 200 || result.status === 201
-                        ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
-                        : result.status === 0
-                          ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
-                          : "border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <strong>{result.test}</strong>
-                      <span className="text-xs text-muted-foreground">
-                        {result.timestamp}
-                      </span>
-                    </div>
-                    <div className="mt-1">
-                      <span
-                        className={`font-mono text-xs ${
-                          result.status === 200 || result.status === 201
-                            ? "text-green-600 dark:text-green-400"
-                            : "text-red-600 dark:text-red-400"
-                        }`}
+              <div className="space-y-2">
+                {results.map((result, idx) => {
+                  const isExpanded = expandedResults.has(idx);
+                  const jsonString = JSON.stringify(result.data, null, 2);
+
+                  return (
+                    <div
+                      key={`result-${idx}-${result.timestamp}`}
+                      className={`rounded-md border transition-colors ${
+                        result.status === 200 || result.status === 201
+                          ? "border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-900/10"
+                          : result.status === 0
+                            ? "border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-900/10"
+                            : "border-yellow-200 bg-yellow-50/50 dark:border-yellow-800 dark:bg-yellow-900/10"
+                      }`}
+                    >
+                      {/* Result Header - Always Visible */}
+                      <button
+                        onClick={() => toggleResult(idx)}
+                        className="w-full px-4 py-3 text-left"
                       >
-                        Status: {result.status}
-                      </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="text-lg">
+                              {isExpanded ? "▼" : "▶"}
+                            </span>
+                            <div>
+                              <div className="font-semibold">{result.test}</div>
+                              <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                                {getStatusBadge(result.status)}
+                                <span>•</span>
+                                <span>{result.timestamp}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Result Content - Collapsible */}
+                      {isExpanded && (
+                        <div className="border-current/20 border-t px-4 py-3">
+                          <div className="mb-2 flex items-center justify-between">
+                            <span className="text-xs font-medium text-muted-foreground">
+                              Response Data:
+                            </span>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard(jsonString);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs"
+                            >
+                              📋 Kopyala
+                            </Button>
+                          </div>
+                          <pre className="max-h-96 overflow-auto rounded-md bg-white p-3 text-xs dark:bg-gray-900">
+                            {jsonString}
+                          </pre>
+                        </div>
+                      )}
                     </div>
-                    <pre className="mt-2 max-h-40 overflow-auto rounded bg-white p-2 text-xs dark:bg-gray-800">
-                      {JSON.stringify(result.data, null, 2)}
-                    </pre>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
