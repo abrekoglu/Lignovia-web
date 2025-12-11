@@ -9,10 +9,35 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/ui/logo";
 
+// Validate callback URL to prevent open redirect attacks
+function getSafeCallbackUrl(url: string | null): string {
+  if (!url) return "/";
+
+  try {
+    // Check if it's a relative URL (starts with /)
+    if (url.startsWith("/") && !url.startsWith("//")) {
+      return url;
+    }
+
+    // Check if it's an absolute URL with the same origin
+    const parsedUrl = new URL(url, window.location.origin);
+    if (parsedUrl.origin === window.location.origin) {
+      return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
+    }
+
+    // Invalid URL, return default
+    return "/";
+  } catch {
+    // URL parsing failed, return default
+    return "/";
+  }
+}
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const rawCallbackUrl = searchParams.get("callbackUrl");
+  const callbackUrl = getSafeCallbackUrl(rawCallbackUrl);
   const error = searchParams.get("error");
 
   const [email, setEmail] = useState("");
@@ -33,7 +58,15 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        setErrorMessage(result.error);
+        // Map NextAuth error codes to user-friendly messages
+        const errorMessages: Record<string, string> = {
+          CredentialsSignin: "Geçersiz email veya şifre",
+          Configuration: "Geçersiz email veya şifre",
+          AccessDenied: "Erişim reddedildi",
+          Verification: "Doğrulama hatası",
+          Default: "Giriş yapılamadı. Lütfen tekrar deneyin.",
+        };
+        setErrorMessage(errorMessages[result.error] || errorMessages.Default);
       } else {
         router.push(callbackUrl);
         router.refresh();

@@ -46,33 +46,35 @@ export async function verifyEmailToken(
   }
 
   if (verificationToken.expires < new Date()) {
-    // Delete expired token
-    await prisma.verificationToken.delete({
+    // Delete expired token (use deleteMany to avoid error if already deleted)
+    await prisma.verificationToken.deleteMany({
       where: {
-        identifier_token: {
-          identifier: verificationToken.identifier,
-          token: verificationToken.token,
-        },
+        identifier: verificationToken.identifier,
+        token: verificationToken.token,
       },
     });
     return { success: false, error: "Doğrulama linki süresi dolmuş" };
   }
 
-  // Mark email as verified
-  await prisma.user.update({
-    where: { email: verificationToken.identifier },
-    data: { emailVerified: new Date() },
-  });
-
-  // Delete used token
-  await prisma.verificationToken.delete({
-    where: {
-      identifier_token: {
-        identifier: verificationToken.identifier,
-        token: verificationToken.token,
-      },
-    },
-  });
+  // Mark email as verified and delete token in a transaction
+  try {
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { email: verificationToken.identifier },
+        data: { emailVerified: new Date() },
+      }),
+      prisma.verificationToken.deleteMany({
+        where: {
+          identifier: verificationToken.identifier,
+          token: verificationToken.token,
+        },
+      }),
+    ]);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error verifying email:", error);
+    return { success: false, error: "Doğrulama işlemi başarısız oldu" };
+  }
 
   return { success: true, email: verificationToken.identifier };
 }

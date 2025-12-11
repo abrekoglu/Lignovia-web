@@ -20,14 +20,19 @@ export async function POST(request: Request) {
       const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
       const resetLink = `${baseUrl}/auth/reset-password?token=${token}`;
 
-      // Send password reset email
-      const template = emailTemplates.passwordReset({ resetLink });
-
-      await sendEmail({
-        to: email,
-        subject: template.subject,
-        html: template.html,
-      });
+      // Send password reset email (non-blocking, don't fail if email fails)
+      try {
+        const template = emailTemplates.passwordReset({ resetLink });
+        await sendEmail({
+          to: email,
+          subject: template.subject,
+          html: template.html,
+        });
+      } catch (emailError) {
+        // Log email error but don't fail the request
+        // eslint-disable-next-line no-console
+        console.error("Failed to send password reset email:", emailError);
+      }
     }
 
     return NextResponse.json({
@@ -38,9 +43,11 @@ export async function POST(request: Request) {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Forgot password error:", error);
-    return NextResponse.json(
-      { error: "Bir hata oluştu. Lütfen tekrar deneyin." },
-      { status: 500 }
-    );
+    // Still return success to prevent email enumeration
+    return NextResponse.json({
+      success: true,
+      message:
+        "Eğer bu email adresi kayıtlıysa, şifre sıfırlama linki gönderildi",
+    });
   }
 }

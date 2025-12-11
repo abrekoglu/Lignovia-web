@@ -17,20 +17,13 @@ export async function POST(request: Request) {
       where: { email },
     });
 
-    if (!user) {
-      // Don't reveal if user exists or not for security
+    // Always return the same response to prevent email enumeration
+    // Only send email if user exists and is not verified
+    if (!user || user.emailVerified) {
       return NextResponse.json({
         success: true,
         message: "Doğrulama emaili gönderildi",
       });
-    }
-
-    // Check if already verified
-    if (user.emailVerified) {
-      return NextResponse.json(
-        { error: "Email adresi zaten doğrulanmış" },
-        { status: 400 }
-      );
     }
 
     // Create verification token
