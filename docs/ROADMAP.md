@@ -183,19 +183,19 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [x] Index'lerin eklenmesi (performance) ✅
 - [ ] Migration dosyalarının oluşturulması (production için)
 
-### 2.2 Authentication Sistemi
+### 2.2 Authentication Sistemi ✅ TAMAMLANDI
 
-- [ ] NextAuth.js v5 kurulumu
-- [ ] Email/Password authentication
-- [ ] Google OAuth provider
-- [ ] Facebook OAuth provider (opsiyonel)
-- [ ] Apple Sign In provider (opsiyonel)
-- [ ] JWT token yapılandırması
-- [ ] Session management
-- [ ] Password hashing (bcrypt)
-- [ ] Email verification flow
-- [ ] Password reset flow (Email + SMS)
-- [ ] Two-Factor Authentication (2FA) setup
+- [x] NextAuth.js v5 kurulumu ✅
+- [x] Email/Password authentication ✅
+- [x] Google OAuth provider ✅
+- [ ] Facebook OAuth provider (opsiyonel - sonraya bırakıldı)
+- [ ] Apple Sign In provider (opsiyonel - sonraya bırakıldı)
+- [x] JWT token yapılandırması ✅
+- [x] Session management ✅
+- [x] Password hashing (bcrypt) ✅
+- [x] Email verification flow ✅
+- [x] Password reset flow (Email) ✅
+- [ ] Two-Factor Authentication (2FA) setup (sonraya bırakıldı)
   - [ ] Google Authenticator integration
   - [ ] SMS-based 2FA
   - [ ] Backup codes
