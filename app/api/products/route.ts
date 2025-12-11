@@ -7,8 +7,8 @@ import { generateSlug, generateUniqueSlug } from "@/lib/utils/slug";
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "12");
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
     const categoryId = searchParams.get("categoryId");
     const search = searchParams.get("search");
     const isFeatured = searchParams.get("featured") === "true";
@@ -17,7 +17,29 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
-    const skip = (page - 1) * limit;
+    // Validate and parse page parameter
+    const page = pageParam ? parseInt(pageParam, 10) : 1;
+    if (isNaN(page) || page < 1) {
+      return NextResponse.json(
+        { error: "Page parametresi 1 veya daha büyük bir sayı olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    // Validate and parse limit parameter
+    const limit = limitParam ? parseInt(limitParam, 10) : 12;
+    if (isNaN(limit) || limit < 1) {
+      return NextResponse.json(
+        { error: "Limit parametresi 1 veya daha büyük bir sayı olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    // Set maximum limit to prevent excessive data retrieval
+    const maxLimit = 100;
+    const finalLimit = limit > maxLimit ? maxLimit : limit;
+
+    const skip = (page - 1) * finalLimit;
 
     // Build where clause
     const where: any = {
@@ -60,7 +82,7 @@ export async function GET(request: NextRequest) {
       prisma.product.findMany({
         where,
         skip,
-        take: limit,
+        take: finalLimit,
         orderBy,
         include: {
           category: {
@@ -92,14 +114,14 @@ export async function GET(request: NextRequest) {
       prisma.product.count({ where }),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(total / finalLimit);
 
     return NextResponse.json({
       success: true,
       data: products,
       pagination: {
         page,
-        limit,
+        limit: finalLimit,
         total,
         totalPages,
         hasNext: page < totalPages,
@@ -127,11 +149,25 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Validation
-    if (!body.name || !body.price || !body.categoryId) {
+    if (!body.name || body.name.trim() === "") {
+      return NextResponse.json({ error: "Ürün adı gerekli." }, { status: 400 });
+    }
+
+    if (body.price === undefined || body.price === null) {
+      return NextResponse.json({ error: "Fiyat gerekli." }, { status: 400 });
+    }
+
+    // Validate price is a valid number (including 0)
+    const price = parseFloat(body.price);
+    if (isNaN(price) || price < 0) {
       return NextResponse.json(
-        { error: "Ürün adı, fiyat ve kategori gerekli." },
+        { error: "Fiyat geçerli bir sayı olmalıdır (0 veya pozitif)." },
         { status: 400 }
       );
+    }
+
+    if (!body.categoryId || body.categoryId.trim() === "") {
+      return NextResponse.json({ error: "Kategori gerekli." }, { status: 400 });
     }
 
     // Validate category exists
@@ -176,7 +212,7 @@ export async function POST(request: NextRequest) {
         slug,
         description: body.description || null,
         descriptionEn: body.descriptionEn || null,
-        price: parseFloat(body.price),
+        price,
         priceUsd: body.priceUsd ? parseFloat(body.priceUsd) : null,
         priceEur: body.priceEur ? parseFloat(body.priceEur) : null,
         comparePrice: body.comparePrice ? parseFloat(body.comparePrice) : null,
