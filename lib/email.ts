@@ -114,6 +114,30 @@ export const emailTemplates = {
     `,
   }),
 
+  // Email verification
+  emailVerification: (data: { verifyLink: string; customerName?: string }) => ({
+    subject: "LIGNOVIA - Email Adresinizi Doğrulayın",
+    html: `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #4A3A2C; padding: 20px; text-align: center;">
+          <h1 style="color: #FAF7F2; margin: 0; font-family: Raleway, sans-serif;">LIGNOVIA</h1>
+        </div>
+        <div style="padding: 30px; background-color: #FAF7F2;">
+          <h2 style="color: #4A3A2C;">Email Doğrulama</h2>
+          <p style="color: #333;">${data.customerName ? `Sayın ${data.customerName},` : ""}</p>
+          <p style="color: #333;">LIGNOVIA'ya hoş geldiniz! Email adresinizi doğrulamak için aşağıdaki butona tıklayın:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${data.verifyLink}" style="background-color: #C97A5A; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px;">Email Adresimi Doğrula</a>
+          </div>
+          <p style="color: #666; font-size: 12px;">Bu link 24 saat geçerlidir. Bu talebi siz yapmadıysanız bu emaili görmezden gelebilirsiniz.</p>
+        </div>
+        <div style="background-color: #D6C2B5; padding: 15px; text-align: center;">
+          <p style="color: #4A3A2C; margin: 0; font-size: 12px;">© 2024 LIGNOVIA. Tüm hakları saklıdır.</p>
+        </div>
+      </div>
+    `,
+  }),
+
   // Password reset email
   passwordReset: (data: { resetLink: string }) => ({
     subject: "LIGNOVIA - Şifre Sıfırlama",
@@ -128,7 +152,7 @@ export const emailTemplates = {
           <div style="text-align: center; margin: 30px 0;">
             <a href="${data.resetLink}" style="background-color: #C97A5A; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px;">Şifremi Sıfırla</a>
           </div>
-          <p style="color: #666; font-size: 12px;">Bu link 24 saat geçerlidir. Bu talebi siz yapmadıysanız bu emaili görmezden gelebilirsiniz.</p>
+          <p style="color: #666; font-size: 12px;">Bu link 1 saat geçerlidir. Bu talebi siz yapmadıysanız bu emaili görmezden gelebilirsiniz.</p>
         </div>
         <div style="background-color: #D6C2B5; padding: 15px; text-align: center;">
           <p style="color: #4A3A2C; margin: 0; font-size: 12px;">© 2024 LIGNOVIA. Tüm hakları saklıdır.</p>

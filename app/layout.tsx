@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Raleway } from "next/font/google";
+import { SessionProvider } from "@/components/providers/session-provider";
 import "./globals.css";
 
 // Body font - Inter
@@ -29,7 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" className={`${inter.variable} ${raleway.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
