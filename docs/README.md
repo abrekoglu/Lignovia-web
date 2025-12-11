@@ -38,4 +38,4 @@ Bu klasör LIGNOVIA e-ticaret platformu için tüm proje dokümantasyonunu içer
 
 ---
 
-**Son Güncelleme:** 10 Aralık 2024
+**Son Güncelleme:** 11 Aralık 2024
