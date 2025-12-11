@@ -3,44 +3,50 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+
+interface TestResult {
+  test: string;
+  status: number;
+  data: any;
+  timestamp: string;
+}
 
 export default function TestAPIPage() {
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<TestResult[]>([]);
   const [productId, setProductId] = useState("");
-  const [categoryId] = useState("cmj1os0xc000010zivy6v8wwe"); // Test category ID
+  const [isLoading, setIsLoading] = useState<string | null>(null);
+  const categoryId = "cmj1os0xc000010zivy6v8wwe"; // Test category ID
 
   const addResult = (test: string, status: number, data: any) => {
-    console.log("Adding result:", { test, status, data });
+    const newResult: TestResult = {
+      test,
+      status,
+      data,
+      timestamp: new Date().toLocaleTimeString("tr-TR"),
+    };
+    console.log("Adding result:", newResult);
     setResults((prev) => {
-      const newResults = [
-        ...prev,
-        {
-          test,
-          status,
-          data,
-          timestamp: new Date().toLocaleTimeString(),
-        },
-      ];
-      console.log("New results array:", newResults);
-      return newResults;
+      const updated = [...prev, newResult];
+      console.log("Updated results:", updated.length, updated);
+      return updated;
     });
   };
 
   const testGetProducts = async () => {
+    setIsLoading("get-products");
     try {
-      console.log("Testing GET /api/products...");
       const res = await fetch("/api/products?page=1&limit=5");
       const data = await res.json();
-      console.log("Response:", { status: res.status, data });
       addResult("GET /api/products", res.status, data);
     } catch (error) {
-      console.error("Error:", error);
       addResult("GET /api/products", 0, { error: String(error) });
+    } finally {
+      setIsLoading(null);
     }
   };
 
   const testCreateProduct = async () => {
+    setIsLoading("create-product");
     try {
       const productData = {
         name: `Test Ürün ${Date.now()}`,
@@ -64,6 +70,8 @@ export default function TestAPIPage() {
       }
     } catch (error) {
       addResult("POST /api/products", 0, { error: String(error) });
+    } finally {
+      setIsLoading(null);
     }
   };
 
@@ -73,12 +81,15 @@ export default function TestAPIPage() {
       return;
     }
 
+    setIsLoading("get-product");
     try {
       const res = await fetch(`/api/products/${productId}`);
       const data = await res.json();
       addResult("GET /api/products/[id]", res.status, data);
     } catch (error) {
       addResult("GET /api/products/[id]", 0, { error: String(error) });
+    } finally {
+      setIsLoading(null);
     }
   };
 
@@ -88,6 +99,7 @@ export default function TestAPIPage() {
       return;
     }
 
+    setIsLoading("update-product");
     try {
       const res = await fetch(`/api/products/${productId}`, {
         method: "PATCH",
@@ -102,6 +114,8 @@ export default function TestAPIPage() {
       addResult("PATCH /api/products/[id]", res.status, data);
     } catch (error) {
       addResult("PATCH /api/products/[id]", 0, { error: String(error) });
+    } finally {
+      setIsLoading(null);
     }
   };
 
@@ -111,6 +125,7 @@ export default function TestAPIPage() {
       return;
     }
 
+    setIsLoading("delete-product");
     try {
       const res = await fetch(`/api/products/${productId}`, {
         method: "DELETE",
@@ -123,6 +138,8 @@ export default function TestAPIPage() {
       }
     } catch (error) {
       addResult("DELETE /api/products/[id]", 0, { error: String(error) });
+    } finally {
+      setIsLoading(null);
     }
   };
 
@@ -138,32 +155,50 @@ export default function TestAPIPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <Button onClick={testGetProducts} variant="outline">
-              1. GET Products (List)
+            <Button
+              onClick={testGetProducts}
+              variant="outline"
+              disabled={isLoading === "get-products"}
+            >
+              {isLoading === "get-products"
+                ? "Test ediliyor..."
+                : "1. GET Products (List)"}
             </Button>
-            <Button onClick={testCreateProduct} variant="outline">
-              2. POST Product (Admin)
+            <Button
+              onClick={testCreateProduct}
+              variant="outline"
+              disabled={isLoading === "create-product"}
+            >
+              {isLoading === "create-product"
+                ? "Test ediliyor..."
+                : "2. POST Product (Admin)"}
             </Button>
             <Button
               onClick={testGetProduct}
               variant="outline"
-              disabled={!productId}
+              disabled={!productId || isLoading === "get-product"}
             >
-              3. GET Product (Detail)
+              {isLoading === "get-product"
+                ? "Test ediliyor..."
+                : "3. GET Product (Detail)"}
             </Button>
             <Button
               onClick={testUpdateProduct}
               variant="outline"
-              disabled={!productId}
+              disabled={!productId || isLoading === "update-product"}
             >
-              4. PATCH Product (Admin)
+              {isLoading === "update-product"
+                ? "Test ediliyor..."
+                : "4. PATCH Product (Admin)"}
             </Button>
             <Button
               onClick={testDeleteProduct}
               variant="outline"
-              disabled={!productId}
+              disabled={!productId || isLoading === "delete-product"}
             >
-              5. DELETE Product (Admin)
+              {isLoading === "delete-product"
+                ? "Test ediliyor..."
+                : "5. DELETE Product (Admin)"}
             </Button>
           </div>
 
@@ -177,6 +212,9 @@ export default function TestAPIPage() {
             <h3 className="font-semibold">
               Test Sonuçları ({results.length}):
             </h3>
+            <div className="mb-2 text-xs text-muted-foreground">
+              Debug: results.length = {results.length}
+            </div>
             {results.length === 0 ? (
               <div className="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-muted-foreground dark:border-gray-700">
                 Henüz test yapılmadı. Yukarıdaki butonlara tıklayarak test edin.
@@ -185,7 +223,7 @@ export default function TestAPIPage() {
               <div className="max-h-96 space-y-2 overflow-y-auto">
                 {results.map((result, idx) => (
                   <div
-                    key={idx}
+                    key={`result-${idx}-${result.timestamp}`}
                     className={`rounded-md border p-3 text-sm ${
                       result.status === 200 || result.status === 201
                         ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
