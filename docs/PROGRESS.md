@@ -314,11 +314,13 @@ Tüm adımlar başarıyla tamamlandı. Faz 2'ye geçmeye hazırız!
   - app/api/auth/reset-password/route.ts
   - app/api/auth/send-verification/route.ts
   - app/api/auth/verify-email/route.ts
+  - app/api/auth/logout/route.ts (Custom cookie clearing)
   - app/auth/login/page.tsx
   - app/auth/register/page.tsx
   - app/auth/forgot-password/page.tsx
   - app/auth/reset-password/page.tsx
   - app/auth/verify-email/page.tsx
+  - app/auth/logout/page.tsx
 - **Eklenen Paketler:**
   - next-auth@beta
   - @auth/prisma-adapter
@@ -328,8 +330,10 @@ Tüm adımlar başarıyla tamamlandı. Faz 2'ye geçmeye hazırız!
   - Password hashing (bcrypt, 12 rounds)
   - JWT token tabanlı session
   - Protected routes middleware
-  - Email enumeration koruması (forgot password)
+  - Email enumeration koruması (forgot password & send-verification)
   - Token expiry (email verification: 24h, password reset: 1h)
+  - Open redirect koruması (callback URL validation)
+  - Kullanıcı dostu hata mesajları (güvenlik bilgisi sızdırmadan)
 
 ---
 
