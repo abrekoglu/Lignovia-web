@@ -14,8 +14,54 @@ export async function GET(request: NextRequest) {
     const isFeatured = searchParams.get("featured") === "true";
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
+    const sortByParam = searchParams.get("sortBy");
+    const sortOrderParam = searchParams.get("sortOrder");
+
+    // Whitelist of allowed sort fields
+    const allowedSortFields = [
+      "createdAt",
+      "updatedAt",
+      "price",
+      "name",
+      "stock",
+      "isFeatured",
+    ];
+
+    // Validate sortBy (if provided)
+    if (sortByParam && !allowedSortFields.includes(sortByParam)) {
+      return NextResponse.json(
+        {
+          error: `Geçersiz sıralama alanı. İzin verilen alanlar: ${allowedSortFields.join(", ")}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Use validated sortBy or default
+    const sortBy =
+      sortByParam && allowedSortFields.includes(sortByParam)
+        ? sortByParam
+        : "createdAt";
+
+    // Validate sortOrder (if provided)
+    const allowedSortOrders = ["asc", "desc"];
+    if (
+      sortOrderParam &&
+      !allowedSortOrders.includes(sortOrderParam.toLowerCase())
+    ) {
+      return NextResponse.json(
+        {
+          error: `Geçersiz sıralama yönü. İzin verilen değerler: ${allowedSortOrders.join(", ")}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Use validated sortOrder or default
+    const sortOrder =
+      sortOrderParam && allowedSortOrders.includes(sortOrderParam.toLowerCase())
+        ? sortOrderParam.toLowerCase()
+        : "desc";
 
     // Validate and parse page parameter
     const page = pageParam ? parseInt(pageParam, 10) : 1;

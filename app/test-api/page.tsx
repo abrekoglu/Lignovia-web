@@ -271,6 +271,54 @@ export default function TestAPIPage() {
     }
   };
 
+  const testInvalidSortBy = async () => {
+    setIsLoading("invalid-sortby");
+    try {
+      const res = await fetch(
+        "/api/products?sortBy=invalidField&sortOrder=asc"
+      );
+      const data = await res.json();
+      addResult(
+        "GET /api/products (Invalid SortBy)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Invalid SortBy)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testInvalidSortOrder = async () => {
+    setIsLoading("invalid-sortorder");
+    try {
+      const res = await fetch("/api/products?sortBy=price&sortOrder=invalid");
+      const data = await res.json();
+      addResult(
+        "GET /api/products (Invalid SortOrder)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Invalid SortOrder)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   const testPatchInvalidPrice = async () => {
     if (!productId) {
       addResult(
@@ -848,6 +896,20 @@ export default function TestAPIPage() {
                   "Invalid Pagination",
                   testInvalidPagination,
                   "invalid-pagination",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "Invalid SortBy",
+                  testInvalidSortBy,
+                  "invalid-sortby",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "Invalid SortOrder",
+                  testInvalidSortOrder,
+                  "invalid-sortorder",
                   false,
                   "Should return 400"
                 )}
