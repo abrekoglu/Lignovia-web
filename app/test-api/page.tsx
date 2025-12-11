@@ -11,23 +11,31 @@ export default function TestAPIPage() {
   const [categoryId] = useState("cmj1os0xc000010zivy6v8wwe"); // Test category ID
 
   const addResult = (test: string, status: number, data: any) => {
-    setResults((prev) => [
-      ...prev,
-      {
-        test,
-        status,
-        data,
-        timestamp: new Date().toLocaleTimeString(),
-      },
-    ]);
+    console.log("Adding result:", { test, status, data });
+    setResults((prev) => {
+      const newResults = [
+        ...prev,
+        {
+          test,
+          status,
+          data,
+          timestamp: new Date().toLocaleTimeString(),
+        },
+      ];
+      console.log("New results array:", newResults);
+      return newResults;
+    });
   };
 
   const testGetProducts = async () => {
     try {
+      console.log("Testing GET /api/products...");
       const res = await fetch("/api/products?page=1&limit=5");
       const data = await res.json();
+      console.log("Response:", { status: res.status, data });
       addResult("GET /api/products", res.status, data);
     } catch (error) {
+      console.error("Error:", error);
       addResult("GET /api/products", 0, { error: String(error) });
     }
   };
@@ -166,42 +174,50 @@ export default function TestAPIPage() {
           )}
 
           <div className="space-y-2">
-            <h3 className="font-semibold">Test Sonuçları:</h3>
-            <div className="max-h-96 space-y-2 overflow-y-auto">
-              {results.map((result, idx) => (
-                <div
-                  key={idx}
-                  className={`rounded-md border p-3 text-sm ${
-                    result.status === 200 || result.status === 201
-                      ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
-                      : result.status === 0
-                        ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
-                        : "border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <strong>{result.test}</strong>
-                    <span className="text-xs text-muted-foreground">
-                      {result.timestamp}
-                    </span>
+            <h3 className="font-semibold">
+              Test Sonuçları ({results.length}):
+            </h3>
+            {results.length === 0 ? (
+              <div className="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-muted-foreground dark:border-gray-700">
+                Henüz test yapılmadı. Yukarıdaki butonlara tıklayarak test edin.
+              </div>
+            ) : (
+              <div className="max-h-96 space-y-2 overflow-y-auto">
+                {results.map((result, idx) => (
+                  <div
+                    key={idx}
+                    className={`rounded-md border p-3 text-sm ${
+                      result.status === 200 || result.status === 201
+                        ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
+                        : result.status === 0
+                          ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20"
+                          : "border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <strong>{result.test}</strong>
+                      <span className="text-xs text-muted-foreground">
+                        {result.timestamp}
+                      </span>
+                    </div>
+                    <div className="mt-1">
+                      <span
+                        className={`font-mono text-xs ${
+                          result.status === 200 || result.status === 201
+                            ? "text-green-600 dark:text-green-400"
+                            : "text-red-600 dark:text-red-400"
+                        }`}
+                      >
+                        Status: {result.status}
+                      </span>
+                    </div>
+                    <pre className="mt-2 max-h-40 overflow-auto rounded bg-white p-2 text-xs dark:bg-gray-800">
+                      {JSON.stringify(result.data, null, 2)}
+                    </pre>
                   </div>
-                  <div className="mt-1">
-                    <span
-                      className={`font-mono text-xs ${
-                        result.status === 200 || result.status === 201
-                          ? "text-green-600 dark:text-green-400"
-                          : "text-red-600 dark:text-red-400"
-                      }`}
-                    >
-                      Status: {result.status}
-                    </span>
-                  </div>
-                  <pre className="mt-2 max-h-40 overflow-auto rounded bg-white p-2 text-xs dark:bg-gray-800">
-                    {JSON.stringify(result.data, null, 2)}
-                  </pre>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
