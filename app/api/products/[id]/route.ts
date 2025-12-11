@@ -117,6 +117,17 @@ export async function PATCH(
           { status: 400 }
         );
       }
+
+      // Validate name contains at least one alphanumeric character
+      // This prevents names with only special characters that would generate empty slugs
+      const nameHasAlphanumeric = /[a-zA-Z0-9]/.test(body.name.trim());
+      if (!nameHasAlphanumeric) {
+        return NextResponse.json(
+          { error: "Ürün adı en az bir harf veya rakam içermelidir." },
+          { status: 400 }
+        );
+      }
+
       updateData.name = body.name;
       // Auto-generate slug if name changed
       if (body.name !== existingProduct.name) {
@@ -221,10 +232,14 @@ export async function PATCH(
     if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
 
     if (body.sku !== undefined) {
+      // Normalize empty string to null (consistent with POST endpoint)
+      const normalizedSku =
+        body.sku && body.sku.trim() !== "" ? body.sku : null;
+
       // Check SKU uniqueness if provided (and different from current)
-      if (body.sku && body.sku !== existingProduct.sku) {
+      if (normalizedSku && normalizedSku !== existingProduct.sku) {
         const existingSku = await prisma.product.findUnique({
-          where: { sku: body.sku },
+          where: { sku: normalizedSku },
         });
         if (existingSku) {
           return NextResponse.json(
@@ -233,7 +248,7 @@ export async function PATCH(
           );
         }
       }
-      updateData.sku = body.sku;
+      updateData.sku = normalizedSku;
     }
 
     if (body.weight !== undefined) {

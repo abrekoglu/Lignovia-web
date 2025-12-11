@@ -619,6 +619,124 @@ export default function TestAPIPage() {
     }
   };
 
+  const testPostNameOnlySpecialChars = async () => {
+    setIsLoading("post-name-special");
+    try {
+      const productData = {
+        name: "!@#$%^&*()",
+        description: "Name with only special characters",
+        price: 299.99,
+        categoryId,
+        stock: 10,
+        sku: `TEST-SPECIAL-${Date.now()}`,
+      };
+
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (Name Only Special Chars)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "POST /api/products (Name Only Special Chars)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchNameOnlySpecialChars = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Name Only Special Chars)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-name-special");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "!@#$%^&*()" }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Name Only Special Chars)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Name Only Special Chars)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchEmptySku = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Empty SKU)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-empty-sku");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sku: "" }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Empty SKU)",
+        res.status,
+        {
+          ...data,
+          note: "Empty SKU should be normalized to null (consistent with POST)",
+          expectedSku: null,
+          actualSku: data.data?.sku,
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Empty SKU)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -1102,6 +1220,27 @@ export default function TestAPIPage() {
                   "patch-duplicate-sku",
                   false,
                   productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "POST Name Special Chars",
+                  testPostNameOnlySpecialChars,
+                  "post-name-special",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "PATCH Name Special Chars",
+                  testPatchNameOnlySpecialChars,
+                  "patch-name-special",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "PATCH Empty SKU",
+                  testPatchEmptySku,
+                  "patch-empty-sku",
+                  false,
+                  productId ? "Should normalize to null" : "Önce ürün oluştur"
                 )}
               </div>
             </div>

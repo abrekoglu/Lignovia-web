@@ -211,6 +211,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Ürün adı gerekli." }, { status: 400 });
     }
 
+    // Validate name contains at least one alphanumeric character
+    // This prevents names with only special characters that would generate empty slugs
+    const nameHasAlphanumeric = /[a-zA-Z0-9]/.test(body.name.trim());
+    if (!nameHasAlphanumeric) {
+      return NextResponse.json(
+        { error: "Ürün adı en az bir harf veya rakam içermelidir." },
+        { status: 400 }
+      );
+    }
+
     if (body.price === undefined || body.price === null) {
       return NextResponse.json({ error: "Fiyat gerekli." }, { status: 400 });
     }
