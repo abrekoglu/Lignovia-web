@@ -224,6 +224,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate stock if provided
+    if (body.stock !== undefined && body.stock !== null) {
+      const stock = parseInt(body.stock, 10);
+      if (isNaN(stock) || stock < 0) {
+        return NextResponse.json(
+          { error: "Stok geçerli bir tam sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
     if (!body.categoryId || body.categoryId.trim() === "") {
       return NextResponse.json({ error: "Kategori gerekli." }, { status: 400 });
     }
@@ -274,7 +285,10 @@ export async function POST(request: NextRequest) {
         priceUsd: body.priceUsd ? parseFloat(body.priceUsd) : null,
         priceEur: body.priceEur ? parseFloat(body.priceEur) : null,
         comparePrice: body.comparePrice ? parseFloat(body.comparePrice) : null,
-        stock: body.stock ? parseInt(body.stock, 10) : 0,
+        stock:
+          body.stock !== undefined && body.stock !== null
+            ? parseInt(body.stock, 10)
+            : 0,
         categoryId: body.categoryId,
         isActive: body.isActive !== undefined ? body.isActive : true,
         isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,

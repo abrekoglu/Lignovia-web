@@ -478,6 +478,147 @@ export default function TestAPIPage() {
     }
   };
 
+  const testPostInvalidStock = async () => {
+    setIsLoading("post-invalid-stock");
+    try {
+      const productData = {
+        name: `Test Ürün Invalid Stock ${Date.now()}`,
+        description: "Invalid stock validation testi",
+        price: 299.99,
+        categoryId,
+        stock: "abc", // Invalid stock value
+        sku: `TEST-INVALID-STOCK-${Date.now()}`,
+      };
+
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (Invalid Stock)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "POST /api/products (Invalid Stock)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchInvalidCategoryId = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Invalid CategoryId)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-invalid-category");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categoryId: "invalid-category-id" }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Invalid CategoryId)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Invalid CategoryId)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchDuplicateSku = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Duplicate SKU)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-duplicate-sku");
+    try {
+      // First, create another product to get its SKU
+      const createRes = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `Test Ürün SKU Source ${Date.now()}`,
+          description: "SKU source for duplicate test",
+          price: 199.99,
+          categoryId,
+          stock: 5,
+          sku: `TEST-DUPLICATE-SKU-${Date.now()}`,
+        }),
+      });
+
+      const createData = await createRes.json();
+      const duplicateSku = createData.data?.sku;
+
+      if (!duplicateSku) {
+        addResult(
+          "PATCH /api/products/[id] (Duplicate SKU)",
+          0,
+          { error: "Test ürünü oluşturulamadı" },
+          "Products"
+        );
+        return;
+      }
+
+      // Try to update current product with duplicate SKU
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sku: duplicateSku }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Duplicate SKU)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Duplicate SKU)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -940,6 +1081,27 @@ export default function TestAPIPage() {
                   "post-stock-radix",
                   false,
                   "Should parse as decimal 10"
+                )}
+                {renderTestButton(
+                  "POST Invalid Stock",
+                  testPostInvalidStock,
+                  "post-invalid-stock",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "PATCH Invalid CategoryId",
+                  testPatchInvalidCategoryId,
+                  "patch-invalid-category",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "PATCH Duplicate SKU",
+                  testPatchDuplicateSku,
+                  "patch-duplicate-sku",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
                 )}
               </div>
             </div>

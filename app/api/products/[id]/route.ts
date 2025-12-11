@@ -197,10 +197,44 @@ export async function PATCH(
       updateData.stock = stock;
     }
 
-    if (body.categoryId !== undefined) updateData.categoryId = body.categoryId;
+    if (body.categoryId !== undefined) {
+      // Validate category exists
+      if (!body.categoryId || body.categoryId.trim() === "") {
+        return NextResponse.json(
+          { error: "Kategori gerekli." },
+          { status: 400 }
+        );
+      }
+      const category = await prisma.category.findUnique({
+        where: { id: body.categoryId },
+      });
+      if (!category) {
+        return NextResponse.json(
+          { error: "Geçersiz kategori." },
+          { status: 400 }
+        );
+      }
+      updateData.categoryId = body.categoryId;
+    }
+
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
     if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
-    if (body.sku !== undefined) updateData.sku = body.sku;
+
+    if (body.sku !== undefined) {
+      // Check SKU uniqueness if provided (and different from current)
+      if (body.sku && body.sku !== existingProduct.sku) {
+        const existingSku = await prisma.product.findUnique({
+          where: { sku: body.sku },
+        });
+        if (existingSku) {
+          return NextResponse.json(
+            { error: "Bu SKU zaten kullanılıyor." },
+            { status: 400 }
+          );
+        }
+      }
+      updateData.sku = body.sku;
+    }
 
     if (body.weight !== undefined) {
       const weight = parseFloat(body.weight);
