@@ -55,21 +55,33 @@ export async function GET(request: NextRequest) {
       where.isFeatured = true;
     }
 
+    // Search should work with other filters (AND), not as an alternative (OR)
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-        { sku: { contains: search, mode: "insensitive" } },
+      where.AND = [
+        ...(where.AND || []),
+        {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { description: { contains: search, mode: "insensitive" } },
+            { sku: { contains: search, mode: "insensitive" } },
+          ],
+        },
       ];
     }
 
     if (minPrice || maxPrice) {
       where.price = {};
       if (minPrice) {
-        where.price.gte = parseFloat(minPrice);
+        const minPriceNum = parseFloat(minPrice);
+        if (!isNaN(minPriceNum)) {
+          where.price.gte = minPriceNum;
+        }
       }
       if (maxPrice) {
-        where.price.lte = parseFloat(maxPrice);
+        const maxPriceNum = parseFloat(maxPrice);
+        if (!isNaN(maxPriceNum)) {
+          where.price.lte = maxPriceNum;
+        }
       }
     }
 

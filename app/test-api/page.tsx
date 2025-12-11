@@ -197,6 +197,156 @@ export default function TestAPIPage() {
     }
   };
 
+  // Bug Fix Tests
+  const testSearchWithCategory = async () => {
+    setIsLoading("search-category");
+    try {
+      const res = await fetch(
+        `/api/products?search=test&categoryId=${categoryId}&page=1&limit=5`
+      );
+      const data = await res.json();
+      addResult(
+        "GET /api/products (Search + Category)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Search + Category)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testSearchWithPriceRange = async () => {
+    setIsLoading("search-price");
+    try {
+      const res = await fetch(
+        `/api/products?search=test&minPrice=100&maxPrice=500&page=1&limit=5`
+      );
+      const data = await res.json();
+      addResult(
+        "GET /api/products (Search + Price Range)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Search + Price Range)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testInvalidPagination = async () => {
+    setIsLoading("invalid-pagination");
+    try {
+      const res = await fetch("/api/products?page=0&limit=-1");
+      const data = await res.json();
+      addResult(
+        "GET /api/products (Invalid Pagination)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Invalid Pagination)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchInvalidPrice = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Invalid Price)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-invalid-price");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ price: "abc" }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Invalid Price)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Invalid Price)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPatchNegativeStock = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Negative Stock)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-negative-stock");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stock: -5 }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Negative Stock)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Negative Stock)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -590,6 +740,50 @@ export default function TestAPIPage() {
                 </code>
               </div>
             )}
+
+            {/* Bug Fix Tests */}
+            <div className="mt-4 rounded-md border-2 border-yellow-200 bg-yellow-50/50 p-4 dark:border-yellow-800 dark:bg-yellow-900/10">
+              <h4 className="mb-3 text-sm font-semibold text-yellow-800 dark:text-yellow-300">
+                🐛 Bug Fix Tests
+              </h4>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {renderTestButton(
+                  "Search + Category",
+                  testSearchWithCategory,
+                  "search-category",
+                  false,
+                  "Filter combo test"
+                )}
+                {renderTestButton(
+                  "Search + Price Range",
+                  testSearchWithPriceRange,
+                  "search-price",
+                  false,
+                  "Filter combo test"
+                )}
+                {renderTestButton(
+                  "Invalid Pagination",
+                  testInvalidPagination,
+                  "invalid-pagination",
+                  false,
+                  "Should return 400"
+                )}
+                {renderTestButton(
+                  "PATCH Invalid Price",
+                  testPatchInvalidPrice,
+                  "patch-invalid-price",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "PATCH Negative Stock",
+                  testPatchNegativeStock,
+                  "patch-negative-stock",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+              </div>
+            </div>
           </div>
 
           {/* AUTHENTICATION APIs */}

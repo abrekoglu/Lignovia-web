@@ -130,23 +130,96 @@ export async function PATCH(
       updateData.description = body.description;
     if (body.descriptionEn !== undefined)
       updateData.descriptionEn = body.descriptionEn;
-    if (body.price !== undefined) updateData.price = parseFloat(body.price);
-    if (body.priceUsd !== undefined)
-      updateData.priceUsd = parseFloat(body.priceUsd);
-    if (body.priceEur !== undefined)
-      updateData.priceEur = parseFloat(body.priceEur);
-    if (body.comparePrice !== undefined)
-      updateData.comparePrice = parseFloat(body.comparePrice);
-    if (body.stock !== undefined) updateData.stock = parseInt(body.stock);
+
+    // Validate numeric fields to prevent NaN values
+    if (body.price !== undefined) {
+      const price = parseFloat(body.price);
+      if (isNaN(price) || price < 0) {
+        return NextResponse.json(
+          { error: "Fiyat geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+      updateData.price = price;
+    }
+
+    if (body.priceUsd !== undefined) {
+      const priceUsd = parseFloat(body.priceUsd);
+      if (isNaN(priceUsd) || priceUsd < 0) {
+        return NextResponse.json(
+          { error: "USD fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+      updateData.priceUsd = priceUsd;
+    }
+
+    if (body.priceEur !== undefined) {
+      const priceEur = parseFloat(body.priceEur);
+      if (isNaN(priceEur) || priceEur < 0) {
+        return NextResponse.json(
+          { error: "EUR fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+      updateData.priceEur = priceEur;
+    }
+
+    if (body.comparePrice !== undefined) {
+      const comparePrice = parseFloat(body.comparePrice);
+      if (isNaN(comparePrice) || comparePrice < 0) {
+        return NextResponse.json(
+          {
+            error:
+              "Karşılaştırma fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
+          },
+          { status: 400 }
+        );
+      }
+      updateData.comparePrice = comparePrice;
+    }
+
+    if (body.stock !== undefined) {
+      const stock = parseInt(body.stock, 10);
+      if (isNaN(stock) || stock < 0) {
+        return NextResponse.json(
+          { error: "Stok geçerli bir tam sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+      updateData.stock = stock;
+    }
+
     if (body.categoryId !== undefined) updateData.categoryId = body.categoryId;
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
     if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
     if (body.sku !== undefined) updateData.sku = body.sku;
-    if (body.weight !== undefined) updateData.weight = parseFloat(body.weight);
+
+    if (body.weight !== undefined) {
+      const weight = parseFloat(body.weight);
+      if (isNaN(weight) || weight < 0) {
+        return NextResponse.json(
+          { error: "Ağırlık geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+      updateData.weight = weight;
+    }
+
     if (body.dimensions !== undefined) updateData.dimensions = body.dimensions;
     if (body.material !== undefined) updateData.material = body.material;
-    if (body.taxRate !== undefined)
-      updateData.taxRate = parseFloat(body.taxRate);
+
+    if (body.taxRate !== undefined) {
+      const taxRate = parseFloat(body.taxRate);
+      if (isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
+        return NextResponse.json(
+          { error: "KDV oranı 0-100 arasında geçerli bir sayı olmalıdır." },
+          { status: 400 }
+        );
+      }
+      updateData.taxRate = taxRate;
+    }
+
     if (body.metaTitle !== undefined) updateData.metaTitle = body.metaTitle;
     if (body.metaDescription !== undefined)
       updateData.metaDescription = body.metaDescription;
