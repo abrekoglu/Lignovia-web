@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
         priceUsd: body.priceUsd ? parseFloat(body.priceUsd) : null,
         priceEur: body.priceEur ? parseFloat(body.priceEur) : null,
         comparePrice: body.comparePrice ? parseFloat(body.comparePrice) : null,
-        stock: body.stock ? parseInt(body.stock) : 0,
+        stock: body.stock ? parseInt(body.stock, 10) : 0,
         categoryId: body.categoryId,
         isActive: body.isActive !== undefined ? body.isActive : true,
         isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,

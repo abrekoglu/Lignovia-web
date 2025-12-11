@@ -110,6 +110,13 @@ export async function PATCH(
     const updateData: any = {};
 
     if (body.name !== undefined) {
+      // Validate name is not empty
+      if (!body.name || body.name.trim() === "") {
+        return NextResponse.json(
+          { error: "Ürün adı boş olamaz." },
+          { status: 400 }
+        );
+      }
       updateData.name = body.name;
       // Auto-generate slug if name changed
       if (body.name !== existingProduct.name) {

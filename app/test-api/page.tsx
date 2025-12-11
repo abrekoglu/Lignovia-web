@@ -347,6 +347,89 @@ export default function TestAPIPage() {
     }
   };
 
+  const testPatchEmptyName = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Empty Name)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-empty-name");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "" }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Empty Name)",
+        res.status,
+        data,
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Empty Name)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testPostStockWithRadix = async () => {
+    setIsLoading("post-stock-radix");
+    try {
+      const productData = {
+        name: `Test Ürün Radix ${Date.now()}`,
+        description: "parseInt radix testi",
+        price: 299.99,
+        categoryId,
+        stock: "010", // Octal olarak yorumlanmamalı, decimal 10 olmalı
+        sku: `TEST-RADIX-${Date.now()}`,
+      };
+
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (Stock Radix Test)",
+        res.status,
+        {
+          ...data,
+          note: "Stock '010' string olarak gönderildi, decimal 10 olarak kaydedilmeli (octal 8 değil)",
+          expectedStock: 10,
+          actualStock: data.data?.stock,
+        },
+        "Products"
+      );
+      if (data.data?.id) {
+        setProductId(data.data.id);
+      }
+    } catch (error) {
+      addResult(
+        "POST /api/products (Stock Radix Test)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -781,6 +864,20 @@ export default function TestAPIPage() {
                   "patch-negative-stock",
                   false,
                   productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "PATCH Empty Name",
+                  testPatchEmptyName,
+                  "patch-empty-name",
+                  false,
+                  productId ? "Should return 400" : "Önce ürün oluştur"
+                )}
+                {renderTestButton(
+                  "POST Stock Radix",
+                  testPostStockWithRadix,
+                  "post-stock-radix",
+                  false,
+                  "Should parse as decimal 10"
                 )}
               </div>
             </div>
