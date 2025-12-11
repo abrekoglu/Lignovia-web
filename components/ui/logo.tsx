@@ -8,14 +8,24 @@ interface LogoProps {
   height?: number;
   className?: string;
   variant?: "auto" | "light" | "dark";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
+const sizeMap = {
+  sm: { width: 120, height: 21 },
+  md: { width: 160, height: 28 },
+  lg: { width: 200, height: 35 },
+  xl: { width: 280, height: 49 },
+};
+
 export function Logo({
-  width = 200,
-  height = 35,
+  width,
+  height,
   className = "",
   variant = "auto",
+  size = "lg",
 }: LogoProps) {
+  const dimensions = width && height ? { width, height } : sizeMap[size];
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -48,8 +58,8 @@ export function Logo({
     <Image
       src={logoSrc}
       alt="LIGNOVIA"
-      width={width}
-      height={height}
+      width={dimensions.width}
+      height={dimensions.height}
       className={className}
       priority
     />

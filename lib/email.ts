@@ -3,6 +3,16 @@ import { Resend } from "resend";
 // Initialize Resend client
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// HTML escape utility to prevent XSS in email templates
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 // Email sending options
 interface SendEmailOptions {
   to: string | string[];
@@ -67,7 +77,7 @@ export const emailTemplates = {
     customerName: string;
     total: string;
   }) => ({
-    subject: `LIGNOVIA - Sipariş Onayı #${data.orderNumber}`,
+    subject: `LIGNOVIA - Sipariş Onayı #${escapeHtml(data.orderNumber)}`,
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A3A2C; padding: 20px; text-align: center;">
@@ -75,11 +85,11 @@ export const emailTemplates = {
         </div>
         <div style="padding: 30px; background-color: #FAF7F2;">
           <h2 style="color: #4A3A2C;">Siparişiniz Alındı!</h2>
-          <p style="color: #333;">Sayın ${data.customerName},</p>
+          <p style="color: #333;">Sayın ${escapeHtml(data.customerName)},</p>
           <p style="color: #333;">Siparişiniz başarıyla alındı. Sipariş detayları:</p>
           <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 5px 0;"><strong>Sipariş No:</strong> ${data.orderNumber}</p>
-            <p style="margin: 5px 0;"><strong>Toplam:</strong> ${data.total}</p>
+            <p style="margin: 5px 0;"><strong>Sipariş No:</strong> ${escapeHtml(data.orderNumber)}</p>
+            <p style="margin: 5px 0;"><strong>Toplam:</strong> ${escapeHtml(data.total)}</p>
           </div>
           <p style="color: #333;">Siparişinizi takip etmek için hesabınıza giriş yapabilirsiniz.</p>
         </div>
@@ -100,12 +110,36 @@ export const emailTemplates = {
         </div>
         <div style="padding: 30px; background-color: #FAF7F2;">
           <h2 style="color: #4A3A2C;">Hoş Geldiniz!</h2>
-          <p style="color: #333;">Sayın ${data.customerName},</p>
+          <p style="color: #333;">Sayın ${escapeHtml(data.customerName)},</p>
           <p style="color: #333;">LIGNOVIA ailesine katıldığınız için teşekkür ederiz!</p>
           <p style="color: #333;">El yapımı ahşap ürünlerimizi keşfetmek için sitemizi ziyaret edebilirsiniz.</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="#" style="background-color: #C97A5A; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px;">Alışverişe Başla</a>
           </div>
+        </div>
+        <div style="background-color: #D6C2B5; padding: 15px; text-align: center;">
+          <p style="color: #4A3A2C; margin: 0; font-size: 12px;">© 2024 LIGNOVIA. Tüm hakları saklıdır.</p>
+        </div>
+      </div>
+    `,
+  }),
+
+  // Email verification
+  emailVerification: (data: { verifyLink: string; customerName?: string }) => ({
+    subject: "LIGNOVIA - Email Adresinizi Doğrulayın",
+    html: `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #4A3A2C; padding: 20px; text-align: center;">
+          <h1 style="color: #FAF7F2; margin: 0; font-family: Raleway, sans-serif;">LIGNOVIA</h1>
+        </div>
+        <div style="padding: 30px; background-color: #FAF7F2;">
+          <h2 style="color: #4A3A2C;">Email Doğrulama</h2>
+          <p style="color: #333;">${data.customerName ? `Sayın ${escapeHtml(data.customerName)},` : ""}</p>
+          <p style="color: #333;">LIGNOVIA'ya hoş geldiniz! Email adresinizi doğrulamak için aşağıdaki butona tıklayın:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${escapeHtml(data.verifyLink)}" style="background-color: #C97A5A; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px;">Email Adresimi Doğrula</a>
+          </div>
+          <p style="color: #666; font-size: 12px;">Bu link 24 saat geçerlidir. Bu talebi siz yapmadıysanız bu emaili görmezden gelebilirsiniz.</p>
         </div>
         <div style="background-color: #D6C2B5; padding: 15px; text-align: center;">
           <p style="color: #4A3A2C; margin: 0; font-size: 12px;">© 2024 LIGNOVIA. Tüm hakları saklıdır.</p>
@@ -126,9 +160,9 @@ export const emailTemplates = {
           <h2 style="color: #4A3A2C;">Şifre Sıfırlama</h2>
           <p style="color: #333;">Şifrenizi sıfırlamak için aşağıdaki butona tıklayın:</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${data.resetLink}" style="background-color: #C97A5A; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px;">Şifremi Sıfırla</a>
+            <a href="${escapeHtml(data.resetLink)}" style="background-color: #C97A5A; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 4px;">Şifremi Sıfırla</a>
           </div>
-          <p style="color: #666; font-size: 12px;">Bu link 24 saat geçerlidir. Bu talebi siz yapmadıysanız bu emaili görmezden gelebilirsiniz.</p>
+          <p style="color: #666; font-size: 12px;">Bu link 1 saat geçerlidir. Bu talebi siz yapmadıysanız bu emaili görmezden gelebilirsiniz.</p>
         </div>
         <div style="background-color: #D6C2B5; padding: 15px; text-align: center;">
           <p style="color: #4A3A2C; margin: 0; font-size: 12px;">© 2024 LIGNOVIA. Tüm hakları saklıdır.</p>
@@ -143,7 +177,7 @@ export const emailTemplates = {
     trackingNumber: string;
     carrierName: string;
   }) => ({
-    subject: `LIGNOVIA - Siparişiniz Kargoya Verildi #${data.orderNumber}`,
+    subject: `LIGNOVIA - Siparişiniz Kargoya Verildi #${escapeHtml(data.orderNumber)}`,
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #4A3A2C; padding: 20px; text-align: center;">
@@ -153,9 +187,9 @@ export const emailTemplates = {
           <h2 style="color: #4A3A2C;">Siparişiniz Yola Çıktı! 📦</h2>
           <p style="color: #333;">Siparişiniz kargoya verildi ve yolda!</p>
           <div style="background-color: #fff; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 5px 0;"><strong>Sipariş No:</strong> ${data.orderNumber}</p>
-            <p style="margin: 5px 0;"><strong>Kargo Firması:</strong> ${data.carrierName}</p>
-            <p style="margin: 5px 0;"><strong>Takip No:</strong> ${data.trackingNumber}</p>
+            <p style="margin: 5px 0;"><strong>Sipariş No:</strong> ${escapeHtml(data.orderNumber)}</p>
+            <p style="margin: 5px 0;"><strong>Kargo Firması:</strong> ${escapeHtml(data.carrierName)}</p>
+            <p style="margin: 5px 0;"><strong>Takip No:</strong> ${escapeHtml(data.trackingNumber)}</p>
           </div>
         </div>
         <div style="background-color: #D6C2B5; padding: 15px; text-align: center;">
