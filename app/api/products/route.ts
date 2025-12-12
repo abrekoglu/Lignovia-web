@@ -257,7 +257,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate category exists
+    // Validate category exists, is active, and not deleted
     const category = await prisma.category.findUnique({
       where: { id: body.categoryId },
     });
@@ -265,6 +265,13 @@ export async function POST(request: NextRequest) {
     if (!category) {
       return NextResponse.json(
         { error: "Geçersiz kategori." },
+        { status: 400 }
+      );
+    }
+
+    if (!category.isActive || category.deletedAt) {
+      return NextResponse.json(
+        { error: "Kategori aktif değil veya silinmiş." },
         { status: 400 }
       );
     }
@@ -355,10 +362,25 @@ export async function POST(request: NextRequest) {
     const product = await prisma.product.create({
       data: {
         name: body.name,
-        nameEn: body.nameEn || null,
+        nameEn:
+          body.nameEn !== undefined
+            ? typeof body.nameEn === "string"
+              ? body.nameEn
+              : null
+            : null,
         slug,
-        description: body.description || null,
-        descriptionEn: body.descriptionEn || null,
+        description:
+          body.description !== undefined
+            ? typeof body.description === "string"
+              ? body.description
+              : null
+            : null,
+        descriptionEn:
+          body.descriptionEn !== undefined
+            ? typeof body.descriptionEn === "string"
+              ? body.descriptionEn
+              : null
+            : null,
         price,
         priceUsd:
           body.priceUsd !== undefined && body.priceUsd !== null
@@ -384,14 +406,34 @@ export async function POST(request: NextRequest) {
           body.weight !== undefined && body.weight !== null
             ? parseFloat(body.weight)
             : null,
-        dimensions: body.dimensions || null,
-        material: body.material || null,
+        dimensions:
+          body.dimensions !== undefined
+            ? typeof body.dimensions === "string"
+              ? body.dimensions
+              : null
+            : null,
+        material:
+          body.material !== undefined
+            ? typeof body.material === "string"
+              ? body.material
+              : null
+            : null,
         taxRate:
           body.taxRate !== undefined && body.taxRate !== null
             ? parseFloat(body.taxRate)
             : 20,
-        metaTitle: body.metaTitle || null,
-        metaDescription: body.metaDescription || null,
+        metaTitle:
+          body.metaTitle !== undefined
+            ? typeof body.metaTitle === "string"
+              ? body.metaTitle
+              : null
+            : null,
+        metaDescription:
+          body.metaDescription !== undefined
+            ? typeof body.metaDescription === "string"
+              ? body.metaDescription
+              : null
+            : null,
       },
       include: {
         category: {

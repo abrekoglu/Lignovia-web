@@ -143,11 +143,14 @@ export async function PATCH(
       }
     }
 
-    if (body.nameEn !== undefined) updateData.nameEn = body.nameEn;
+    if (body.nameEn !== undefined)
+      updateData.nameEn = typeof body.nameEn === "string" ? body.nameEn : null;
     if (body.description !== undefined)
-      updateData.description = body.description;
+      updateData.description =
+        typeof body.description === "string" ? body.description : null;
     if (body.descriptionEn !== undefined)
-      updateData.descriptionEn = body.descriptionEn;
+      updateData.descriptionEn =
+        typeof body.descriptionEn === "string" ? body.descriptionEn : null;
 
     // Validate numeric fields to prevent NaN values
     if (body.price !== undefined) {
@@ -228,6 +231,12 @@ export async function PATCH(
           { status: 400 }
         );
       }
+      if (!category.isActive || category.deletedAt) {
+        return NextResponse.json(
+          { error: "Kategori aktif değil veya silinmiş." },
+          { status: 400 }
+        );
+      }
       updateData.categoryId = body.categoryId;
     }
 
@@ -268,8 +277,12 @@ export async function PATCH(
       updateData.weight = weight;
     }
 
-    if (body.dimensions !== undefined) updateData.dimensions = body.dimensions;
-    if (body.material !== undefined) updateData.material = body.material;
+    if (body.dimensions !== undefined)
+      updateData.dimensions =
+        typeof body.dimensions === "string" ? body.dimensions : null;
+    if (body.material !== undefined)
+      updateData.material =
+        typeof body.material === "string" ? body.material : null;
 
     if (body.taxRate !== undefined) {
       const taxRate = parseFloat(body.taxRate);
@@ -282,9 +295,12 @@ export async function PATCH(
       updateData.taxRate = taxRate;
     }
 
-    if (body.metaTitle !== undefined) updateData.metaTitle = body.metaTitle;
+    if (body.metaTitle !== undefined)
+      updateData.metaTitle =
+        typeof body.metaTitle === "string" ? body.metaTitle : null;
     if (body.metaDescription !== undefined)
-      updateData.metaDescription = body.metaDescription;
+      updateData.metaDescription =
+        typeof body.metaDescription === "string" ? body.metaDescription : null;
 
     // Update product
     const updatedProduct = await prisma.product.update({
