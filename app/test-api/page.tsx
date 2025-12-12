@@ -108,8 +108,8 @@ export default function TestAPIPage() {
 
       const data = await res.json();
       addResult("POST /api/categories", res.status, data, "Categories");
-      if (data.id) {
-        setCreatedCategoryId(data.id);
+      if (data.data?.id) {
+        setCreatedCategoryId(data.data.id);
       }
     } catch (error) {
       addResult(

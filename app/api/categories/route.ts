@@ -277,6 +277,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate isActive if provided
+    if (body.isActive !== undefined) {
+      if (typeof body.isActive !== "boolean") {
+        return NextResponse.json(
+          { error: "isActive boolean olmalıdır." },
+          { status: 400 }
+        );
+      }
+    }
+
     // Generate unique slug
     const baseSlug = generateSlug(body.name);
     let slug = await generateUniqueSlug(baseSlug, async (slug) => {
