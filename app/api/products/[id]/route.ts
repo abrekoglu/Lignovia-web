@@ -264,8 +264,27 @@ export async function PATCH(
       updateData.categoryId = body.categoryId;
     }
 
-    if (body.isActive !== undefined) updateData.isActive = body.isActive;
-    if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
+    // Validate isActive if provided
+    if (body.isActive !== undefined) {
+      if (typeof body.isActive !== "boolean") {
+        return NextResponse.json(
+          { error: "isActive boolean olmalıdır." },
+          { status: 400 }
+        );
+      }
+      updateData.isActive = body.isActive;
+    }
+
+    // Validate isFeatured if provided
+    if (body.isFeatured !== undefined) {
+      if (typeof body.isFeatured !== "boolean") {
+        return NextResponse.json(
+          { error: "isFeatured boolean olmalıdır." },
+          { status: 400 }
+        );
+      }
+      updateData.isFeatured = body.isFeatured;
+    }
 
     if (body.sku !== undefined) {
       // Normalize empty string to null (consistent with POST endpoint)

@@ -366,6 +366,26 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate isActive if provided
+    if (body.isActive !== undefined) {
+      if (typeof body.isActive !== "boolean") {
+        return NextResponse.json(
+          { error: "isActive boolean olmalıdır." },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate isFeatured if provided
+    if (body.isFeatured !== undefined) {
+      if (typeof body.isFeatured !== "boolean") {
+        return NextResponse.json(
+          { error: "isFeatured boolean olmalıdır." },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create product with retry mechanism for slug race condition
     let product;
     let retryCount = 0;
@@ -413,8 +433,18 @@ export async function POST(request: NextRequest) {
                 ? parseInt(body.stock, 10)
                 : 0,
             categoryId: body.categoryId,
-            isActive: body.isActive !== undefined ? body.isActive : true,
-            isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,
+            isActive:
+              body.isActive !== undefined
+                ? typeof body.isActive === "boolean"
+                  ? body.isActive
+                  : true
+                : true,
+            isFeatured:
+              body.isFeatured !== undefined
+                ? typeof body.isFeatured === "boolean"
+                  ? body.isFeatured
+                  : false
+                : false,
             sku: normalizedSku,
             weight:
               body.weight !== undefined && body.weight !== null
@@ -518,9 +548,18 @@ export async function POST(request: NextRequest) {
                       ? parseInt(body.stock, 10)
                       : 0,
                   categoryId: body.categoryId,
-                  isActive: body.isActive !== undefined ? body.isActive : true,
+                  isActive:
+                    body.isActive !== undefined
+                      ? typeof body.isActive === "boolean"
+                        ? body.isActive
+                        : true
+                      : true,
                   isFeatured:
-                    body.isFeatured !== undefined ? body.isFeatured : false,
+                    body.isFeatured !== undefined
+                      ? typeof body.isFeatured === "boolean"
+                        ? body.isFeatured
+                        : false
+                      : false,
                   sku: normalizedSku,
                   weight:
                     body.weight !== undefined && body.weight !== null
@@ -624,9 +663,17 @@ export async function POST(request: NextRequest) {
                         : 0,
                     categoryId: body.categoryId,
                     isActive:
-                      body.isActive !== undefined ? body.isActive : true,
+                      body.isActive !== undefined
+                        ? typeof body.isActive === "boolean"
+                          ? body.isActive
+                          : true
+                        : true,
                     isFeatured:
-                      body.isFeatured !== undefined ? body.isFeatured : false,
+                      body.isFeatured !== undefined
+                        ? typeof body.isFeatured === "boolean"
+                          ? body.isFeatured
+                          : false
+                        : false,
                     sku: normalizedSku,
                     weight:
                       body.weight !== undefined && body.weight !== null

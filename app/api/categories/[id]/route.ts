@@ -62,7 +62,10 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(category);
+    return NextResponse.json({
+      success: true,
+      data: category,
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Get category error:", error);
@@ -335,7 +338,11 @@ export async function PATCH(
       }
     }
 
-    return NextResponse.json(updatedCategory);
+    return NextResponse.json({
+      success: true,
+      message: "Kategori başarıyla güncellendi.",
+      data: updatedCategory,
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Update category error:", error);

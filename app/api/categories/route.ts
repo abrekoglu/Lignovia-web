@@ -182,14 +182,15 @@ export async function GET(request: NextRequest) {
     const totalPages = Math.ceil(total / finalLimit);
 
     return NextResponse.json({
+      success: true,
       data: categories,
       pagination: {
         page,
         limit: finalLimit,
         total,
         totalPages,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
       },
     });
   } catch (error) {
@@ -434,7 +435,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(category, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Kategori başarıyla oluşturuldu.",
+        data: category,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Create category error:", error);
