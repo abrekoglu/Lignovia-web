@@ -297,6 +297,60 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate optional numeric fields (consistent with PATCH endpoint)
+    if (body.priceUsd !== undefined && body.priceUsd !== null) {
+      const priceUsd = parseFloat(body.priceUsd);
+      if (isNaN(priceUsd) || priceUsd < 0) {
+        return NextResponse.json(
+          { error: "USD fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.priceEur !== undefined && body.priceEur !== null) {
+      const priceEur = parseFloat(body.priceEur);
+      if (isNaN(priceEur) || priceEur < 0) {
+        return NextResponse.json(
+          { error: "EUR fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.comparePrice !== undefined && body.comparePrice !== null) {
+      const comparePrice = parseFloat(body.comparePrice);
+      if (isNaN(comparePrice) || comparePrice < 0) {
+        return NextResponse.json(
+          {
+            error:
+              "Karşılaştırma fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.weight !== undefined && body.weight !== null) {
+      const weight = parseFloat(body.weight);
+      if (isNaN(weight) || weight < 0) {
+        return NextResponse.json(
+          { error: "Ağırlık geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.taxRate !== undefined && body.taxRate !== null) {
+      const taxRate = parseFloat(body.taxRate);
+      if (isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
+        return NextResponse.json(
+          { error: "KDV oranı 0-100 arasında geçerli bir sayı olmalıdır." },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create product
     const product = await prisma.product.create({
       data: {
@@ -306,9 +360,18 @@ export async function POST(request: NextRequest) {
         description: body.description || null,
         descriptionEn: body.descriptionEn || null,
         price,
-        priceUsd: body.priceUsd ? parseFloat(body.priceUsd) : null,
-        priceEur: body.priceEur ? parseFloat(body.priceEur) : null,
-        comparePrice: body.comparePrice ? parseFloat(body.comparePrice) : null,
+        priceUsd:
+          body.priceUsd !== undefined && body.priceUsd !== null
+            ? parseFloat(body.priceUsd)
+            : null,
+        priceEur:
+          body.priceEur !== undefined && body.priceEur !== null
+            ? parseFloat(body.priceEur)
+            : null,
+        comparePrice:
+          body.comparePrice !== undefined && body.comparePrice !== null
+            ? parseFloat(body.comparePrice)
+            : null,
         stock:
           body.stock !== undefined && body.stock !== null
             ? parseInt(body.stock, 10)
@@ -317,10 +380,16 @@ export async function POST(request: NextRequest) {
         isActive: body.isActive !== undefined ? body.isActive : true,
         isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,
         sku: normalizedSku,
-        weight: body.weight ? parseFloat(body.weight) : null,
+        weight:
+          body.weight !== undefined && body.weight !== null
+            ? parseFloat(body.weight)
+            : null,
         dimensions: body.dimensions || null,
         material: body.material || null,
-        taxRate: body.taxRate ? parseFloat(body.taxRate) : 20,
+        taxRate:
+          body.taxRate !== undefined && body.taxRate !== null
+            ? parseFloat(body.taxRate)
+            : 20,
         metaTitle: body.metaTitle || null,
         metaDescription: body.metaDescription || null,
       },

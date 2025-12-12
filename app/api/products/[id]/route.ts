@@ -239,7 +239,7 @@ export async function PATCH(
       // Validate SKU is a string if provided
       const normalizedSku =
         typeof body.sku === "string" && body.sku.trim() !== ""
-          ? body.sku
+          ? body.sku.trim()
           : null;
 
       // Check SKU uniqueness if provided (and different from current)
