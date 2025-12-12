@@ -1163,6 +1163,66 @@ export default function TestAPIPage() {
     }
   };
 
+  // Test null values for optional numeric fields in PATCH
+  const testPatchNullNumericFields = async () => {
+    if (!productId) {
+      addResult(
+        "PATCH /api/products/[id] (Null Numeric Fields)",
+        0,
+        { error: "Önce bir ürün oluşturun! (POST Product butonuna tıklayın)" },
+        "Products"
+      );
+      return;
+    }
+
+    setIsLoading("patch-null-numeric");
+    try {
+      const res = await fetch(`/api/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceUsd: null,
+          priceEur: null,
+          comparePrice: null,
+          weight: null,
+          taxRate: null,
+        }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "PATCH /api/products/[id] (Null Numeric Fields)",
+        res.status,
+        {
+          ...data,
+          note:
+            res.status === 200
+              ? "✅ Correct: Null values accepted and fields set to null (consistent with POST)"
+              : `❌ Wrong: Expected 200, got ${res.status}. Null values should be accepted.`,
+          expectedStatus: 200,
+          actualStatus: res.status,
+          fieldsSetToNull: {
+            priceUsd: data.data?.priceUsd === null,
+            priceEur: data.data?.priceEur === null,
+            comparePrice: data.data?.comparePrice === null,
+            weight: data.data?.weight === null,
+            taxRate: data.data?.taxRate === null,
+          },
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "PATCH /api/products/[id] (Null Numeric Fields)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -1787,6 +1847,13 @@ export default function TestAPIPage() {
                     "non-admin-access",
                     false,
                     "Should return 401/403"
+                  )}
+                  {renderTestButton(
+                    "Null Numeric Fields",
+                    testPatchNullNumericFields,
+                    "patch-null-numeric",
+                    false,
+                    productId ? "Should accept null" : "Önce ürün oluştur"
                   )}
                 </div>
               </div>

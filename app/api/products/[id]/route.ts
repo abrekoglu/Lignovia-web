@@ -173,39 +173,55 @@ export async function PATCH(
     }
 
     if (body.priceUsd !== undefined) {
-      const priceUsd = parseFloat(body.priceUsd);
-      if (isNaN(priceUsd) || priceUsd < 0) {
-        return NextResponse.json(
-          { error: "USD fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
-          { status: 400 }
-        );
+      if (body.priceUsd === null) {
+        updateData.priceUsd = null;
+      } else {
+        const priceUsd = parseFloat(body.priceUsd);
+        if (isNaN(priceUsd) || priceUsd < 0) {
+          return NextResponse.json(
+            {
+              error: "USD fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
+            },
+            { status: 400 }
+          );
+        }
+        updateData.priceUsd = priceUsd;
       }
-      updateData.priceUsd = priceUsd;
     }
 
     if (body.priceEur !== undefined) {
-      const priceEur = parseFloat(body.priceEur);
-      if (isNaN(priceEur) || priceEur < 0) {
-        return NextResponse.json(
-          { error: "EUR fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
-          { status: 400 }
-        );
+      if (body.priceEur === null) {
+        updateData.priceEur = null;
+      } else {
+        const priceEur = parseFloat(body.priceEur);
+        if (isNaN(priceEur) || priceEur < 0) {
+          return NextResponse.json(
+            {
+              error: "EUR fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
+            },
+            { status: 400 }
+          );
+        }
+        updateData.priceEur = priceEur;
       }
-      updateData.priceEur = priceEur;
     }
 
     if (body.comparePrice !== undefined) {
-      const comparePrice = parseFloat(body.comparePrice);
-      if (isNaN(comparePrice) || comparePrice < 0) {
-        return NextResponse.json(
-          {
-            error:
-              "Karşılaştırma fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
-          },
-          { status: 400 }
-        );
+      if (body.comparePrice === null) {
+        updateData.comparePrice = null;
+      } else {
+        const comparePrice = parseFloat(body.comparePrice);
+        if (isNaN(comparePrice) || comparePrice < 0) {
+          return NextResponse.json(
+            {
+              error:
+                "Karşılaştırma fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
+            },
+            { status: 400 }
+          );
+        }
+        updateData.comparePrice = comparePrice;
       }
-      updateData.comparePrice = comparePrice;
     }
 
     if (body.stock !== undefined) {
@@ -275,14 +291,18 @@ export async function PATCH(
     }
 
     if (body.weight !== undefined) {
-      const weight = parseFloat(body.weight);
-      if (isNaN(weight) || weight < 0) {
-        return NextResponse.json(
-          { error: "Ağırlık geçerli bir sayı olmalıdır (0 veya pozitif)." },
-          { status: 400 }
-        );
+      if (body.weight === null) {
+        updateData.weight = null;
+      } else {
+        const weight = parseFloat(body.weight);
+        if (isNaN(weight) || weight < 0) {
+          return NextResponse.json(
+            { error: "Ağırlık geçerli bir sayı olmalıdır (0 veya pozitif)." },
+            { status: 400 }
+          );
+        }
+        updateData.weight = weight;
       }
-      updateData.weight = weight;
     }
 
     if (body.dimensions !== undefined)
@@ -293,14 +313,18 @@ export async function PATCH(
         typeof body.material === "string" ? body.material : null;
 
     if (body.taxRate !== undefined) {
-      const taxRate = parseFloat(body.taxRate);
-      if (isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
-        return NextResponse.json(
-          { error: "KDV oranı 0-100 arasında geçerli bir sayı olmalıdır." },
-          { status: 400 }
-        );
+      if (body.taxRate === null) {
+        updateData.taxRate = null;
+      } else {
+        const taxRate = parseFloat(body.taxRate);
+        if (isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
+          return NextResponse.json(
+            { error: "KDV oranı 0-100 arasında geçerli bir sayı olmalıdır." },
+            { status: 400 }
+          );
+        }
+        updateData.taxRate = taxRate;
       }
-      updateData.taxRate = taxRate;
     }
 
     if (body.metaTitle !== undefined)
