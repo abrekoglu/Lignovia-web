@@ -43,10 +43,12 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ### Faz 2 Hedefleri
 
-- [ ] NextAuth.js authentication sistemi çalışıyor
-- [ ] Tüm temel API endpoints çalışıyor
+- [x] NextAuth.js authentication sistemi çalışıyor ✅
+- [x] Product CRUD API endpoints çalışıyor ✅
+- [ ] Category CRUD API endpoints çalışıyor
+- [ ] User CRUD API endpoints çalışıyor
 - [ ] Rate limiting ve security middleware aktif
-- [ ] Email/SMS utility fonksiyonları hazır
+- [x] Email utility fonksiyonları hazır ✅
 
 ### Faz 3 Hedefleri
 
@@ -181,19 +183,19 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 - [x] Index'lerin eklenmesi (performance) ✅
 - [ ] Migration dosyalarının oluşturulması (production için)
 
-### 2.2 Authentication Sistemi
+### 2.2 Authentication Sistemi ✅ TAMAMLANDI
 
-- [ ] NextAuth.js v5 kurulumu
-- [ ] Email/Password authentication
-- [ ] Google OAuth provider
-- [ ] Facebook OAuth provider (opsiyonel)
-- [ ] Apple Sign In provider (opsiyonel)
-- [ ] JWT token yapılandırması
-- [ ] Session management
-- [ ] Password hashing (bcrypt)
-- [ ] Email verification flow
-- [ ] Password reset flow (Email + SMS)
-- [ ] Two-Factor Authentication (2FA) setup
+- [x] NextAuth.js v5 kurulumu ✅
+- [x] Email/Password authentication ✅
+- [x] Google OAuth provider ✅
+- [ ] Facebook OAuth provider (opsiyonel - sonraya bırakıldı)
+- [ ] Apple Sign In provider (opsiyonel - sonraya bırakıldı)
+- [x] JWT token yapılandırması ✅
+- [x] Session management ✅
+- [x] Password hashing (bcrypt) ✅
+- [x] Email verification flow ✅
+- [x] Password reset flow (Email) ✅
+- [ ] Two-Factor Authentication (2FA) setup (sonraya bırakıldı)
   - [ ] Google Authenticator integration
   - [ ] SMS-based 2FA
   - [ ] Backup codes
@@ -206,12 +208,12 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
   - [ ] GET /api/users/me
   - [ ] PUT /api/users/me
   - [ ] POST /api/users/change-password
-- [ ] Product API routes
-  - [ ] GET /api/products (list, search, filter)
-  - [ ] GET /api/products/[id]
-  - [ ] POST /api/products (admin)
-  - [ ] PUT /api/products/[id] (admin)
-  - [ ] DELETE /api/products/[id] (admin)
+- [x] Product API routes ✅
+  - [x] GET /api/products (list, search, filter) ✅
+  - [x] GET /api/products/[id] ✅
+  - [x] POST /api/products (admin) ✅
+  - [x] PATCH /api/products/[id] (admin) ✅
+  - [x] DELETE /api/products/[id] (admin, soft delete) ✅
 - [ ] Category API routes
   - [ ] GET /api/categories (hierarchical)
   - [ ] POST /api/categories (admin)
@@ -234,8 +236,8 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ### 2.4 Middleware ve Security
 
-- [ ] Authentication middleware
-- [ ] Authorization middleware (Admin check)
+- [x] Authentication middleware ✅
+- [x] Authorization middleware (Admin check) ✅
 - [ ] Rate limiting middleware
 - [ ] Input validation (Zod schemas)
 - [ ] Error handling middleware
@@ -244,11 +246,11 @@ Bu doküman, LIGNOVIA e-ticaret platformunun adım adım geliştirme planını i
 
 ### 2.5 Utility Functions
 
-- [ ] Email utility (Resend)
+- [x] Email utility (Resend) ✅
 - [ ] SMS utility (SMS Gateway)
-- [ ] Image upload utility (Cloudinary)
+- [x] Image upload utility (Cloudinary) ✅
 - [ ] Currency conversion utility
-- [ ] Slug generation utility
+- [x] Slug generation utility ✅
 - [ ] Date formatting utility
 - [ ] KDV calculation utility
 - [ ] Invoice generation utility (PDF)

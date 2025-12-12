@@ -1,0 +1,715 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import {
+  requireAdmin,
+  forbiddenResponse,
+  unauthorizedResponse,
+} from "@/lib/api-helpers";
+import { generateSlug, generateUniqueSlug } from "@/lib/utils/slug";
+
+// GET /api/products - Get product list with filtering, pagination, and search
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
+    const categoryId = searchParams.get("categoryId");
+    const search = searchParams.get("search");
+    const isFeatured = searchParams.get("featured") === "true";
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+    const sortByParam = searchParams.get("sortBy");
+    const sortOrderParam = searchParams.get("sortOrder");
+
+    // Whitelist of allowed sort fields
+    const allowedSortFields = [
+      "createdAt",
+      "updatedAt",
+      "price",
+      "name",
+      "stock",
+      "isFeatured",
+    ];
+
+    // Validate sortBy (if provided)
+    if (sortByParam && !allowedSortFields.includes(sortByParam)) {
+      return NextResponse.json(
+        {
+          error: `Geçersiz sıralama alanı. İzin verilen alanlar: ${allowedSortFields.join(", ")}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Use validated sortBy or default
+    const sortBy =
+      sortByParam && allowedSortFields.includes(sortByParam)
+        ? sortByParam
+        : "createdAt";
+
+    // Validate sortOrder (if provided)
+    const allowedSortOrders = ["asc", "desc"];
+    if (
+      sortOrderParam &&
+      !allowedSortOrders.includes(sortOrderParam.toLowerCase())
+    ) {
+      return NextResponse.json(
+        {
+          error: `Geçersiz sıralama yönü. İzin verilen değerler: ${allowedSortOrders.join(", ")}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Use validated sortOrder or default
+    const sortOrder =
+      sortOrderParam && allowedSortOrders.includes(sortOrderParam.toLowerCase())
+        ? sortOrderParam.toLowerCase()
+        : "desc";
+
+    // Validate and parse page parameter
+    const page = pageParam ? parseInt(pageParam, 10) : 1;
+    if (isNaN(page) || page < 1) {
+      return NextResponse.json(
+        { error: "Page parametresi 1 veya daha büyük bir sayı olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    // Validate and parse limit parameter
+    const limit = limitParam ? parseInt(limitParam, 10) : 12;
+    if (isNaN(limit) || limit < 1) {
+      return NextResponse.json(
+        { error: "Limit parametresi 1 veya daha büyük bir sayı olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    // Set maximum limit to prevent excessive data retrieval
+    const maxLimit = 100;
+    const finalLimit = limit > maxLimit ? maxLimit : limit;
+
+    const skip = (page - 1) * finalLimit;
+
+    // Build where clause
+    const where: any = {
+      isActive: true,
+      deletedAt: null,
+    };
+
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+
+    if (isFeatured) {
+      where.isFeatured = true;
+    }
+
+    // Search should work with other filters (AND), not as an alternative (OR)
+    if (search) {
+      where.AND = [
+        ...(where.AND || []),
+        {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { description: { contains: search, mode: "insensitive" } },
+            { sku: { contains: search, mode: "insensitive" } },
+          ],
+        },
+      ];
+    }
+
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) {
+        const minPriceNum = parseFloat(minPrice);
+        if (!isNaN(minPriceNum)) {
+          where.price.gte = minPriceNum;
+        }
+      }
+      if (maxPrice) {
+        const maxPriceNum = parseFloat(maxPrice);
+        if (!isNaN(maxPriceNum)) {
+          where.price.lte = maxPriceNum;
+        }
+      }
+    }
+
+    // Build orderBy
+    const orderBy: any = {};
+    orderBy[sortBy] = sortOrder;
+
+    // Get products and total count
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        skip,
+        take: finalLimit,
+        orderBy,
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
+          },
+          images: {
+            select: {
+              id: true,
+              url: true,
+              altText: true,
+              order: true,
+            },
+            orderBy: {
+              order: "asc",
+            },
+            take: 1, // Only get first image for list view
+          },
+          _count: {
+            select: {
+              reviews: true,
+            },
+          },
+        },
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(total / finalLimit);
+
+    return NextResponse.json({
+      success: true,
+      data: products,
+      pagination: {
+        page,
+        limit: finalLimit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Get products error:", error);
+    return NextResponse.json(
+      { error: "Ürünler yüklenirken bir hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
+
+// POST /api/products - Create new product (Admin only)
+export async function POST(request: NextRequest) {
+  try {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.session) {
+      if (adminCheck.status === 401) {
+        return unauthorizedResponse();
+      }
+      return forbiddenResponse();
+    }
+
+    const body = await request.json();
+
+    // Validation
+    // Validate name is a string and not empty
+    if (typeof body.name !== "string" || body.name.trim() === "") {
+      return NextResponse.json(
+        { error: "Ürün adı gerekli ve string olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    // Validate name contains at least one alphanumeric character
+    // This prevents names with only special characters that would generate empty slugs
+    const nameHasAlphanumeric = /[a-zA-Z0-9]/.test(body.name.trim());
+    if (!nameHasAlphanumeric) {
+      return NextResponse.json(
+        { error: "Ürün adı en az bir harf veya rakam içermelidir." },
+        { status: 400 }
+      );
+    }
+
+    if (body.price === undefined || body.price === null) {
+      return NextResponse.json({ error: "Fiyat gerekli." }, { status: 400 });
+    }
+
+    // Validate price is a valid number (including 0)
+    const price = parseFloat(body.price);
+    if (isNaN(price) || price < 0) {
+      return NextResponse.json(
+        { error: "Fiyat geçerli bir sayı olmalıdır (0 veya pozitif)." },
+        { status: 400 }
+      );
+    }
+
+    // Validate stock if provided
+    if (body.stock !== undefined && body.stock !== null) {
+      const stock = parseInt(body.stock, 10);
+      if (isNaN(stock) || stock < 0) {
+        return NextResponse.json(
+          { error: "Stok geçerli bir tam sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate categoryId is a string and not empty
+    if (typeof body.categoryId !== "string" || body.categoryId.trim() === "") {
+      return NextResponse.json(
+        { error: "Kategori gerekli ve string olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    // Validate category exists, is active, and not deleted
+    const category = await prisma.category.findUnique({
+      where: { id: body.categoryId },
+    });
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Geçersiz kategori." },
+        { status: 400 }
+      );
+    }
+
+    if (!category.isActive || category.deletedAt) {
+      return NextResponse.json(
+        { error: "Kategori aktif değil veya silinmiş." },
+        { status: 400 }
+      );
+    }
+
+    // Generate unique slug
+    const baseSlug = generateSlug(body.name);
+    let slug = await generateUniqueSlug(baseSlug, async (slug) => {
+      const existing = await prisma.product.findUnique({
+        where: { slug },
+      });
+      return !existing;
+    });
+
+    // Check SKU uniqueness if provided
+    // Normalize empty string to null and validate SKU is a string
+    const normalizedSku =
+      typeof body.sku === "string" && body.sku.trim() !== ""
+        ? body.sku.trim()
+        : null;
+
+    if (normalizedSku) {
+      const existingSku = await prisma.product.findUnique({
+        where: { sku: normalizedSku },
+      });
+      if (existingSku) {
+        return NextResponse.json(
+          { error: "Bu SKU zaten kullanılıyor." },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate optional numeric fields (consistent with PATCH endpoint)
+    if (body.priceUsd !== undefined && body.priceUsd !== null) {
+      const priceUsd = parseFloat(body.priceUsd);
+      if (isNaN(priceUsd) || priceUsd < 0) {
+        return NextResponse.json(
+          { error: "USD fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.priceEur !== undefined && body.priceEur !== null) {
+      const priceEur = parseFloat(body.priceEur);
+      if (isNaN(priceEur) || priceEur < 0) {
+        return NextResponse.json(
+          { error: "EUR fiyatı geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.comparePrice !== undefined && body.comparePrice !== null) {
+      const comparePrice = parseFloat(body.comparePrice);
+      if (isNaN(comparePrice) || comparePrice < 0) {
+        return NextResponse.json(
+          {
+            error:
+              "Karşılaştırma fiyatı geçerli bir sayı olmalıdır (0 veya pozitif).",
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.weight !== undefined && body.weight !== null) {
+      const weight = parseFloat(body.weight);
+      if (isNaN(weight) || weight < 0) {
+        return NextResponse.json(
+          { error: "Ağırlık geçerli bir sayı olmalıdır (0 veya pozitif)." },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (body.taxRate !== undefined && body.taxRate !== null) {
+      const taxRate = parseFloat(body.taxRate);
+      if (isNaN(taxRate) || taxRate < 0 || taxRate > 100) {
+        return NextResponse.json(
+          { error: "KDV oranı 0-100 arasında geçerli bir sayı olmalıdır." },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Create product with retry mechanism for slug race condition
+    let product;
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    while (retryCount < maxRetries) {
+      try {
+        product = await prisma.product.create({
+          data: {
+            name: body.name,
+            nameEn:
+              body.nameEn !== undefined
+                ? typeof body.nameEn === "string"
+                  ? body.nameEn
+                  : null
+                : null,
+            slug,
+            description:
+              body.description !== undefined
+                ? typeof body.description === "string"
+                  ? body.description
+                  : null
+                : null,
+            descriptionEn:
+              body.descriptionEn !== undefined
+                ? typeof body.descriptionEn === "string"
+                  ? body.descriptionEn
+                  : null
+                : null,
+            price,
+            priceUsd:
+              body.priceUsd !== undefined && body.priceUsd !== null
+                ? parseFloat(body.priceUsd)
+                : null,
+            priceEur:
+              body.priceEur !== undefined && body.priceEur !== null
+                ? parseFloat(body.priceEur)
+                : null,
+            comparePrice:
+              body.comparePrice !== undefined && body.comparePrice !== null
+                ? parseFloat(body.comparePrice)
+                : null,
+            stock:
+              body.stock !== undefined && body.stock !== null
+                ? parseInt(body.stock, 10)
+                : 0,
+            categoryId: body.categoryId,
+            isActive: body.isActive !== undefined ? body.isActive : true,
+            isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,
+            sku: normalizedSku,
+            weight:
+              body.weight !== undefined && body.weight !== null
+                ? parseFloat(body.weight)
+                : null,
+            dimensions:
+              body.dimensions !== undefined
+                ? typeof body.dimensions === "string"
+                  ? body.dimensions
+                  : null
+                : null,
+            material:
+              body.material !== undefined
+                ? typeof body.material === "string"
+                  ? body.material
+                  : null
+                : null,
+            taxRate:
+              body.taxRate !== undefined && body.taxRate !== null
+                ? parseFloat(body.taxRate)
+                : 20,
+            metaTitle:
+              body.metaTitle !== undefined
+                ? typeof body.metaTitle === "string"
+                  ? body.metaTitle
+                  : null
+                : null,
+            metaDescription:
+              body.metaDescription !== undefined
+                ? typeof body.metaDescription === "string"
+                  ? body.metaDescription
+                  : null
+                : null,
+          },
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        });
+        break; // Success, exit retry loop
+      } catch (error: any) {
+        // Handle unique constraint violation (slug race condition)
+        if (error?.code === "P2002" && error?.meta?.target?.includes("slug")) {
+          retryCount++;
+          if (retryCount >= maxRetries) {
+            // Generate a new unique slug with timestamp to avoid further conflicts
+            slug = await generateUniqueSlug(
+              `${baseSlug}-${Date.now()}`,
+              async (newSlug) => {
+                const existing = await prisma.product.findUnique({
+                  where: { slug: newSlug },
+                });
+                return !existing;
+              }
+            );
+            // Final attempt with timestamp-based slug (wrapped in try-catch)
+            try {
+              product = await prisma.product.create({
+                data: {
+                  name: body.name,
+                  nameEn:
+                    body.nameEn !== undefined
+                      ? typeof body.nameEn === "string"
+                        ? body.nameEn
+                        : null
+                      : null,
+                  slug,
+                  description:
+                    body.description !== undefined
+                      ? typeof body.description === "string"
+                        ? body.description
+                        : null
+                      : null,
+                  descriptionEn:
+                    body.descriptionEn !== undefined
+                      ? typeof body.descriptionEn === "string"
+                        ? body.descriptionEn
+                        : null
+                      : null,
+                  price,
+                  priceUsd:
+                    body.priceUsd !== undefined && body.priceUsd !== null
+                      ? parseFloat(body.priceUsd)
+                      : null,
+                  priceEur:
+                    body.priceEur !== undefined && body.priceEur !== null
+                      ? parseFloat(body.priceEur)
+                      : null,
+                  comparePrice:
+                    body.comparePrice !== undefined &&
+                    body.comparePrice !== null
+                      ? parseFloat(body.comparePrice)
+                      : null,
+                  stock:
+                    body.stock !== undefined && body.stock !== null
+                      ? parseInt(body.stock, 10)
+                      : 0,
+                  categoryId: body.categoryId,
+                  isActive: body.isActive !== undefined ? body.isActive : true,
+                  isFeatured:
+                    body.isFeatured !== undefined ? body.isFeatured : false,
+                  sku: normalizedSku,
+                  weight:
+                    body.weight !== undefined && body.weight !== null
+                      ? parseFloat(body.weight)
+                      : null,
+                  dimensions:
+                    body.dimensions !== undefined
+                      ? typeof body.dimensions === "string"
+                        ? body.dimensions
+                        : null
+                      : null,
+                  material:
+                    body.material !== undefined
+                      ? typeof body.material === "string"
+                        ? body.material
+                        : null
+                      : null,
+                  taxRate:
+                    body.taxRate !== undefined && body.taxRate !== null
+                      ? parseFloat(body.taxRate)
+                      : 20,
+                  metaTitle:
+                    body.metaTitle !== undefined
+                      ? typeof body.metaTitle === "string"
+                        ? body.metaTitle
+                        : null
+                      : null,
+                  metaDescription:
+                    body.metaDescription !== undefined
+                      ? typeof body.metaDescription === "string"
+                        ? body.metaDescription
+                        : null
+                      : null,
+                },
+                include: {
+                  category: {
+                    select: {
+                      id: true,
+                      name: true,
+                      slug: true,
+                    },
+                  },
+                },
+              });
+              break; // Success
+            } catch (finalError: any) {
+              // If final attempt also fails with slug collision, generate another unique slug
+              if (
+                finalError?.code === "P2002" &&
+                finalError?.meta?.target?.includes("slug")
+              ) {
+                slug = await generateUniqueSlug(
+                  `${baseSlug}-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+                  async (newSlug) => {
+                    const existing = await prisma.product.findUnique({
+                      where: { slug: newSlug },
+                    });
+                    return !existing;
+                  }
+                );
+                // One more attempt with random suffix
+                product = await prisma.product.create({
+                  data: {
+                    name: body.name,
+                    nameEn:
+                      body.nameEn !== undefined
+                        ? typeof body.nameEn === "string"
+                          ? body.nameEn
+                          : null
+                        : null,
+                    slug,
+                    description:
+                      body.description !== undefined
+                        ? typeof body.description === "string"
+                          ? body.description
+                          : null
+                        : null,
+                    descriptionEn:
+                      body.descriptionEn !== undefined
+                        ? typeof body.descriptionEn === "string"
+                          ? body.descriptionEn
+                          : null
+                        : null,
+                    price,
+                    priceUsd:
+                      body.priceUsd !== undefined && body.priceUsd !== null
+                        ? parseFloat(body.priceUsd)
+                        : null,
+                    priceEur:
+                      body.priceEur !== undefined && body.priceEur !== null
+                        ? parseFloat(body.priceEur)
+                        : null,
+                    comparePrice:
+                      body.comparePrice !== undefined &&
+                      body.comparePrice !== null
+                        ? parseFloat(body.comparePrice)
+                        : null,
+                    stock:
+                      body.stock !== undefined && body.stock !== null
+                        ? parseInt(body.stock, 10)
+                        : 0,
+                    categoryId: body.categoryId,
+                    isActive:
+                      body.isActive !== undefined ? body.isActive : true,
+                    isFeatured:
+                      body.isFeatured !== undefined ? body.isFeatured : false,
+                    sku: normalizedSku,
+                    weight:
+                      body.weight !== undefined && body.weight !== null
+                        ? parseFloat(body.weight)
+                        : null,
+                    dimensions:
+                      body.dimensions !== undefined
+                        ? typeof body.dimensions === "string"
+                          ? body.dimensions
+                          : null
+                        : null,
+                    material:
+                      body.material !== undefined
+                        ? typeof body.material === "string"
+                          ? body.material
+                          : null
+                        : null,
+                    taxRate:
+                      body.taxRate !== undefined && body.taxRate !== null
+                        ? parseFloat(body.taxRate)
+                        : 20,
+                    metaTitle:
+                      body.metaTitle !== undefined
+                        ? typeof body.metaTitle === "string"
+                          ? body.metaTitle
+                          : null
+                        : null,
+                    metaDescription:
+                      body.metaDescription !== undefined
+                        ? typeof body.metaDescription === "string"
+                          ? body.metaDescription
+                          : null
+                        : null,
+                  },
+                  include: {
+                    category: {
+                      select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                      },
+                    },
+                  },
+                });
+                break; // Success after final retry
+              } else {
+                // Re-throw non-slug constraint errors
+                throw finalError;
+              }
+            }
+          } else {
+            // Retry with a new slug
+            slug = await generateUniqueSlug(
+              `${baseSlug}-${retryCount}`,
+              async (newSlug) => {
+                const existing = await prisma.product.findUnique({
+                  where: { slug: newSlug },
+                });
+                return !existing;
+              }
+            );
+            continue; // Retry with new slug
+          }
+        } else {
+          // Re-throw non-slug constraint errors
+          throw error;
+        }
+      }
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Ürün başarıyla oluşturuldu.",
+        data: product,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Create product error:", error);
+    return NextResponse.json(
+      { error: "Ürün oluşturulurken bir hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
