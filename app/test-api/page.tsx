@@ -319,6 +319,59 @@ export default function TestAPIPage() {
     }
   };
 
+  const testInvalidPriceRange = async () => {
+    setIsLoading("invalid-price-range");
+    try {
+      // Test with invalid minPrice (non-numeric string)
+      const res1 = await fetch("/api/products?minPrice=abc&maxPrice=500");
+      const data1 = await res1.json();
+      addResult(
+        "GET /api/products (Invalid MinPrice)",
+        res1.status,
+        {
+          ...data1,
+          note: "Invalid minPrice should be ignored (not cause error)",
+        },
+        "Products"
+      );
+
+      // Test with invalid maxPrice (non-numeric string)
+      const res2 = await fetch("/api/products?minPrice=100&maxPrice=xyz");
+      const data2 = await res2.json();
+      addResult(
+        "GET /api/products (Invalid MaxPrice)",
+        res2.status,
+        {
+          ...data2,
+          note: "Invalid maxPrice should be ignored (not cause error)",
+        },
+        "Products"
+      );
+
+      // Test with both invalid
+      const res3 = await fetch("/api/products?minPrice=abc&maxPrice=xyz");
+      const data3 = await res3.json();
+      addResult(
+        "GET /api/products (Invalid Both Prices)",
+        res3.status,
+        {
+          ...data3,
+          note: "Both invalid prices should be ignored",
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Invalid Price Range)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   const testPatchInvalidPrice = async () => {
     if (!productId) {
       addResult(
@@ -1376,6 +1429,13 @@ export default function TestAPIPage() {
                   "invalid-sortorder",
                   false,
                   "Should return 400"
+                )}
+                {renderTestButton(
+                  "Invalid Price Range",
+                  testInvalidPriceRange,
+                  "invalid-price-range",
+                  false,
+                  "Invalid prices should be ignored"
                 )}
                 {renderTestButton(
                   "PATCH Invalid Price",
