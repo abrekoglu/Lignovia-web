@@ -16,6 +16,7 @@ interface TestResult {
 export default function TestAPIPage() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [productId, setProductId] = useState("");
+  const [createdCategoryId, setCreatedCategoryId] = useState("");
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [expandedResults, setExpandedResults] = useState<Set<number>>(
     new Set()
@@ -49,6 +50,7 @@ export default function TestAPIPage() {
     setResults([]);
     setExpandedResults(new Set());
     setProductId("");
+    setCreatedCategoryId("");
   };
 
   const addResult = (
@@ -65,6 +67,143 @@ export default function TestAPIPage() {
       category,
     };
     setResults((prev) => [newResult, ...prev]);
+  };
+
+  // ============================================
+  // CATEGORY APIs
+  // ============================================
+
+  const testGetCategories = async () => {
+    setIsLoading("get-categories");
+    try {
+      const res = await fetch("/api/categories?page=1&limit=10");
+      const data = await res.json();
+      addResult("GET /api/categories", res.status, data, "Categories");
+    } catch (error) {
+      addResult(
+        "GET /api/categories",
+        0,
+        { error: String(error) },
+        "Categories"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testCreateCategory = async () => {
+    setIsLoading("create-category");
+    try {
+      const categoryData = {
+        name: `Test Kategori ${Date.now()}`,
+        description: "Test kategori açıklaması",
+        order: 0,
+      };
+
+      const res = await fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(categoryData),
+      });
+
+      const data = await res.json();
+      addResult("POST /api/categories", res.status, data, "Categories");
+      if (data.id) {
+        setCreatedCategoryId(data.id);
+      }
+    } catch (error) {
+      addResult(
+        "POST /api/categories",
+        0,
+        { error: String(error) },
+        "Categories"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testGetCategory = async () => {
+    if (!createdCategoryId) {
+      alert("Önce bir kategori oluşturun!");
+      return;
+    }
+
+    setIsLoading("get-category");
+    try {
+      const res = await fetch(`/api/categories/${createdCategoryId}`);
+      const data = await res.json();
+      addResult("GET /api/categories/[id]", res.status, data, "Categories");
+    } catch (error) {
+      addResult(
+        "GET /api/categories/[id]",
+        0,
+        { error: String(error) },
+        "Categories"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testUpdateCategory = async () => {
+    if (!createdCategoryId) {
+      alert("Önce bir kategori oluşturun!");
+      return;
+    }
+
+    setIsLoading("update-category");
+    try {
+      const res = await fetch(`/api/categories/${createdCategoryId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `Güncellenmiş Kategori ${Date.now()}`,
+          description: "Güncellenmiş açıklama",
+        }),
+      });
+
+      const data = await res.json();
+      addResult("PATCH /api/categories/[id]", res.status, data, "Categories");
+    } catch (error) {
+      addResult(
+        "PATCH /api/categories/[id]",
+        0,
+        { error: String(error) },
+        "Categories"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testDeleteCategory = async () => {
+    if (!createdCategoryId) {
+      alert("Önce bir kategori oluşturun!");
+      return;
+    }
+
+    setIsLoading("delete-category");
+    try {
+      const res = await fetch(`/api/categories/${createdCategoryId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      addResult("DELETE /api/categories/[id]", res.status, data, "Categories");
+      if (res.status === 200) {
+        setCreatedCategoryId("");
+      }
+    } catch (error) {
+      addResult(
+        "DELETE /api/categories/[id]",
+        0,
+        { error: String(error) },
+        "Categories"
+      );
+    } finally {
+      setIsLoading(null);
+    }
   };
 
   // ============================================
@@ -1470,6 +1609,8 @@ export default function TestAPIPage() {
         return "border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/10";
       case "External Services":
         return "border-orange-200 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-900/10";
+      case "Categories":
+        return "border-teal-200 bg-teal-50/50 dark:border-teal-800 dark:bg-teal-900/10";
       default:
         return "border-gray-200 bg-gray-50/50 dark:border-gray-800 dark:bg-gray-900/10";
     }
@@ -1563,6 +1704,59 @@ export default function TestAPIPage() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* CATEGORY APIs */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="h-1 w-1 rounded-full bg-teal-500"></div>
+              <h3 className="font-semibold">📁 Category APIs</h3>
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {renderTestButton(
+                "GET Categories",
+                testGetCategories,
+                "get-categories",
+                false,
+                "List"
+              )}
+              {renderTestButton(
+                "POST Category",
+                testCreateCategory,
+                "create-category",
+                false,
+                "Admin"
+              )}
+              {renderTestButton(
+                "GET Category",
+                testGetCategory,
+                "get-category",
+                !createdCategoryId,
+                "Detail"
+              )}
+              {renderTestButton(
+                "PATCH Category",
+                testUpdateCategory,
+                "update-category",
+                !createdCategoryId,
+                "Admin"
+              )}
+              {renderTestButton(
+                "DELETE Category",
+                testDeleteCategory,
+                "delete-category",
+                !createdCategoryId,
+                "Admin"
+              )}
+            </div>
+            {createdCategoryId && (
+              <div className="rounded-md bg-teal-50 p-2 text-xs text-teal-600 dark:bg-teal-900/20 dark:text-teal-400">
+                <strong>Created Category ID:</strong>{" "}
+                <code className="rounded bg-teal-100 px-1.5 py-0.5 dark:bg-teal-900/40">
+                  {createdCategoryId}
+                </code>
+              </div>
+            )}
           </div>
 
           {/* PRODUCT APIs */}
