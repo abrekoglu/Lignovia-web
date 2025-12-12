@@ -479,7 +479,7 @@ export async function POST(request: NextRequest) {
             try {
               product = await prisma.product.create({
                 data: {
-                  name: body.name,
+                  name: trimmedName,
                   nameEn:
                     body.nameEn !== undefined
                       ? typeof body.nameEn === "string"
@@ -584,7 +584,7 @@ export async function POST(request: NextRequest) {
                 // One more attempt with random suffix
                 product = await prisma.product.create({
                   data: {
-                    name: body.name,
+                    name: trimmedName,
                     nameEn:
                       body.nameEn !== undefined
                         ? typeof body.nameEn === "string"
