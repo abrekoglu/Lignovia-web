@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, forbiddenResponse } from "@/lib/api-helpers";
+import {
+  requireAdmin,
+  forbiddenResponse,
+  unauthorizedResponse,
+} from "@/lib/api-helpers";
 
 // GET /api/products/[id] - Get product by ID or slug
 export async function GET(
@@ -89,10 +93,14 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await requireAdmin();
-    if (!session) {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.session) {
+      if (adminCheck.status === 401) {
+        return unauthorizedResponse();
+      }
       return forbiddenResponse();
     }
+    const session = adminCheck.session;
 
     const { id } = params;
     const body = await request.json();
@@ -302,31 +310,108 @@ export async function PATCH(
       updateData.metaDescription =
         typeof body.metaDescription === "string" ? body.metaDescription : null;
 
-    // Update product
-    const updatedProduct = await prisma.product.update({
-      where: { id },
-      data: updateData,
-      include: {
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
+    // Update product with retry mechanism for slug race condition
+    let updatedProduct;
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    while (retryCount < maxRetries) {
+      try {
+        updatedProduct = await prisma.product.update({
+          where: { id },
+          data: updateData,
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+            images: {
+              select: {
+                id: true,
+                url: true,
+                altText: true,
+                order: true,
+              },
+              orderBy: {
+                order: "asc",
+              },
+            },
           },
-        },
-        images: {
-          select: {
-            id: true,
-            url: true,
-            altText: true,
-            order: true,
-          },
-          orderBy: {
-            order: "asc",
-          },
-        },
-      },
-    });
+        });
+        break; // Success, exit retry loop
+      } catch (error: any) {
+        // Handle unique constraint violation (slug race condition)
+        if (
+          error?.code === "P2002" &&
+          error?.meta?.target?.includes("slug") &&
+          updateData.slug
+        ) {
+          retryCount++;
+          if (retryCount >= maxRetries) {
+            // Generate a new unique slug with timestamp to avoid further conflicts
+            const { generateSlug } = await import("@/lib/utils/slug");
+            const baseSlug = generateSlug(body.name);
+            const { generateUniqueSlug } = await import("@/lib/utils/slug");
+            updateData.slug = await generateUniqueSlug(
+              `${baseSlug}-${Date.now()}`,
+              async (newSlug) => {
+                const existing = await prisma.product.findUnique({
+                  where: { slug: newSlug },
+                });
+                return !existing || existing.id === id;
+              }
+            );
+            // Final attempt with timestamp-based slug
+            updatedProduct = await prisma.product.update({
+              where: { id },
+              data: updateData,
+              include: {
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                  },
+                },
+                images: {
+                  select: {
+                    id: true,
+                    url: true,
+                    altText: true,
+                    order: true,
+                  },
+                  orderBy: {
+                    order: "asc",
+                  },
+                },
+              },
+            });
+            break;
+          } else {
+            // Retry with a new slug
+            const { generateSlug } = await import("@/lib/utils/slug");
+            const baseSlug = generateSlug(body.name);
+            const { generateUniqueSlug } = await import("@/lib/utils/slug");
+            updateData.slug = await generateUniqueSlug(
+              `${baseSlug}-${retryCount}`,
+              async (newSlug) => {
+                const existing = await prisma.product.findUnique({
+                  where: { slug: newSlug },
+                });
+                return !existing || existing.id === id;
+              }
+            );
+            continue; // Retry with new slug
+          }
+        } else {
+          // Re-throw non-slug constraint errors
+          throw error;
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,
@@ -349,10 +434,14 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await requireAdmin();
-    if (!session) {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.session) {
+      if (adminCheck.status === 401) {
+        return unauthorizedResponse();
+      }
       return forbiddenResponse();
     }
+    const session = adminCheck.session;
 
     const { id } = params;
 

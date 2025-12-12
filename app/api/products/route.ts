@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAdmin, forbiddenResponse } from "@/lib/api-helpers";
+import {
+  requireAdmin,
+  forbiddenResponse,
+  unauthorizedResponse,
+} from "@/lib/api-helpers";
 import { generateSlug, generateUniqueSlug } from "@/lib/utils/slug";
 
 // GET /api/products - Get product list with filtering, pagination, and search
@@ -199,10 +203,14 @@ export async function GET(request: NextRequest) {
 // POST /api/products - Create new product (Admin only)
 export async function POST(request: NextRequest) {
   try {
-    const session = await requireAdmin();
-    if (!session) {
+    const adminCheck = await requireAdmin();
+    if (!adminCheck.session) {
+      if (adminCheck.status === 401) {
+        return unauthorizedResponse();
+      }
       return forbiddenResponse();
     }
+    const session = adminCheck.session;
 
     const body = await request.json();
 
@@ -278,7 +286,7 @@ export async function POST(request: NextRequest) {
 
     // Generate unique slug
     const baseSlug = generateSlug(body.name);
-    const slug = await generateUniqueSlug(baseSlug, async (slug) => {
+    let slug = await generateUniqueSlug(baseSlug, async (slug) => {
       const existing = await prisma.product.findUnique({
         where: { slug },
       });
@@ -358,93 +366,223 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create product
-    const product = await prisma.product.create({
-      data: {
-        name: body.name,
-        nameEn:
-          body.nameEn !== undefined
-            ? typeof body.nameEn === "string"
-              ? body.nameEn
-              : null
-            : null,
-        slug,
-        description:
-          body.description !== undefined
-            ? typeof body.description === "string"
-              ? body.description
-              : null
-            : null,
-        descriptionEn:
-          body.descriptionEn !== undefined
-            ? typeof body.descriptionEn === "string"
-              ? body.descriptionEn
-              : null
-            : null,
-        price,
-        priceUsd:
-          body.priceUsd !== undefined && body.priceUsd !== null
-            ? parseFloat(body.priceUsd)
-            : null,
-        priceEur:
-          body.priceEur !== undefined && body.priceEur !== null
-            ? parseFloat(body.priceEur)
-            : null,
-        comparePrice:
-          body.comparePrice !== undefined && body.comparePrice !== null
-            ? parseFloat(body.comparePrice)
-            : null,
-        stock:
-          body.stock !== undefined && body.stock !== null
-            ? parseInt(body.stock, 10)
-            : 0,
-        categoryId: body.categoryId,
-        isActive: body.isActive !== undefined ? body.isActive : true,
-        isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,
-        sku: normalizedSku,
-        weight:
-          body.weight !== undefined && body.weight !== null
-            ? parseFloat(body.weight)
-            : null,
-        dimensions:
-          body.dimensions !== undefined
-            ? typeof body.dimensions === "string"
-              ? body.dimensions
-              : null
-            : null,
-        material:
-          body.material !== undefined
-            ? typeof body.material === "string"
-              ? body.material
-              : null
-            : null,
-        taxRate:
-          body.taxRate !== undefined && body.taxRate !== null
-            ? parseFloat(body.taxRate)
-            : 20,
-        metaTitle:
-          body.metaTitle !== undefined
-            ? typeof body.metaTitle === "string"
-              ? body.metaTitle
-              : null
-            : null,
-        metaDescription:
-          body.metaDescription !== undefined
-            ? typeof body.metaDescription === "string"
-              ? body.metaDescription
-              : null
-            : null,
-      },
-      include: {
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
+    // Create product with retry mechanism for slug race condition
+    let product;
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    while (retryCount < maxRetries) {
+      try {
+        product = await prisma.product.create({
+          data: {
+            name: body.name,
+            nameEn:
+              body.nameEn !== undefined
+                ? typeof body.nameEn === "string"
+                  ? body.nameEn
+                  : null
+                : null,
+            slug,
+            description:
+              body.description !== undefined
+                ? typeof body.description === "string"
+                  ? body.description
+                  : null
+                : null,
+            descriptionEn:
+              body.descriptionEn !== undefined
+                ? typeof body.descriptionEn === "string"
+                  ? body.descriptionEn
+                  : null
+                : null,
+            price,
+            priceUsd:
+              body.priceUsd !== undefined && body.priceUsd !== null
+                ? parseFloat(body.priceUsd)
+                : null,
+            priceEur:
+              body.priceEur !== undefined && body.priceEur !== null
+                ? parseFloat(body.priceEur)
+                : null,
+            comparePrice:
+              body.comparePrice !== undefined && body.comparePrice !== null
+                ? parseFloat(body.comparePrice)
+                : null,
+            stock:
+              body.stock !== undefined && body.stock !== null
+                ? parseInt(body.stock, 10)
+                : 0,
+            categoryId: body.categoryId,
+            isActive: body.isActive !== undefined ? body.isActive : true,
+            isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,
+            sku: normalizedSku,
+            weight:
+              body.weight !== undefined && body.weight !== null
+                ? parseFloat(body.weight)
+                : null,
+            dimensions:
+              body.dimensions !== undefined
+                ? typeof body.dimensions === "string"
+                  ? body.dimensions
+                  : null
+                : null,
+            material:
+              body.material !== undefined
+                ? typeof body.material === "string"
+                  ? body.material
+                  : null
+                : null,
+            taxRate:
+              body.taxRate !== undefined && body.taxRate !== null
+                ? parseFloat(body.taxRate)
+                : 20,
+            metaTitle:
+              body.metaTitle !== undefined
+                ? typeof body.metaTitle === "string"
+                  ? body.metaTitle
+                  : null
+                : null,
+            metaDescription:
+              body.metaDescription !== undefined
+                ? typeof body.metaDescription === "string"
+                  ? body.metaDescription
+                  : null
+                : null,
           },
-        },
-      },
-    });
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        });
+        break; // Success, exit retry loop
+      } catch (error: any) {
+        // Handle unique constraint violation (slug race condition)
+        if (error?.code === "P2002" && error?.meta?.target?.includes("slug")) {
+          retryCount++;
+          if (retryCount >= maxRetries) {
+            // Generate a new unique slug with timestamp to avoid further conflicts
+            slug = await generateUniqueSlug(
+              `${baseSlug}-${Date.now()}`,
+              async (newSlug) => {
+                const existing = await prisma.product.findUnique({
+                  where: { slug: newSlug },
+                });
+                return !existing;
+              }
+            );
+            // Final attempt with timestamp-based slug
+            product = await prisma.product.create({
+              data: {
+                name: body.name,
+                nameEn:
+                  body.nameEn !== undefined
+                    ? typeof body.nameEn === "string"
+                      ? body.nameEn
+                      : null
+                    : null,
+                slug,
+                description:
+                  body.description !== undefined
+                    ? typeof body.description === "string"
+                      ? body.description
+                      : null
+                    : null,
+                descriptionEn:
+                  body.descriptionEn !== undefined
+                    ? typeof body.descriptionEn === "string"
+                      ? body.descriptionEn
+                      : null
+                    : null,
+                price,
+                priceUsd:
+                  body.priceUsd !== undefined && body.priceUsd !== null
+                    ? parseFloat(body.priceUsd)
+                    : null,
+                priceEur:
+                  body.priceEur !== undefined && body.priceEur !== null
+                    ? parseFloat(body.priceEur)
+                    : null,
+                comparePrice:
+                  body.comparePrice !== undefined && body.comparePrice !== null
+                    ? parseFloat(body.comparePrice)
+                    : null,
+                stock:
+                  body.stock !== undefined && body.stock !== null
+                    ? parseInt(body.stock, 10)
+                    : 0,
+                categoryId: body.categoryId,
+                isActive: body.isActive !== undefined ? body.isActive : true,
+                isFeatured:
+                  body.isFeatured !== undefined ? body.isFeatured : false,
+                sku: normalizedSku,
+                weight:
+                  body.weight !== undefined && body.weight !== null
+                    ? parseFloat(body.weight)
+                    : null,
+                dimensions:
+                  body.dimensions !== undefined
+                    ? typeof body.dimensions === "string"
+                      ? body.dimensions
+                      : null
+                    : null,
+                material:
+                  body.material !== undefined
+                    ? typeof body.material === "string"
+                      ? body.material
+                      : null
+                    : null,
+                taxRate:
+                  body.taxRate !== undefined && body.taxRate !== null
+                    ? parseFloat(body.taxRate)
+                    : 20,
+                metaTitle:
+                  body.metaTitle !== undefined
+                    ? typeof body.metaTitle === "string"
+                      ? body.metaTitle
+                      : null
+                    : null,
+                metaDescription:
+                  body.metaDescription !== undefined
+                    ? typeof body.metaDescription === "string"
+                      ? body.metaDescription
+                      : null
+                    : null,
+              },
+              include: {
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                  },
+                },
+              },
+            });
+            break;
+          } else {
+            // Retry with a new slug
+            slug = await generateUniqueSlug(
+              `${baseSlug}-${retryCount}`,
+              async (newSlug) => {
+                const existing = await prisma.product.findUnique({
+                  where: { slug: newSlug },
+                });
+                return !existing;
+              }
+            );
+            continue; // Retry with new slug
+          }
+        } else {
+          // Re-throw non-slug constraint errors
+          throw error;
+        }
+      }
+    }
 
     return NextResponse.json(
       {

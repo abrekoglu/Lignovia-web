@@ -15,17 +15,19 @@ export async function requireAuth() {
 
 /**
  * Check if the current user is an admin
- * Returns the session if admin, null otherwise
+ * Returns the session if admin, or an object with status code for error cases
  */
-export async function requireAdmin() {
+export async function requireAdmin(): Promise<
+  { session: any; status?: never } | { session: null; status: 401 | 403 }
+> {
   const session = await requireAuth();
   if (!session) {
-    return null;
+    return { session: null, status: 401 }; // Unauthenticated
   }
   if (session.user.role !== "ADMIN") {
-    return null;
+    return { session: null, status: 403 }; // Authenticated but not admin
   }
-  return session;
+  return { session };
 }
 
 /**
