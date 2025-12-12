@@ -994,6 +994,175 @@ export default function TestAPIPage() {
     }
   };
 
+  // Slug Race Condition Test
+  const testSlugRaceCondition = async () => {
+    setIsLoading("slug-race-condition");
+    try {
+      const baseName = `Race Test Product ${Date.now()}`;
+      // Create two products with the same name simultaneously to test race condition
+      const [res1, res2] = await Promise.all([
+        fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: baseName,
+            description: "Race condition test product 1",
+            price: 299.99,
+            categoryId,
+            stock: 10,
+            sku: `RACE-TEST-1-${Date.now()}`,
+          }),
+        }),
+        fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: baseName,
+            description: "Race condition test product 2",
+            price: 299.99,
+            categoryId,
+            stock: 10,
+            sku: `RACE-TEST-2-${Date.now()}`,
+          }),
+        }),
+      ]);
+
+      const data1 = await res1.json();
+      const data2 = await res2.json();
+
+      addResult(
+        "POST /api/products (Slug Race Condition)",
+        res1.status === 201 && res2.status === 201 ? 200 : 500,
+        {
+          product1: {
+            status: res1.status,
+            slug: data1.data?.slug,
+            id: data1.data?.id,
+          },
+          product2: {
+            status: res2.status,
+            slug: data2.data?.slug,
+            id: data2.data?.id,
+          },
+          note:
+            res1.status === 201 && res2.status === 201
+              ? "Both products created successfully with unique slugs (retry mechanism worked)"
+              : "One or both products failed - check if retry mechanism handled slug conflict",
+          slugsAreUnique:
+            data1.data?.slug !== data2.data?.slug &&
+            res1.status === 201 &&
+            res2.status === 201,
+        },
+        "Products"
+      );
+
+      // Set productId to the first created product if available
+      if (data1.data?.id) {
+        setProductId(data1.data.id);
+      }
+    } catch (error) {
+      addResult(
+        "POST /api/products (Slug Race Condition)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  // 401/403 Differentiation Tests
+  const testUnauthenticatedAccess = async () => {
+    setIsLoading("unauthenticated-access");
+    try {
+      // Try to create a product without authentication
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `Unauthenticated Test ${Date.now()}`,
+          description: "Should return 401",
+          price: 299.99,
+          categoryId,
+          stock: 10,
+        }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (Unauthenticated - Should be 401)",
+        res.status,
+        {
+          ...data,
+          note:
+            res.status === 401
+              ? "✅ Correct: Returns 401 Unauthorized for unauthenticated users"
+              : `❌ Wrong: Expected 401, got ${res.status}`,
+          expectedStatus: 401,
+          actualStatus: res.status,
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "POST /api/products (Unauthenticated)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testNonAdminAccess = async () => {
+    setIsLoading("non-admin-access");
+    try {
+      // Note: This test assumes a non-admin user is logged in
+      // In a real scenario, you'd need to login as a regular user first
+      // For now, we'll test that the endpoint checks for admin role
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `Non-Admin Test ${Date.now()}`,
+          description: "Should return 403 if authenticated but not admin",
+          price: 299.99,
+          categoryId,
+          stock: 10,
+        }),
+      });
+
+      const data = await res.json();
+      addResult(
+        "POST /api/products (Non-Admin - Should be 401 or 403)",
+        res.status,
+        {
+          ...data,
+          note:
+            res.status === 401
+              ? "Returns 401 (not authenticated) - Login as non-admin user to test 403"
+              : res.status === 403
+                ? "✅ Correct: Returns 403 Forbidden for authenticated non-admin users"
+                : `Unexpected status: ${res.status}`,
+          expectedStatus: "401 (unauthenticated) or 403 (non-admin)",
+          actualStatus: res.status,
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "POST /api/products (Non-Admin)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
   // ============================================
   // AUTHENTICATION APIs
   // ============================================
@@ -1499,6 +1668,27 @@ export default function TestAPIPage() {
                 </h4>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {renderTestButton(
+                    "Slug Race Condition",
+                    testSlugRaceCondition,
+                    "slug-race-condition",
+                    false,
+                    "Concurrent slug test"
+                  )}
+                  {renderTestButton(
+                    "Unauthenticated (401)",
+                    testUnauthenticatedAccess,
+                    "unauthenticated-access",
+                    false,
+                    "Should return 401"
+                  )}
+                  {renderTestButton(
+                    "Non-Admin (403)",
+                    testNonAdminAccess,
+                    "non-admin-access",
+                    false,
+                    "Should return 401/403"
+                  )}
+                  {renderTestButton(
                     "Invalid Price",
                     testPatchInvalidPrice,
                     "patch-invalid-price",
@@ -1567,6 +1757,36 @@ export default function TestAPIPage() {
                     "patch-sku-non-string",
                     false,
                     productId ? "Should normalize to null" : "Önce ürün oluştur"
+                  )}
+                </div>
+              </div>
+
+              {/* Race Condition & Auth Tests */}
+              <div className="rounded-md border border-orange-200 bg-orange-50/50 p-4 dark:border-orange-800 dark:bg-orange-900/10">
+                <h4 className="mb-3 text-sm font-semibold text-orange-800 dark:text-orange-300">
+                  🔄 Race Condition & Authorization Tests
+                </h4>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {renderTestButton(
+                    "Slug Race Condition",
+                    testSlugRaceCondition,
+                    "slug-race-condition",
+                    false,
+                    "Concurrent slug test"
+                  )}
+                  {renderTestButton(
+                    "Unauthenticated (401)",
+                    testUnauthenticatedAccess,
+                    "unauthenticated-access",
+                    false,
+                    "Should return 401"
+                  )}
+                  {renderTestButton(
+                    "Non-Admin (403)",
+                    testNonAdminAccess,
+                    "non-admin-access",
+                    false,
+                    "Should return 401/403"
                   )}
                 </div>
               </div>
