@@ -475,95 +475,208 @@ export async function POST(request: NextRequest) {
                 return !existing;
               }
             );
-            // Final attempt with timestamp-based slug
-            product = await prisma.product.create({
-              data: {
-                name: body.name,
-                nameEn:
-                  body.nameEn !== undefined
-                    ? typeof body.nameEn === "string"
-                      ? body.nameEn
-                      : null
-                    : null,
-                slug,
-                description:
-                  body.description !== undefined
-                    ? typeof body.description === "string"
-                      ? body.description
-                      : null
-                    : null,
-                descriptionEn:
-                  body.descriptionEn !== undefined
-                    ? typeof body.descriptionEn === "string"
-                      ? body.descriptionEn
-                      : null
-                    : null,
-                price,
-                priceUsd:
-                  body.priceUsd !== undefined && body.priceUsd !== null
-                    ? parseFloat(body.priceUsd)
-                    : null,
-                priceEur:
-                  body.priceEur !== undefined && body.priceEur !== null
-                    ? parseFloat(body.priceEur)
-                    : null,
-                comparePrice:
-                  body.comparePrice !== undefined && body.comparePrice !== null
-                    ? parseFloat(body.comparePrice)
-                    : null,
-                stock:
-                  body.stock !== undefined && body.stock !== null
-                    ? parseInt(body.stock, 10)
-                    : 0,
-                categoryId: body.categoryId,
-                isActive: body.isActive !== undefined ? body.isActive : true,
-                isFeatured:
-                  body.isFeatured !== undefined ? body.isFeatured : false,
-                sku: normalizedSku,
-                weight:
-                  body.weight !== undefined && body.weight !== null
-                    ? parseFloat(body.weight)
-                    : null,
-                dimensions:
-                  body.dimensions !== undefined
-                    ? typeof body.dimensions === "string"
-                      ? body.dimensions
-                      : null
-                    : null,
-                material:
-                  body.material !== undefined
-                    ? typeof body.material === "string"
-                      ? body.material
-                      : null
-                    : null,
-                taxRate:
-                  body.taxRate !== undefined && body.taxRate !== null
-                    ? parseFloat(body.taxRate)
-                    : 20,
-                metaTitle:
-                  body.metaTitle !== undefined
-                    ? typeof body.metaTitle === "string"
-                      ? body.metaTitle
-                      : null
-                    : null,
-                metaDescription:
-                  body.metaDescription !== undefined
-                    ? typeof body.metaDescription === "string"
-                      ? body.metaDescription
-                      : null
-                    : null,
-              },
-              include: {
-                category: {
-                  select: {
-                    id: true,
-                    name: true,
-                    slug: true,
+            // Final attempt with timestamp-based slug (wrapped in try-catch)
+            try {
+              product = await prisma.product.create({
+                data: {
+                  name: body.name,
+                  nameEn:
+                    body.nameEn !== undefined
+                      ? typeof body.nameEn === "string"
+                        ? body.nameEn
+                        : null
+                      : null,
+                  slug,
+                  description:
+                    body.description !== undefined
+                      ? typeof body.description === "string"
+                        ? body.description
+                        : null
+                      : null,
+                  descriptionEn:
+                    body.descriptionEn !== undefined
+                      ? typeof body.descriptionEn === "string"
+                        ? body.descriptionEn
+                        : null
+                      : null,
+                  price,
+                  priceUsd:
+                    body.priceUsd !== undefined && body.priceUsd !== null
+                      ? parseFloat(body.priceUsd)
+                      : null,
+                  priceEur:
+                    body.priceEur !== undefined && body.priceEur !== null
+                      ? parseFloat(body.priceEur)
+                      : null,
+                  comparePrice:
+                    body.comparePrice !== undefined &&
+                    body.comparePrice !== null
+                      ? parseFloat(body.comparePrice)
+                      : null,
+                  stock:
+                    body.stock !== undefined && body.stock !== null
+                      ? parseInt(body.stock, 10)
+                      : 0,
+                  categoryId: body.categoryId,
+                  isActive: body.isActive !== undefined ? body.isActive : true,
+                  isFeatured:
+                    body.isFeatured !== undefined ? body.isFeatured : false,
+                  sku: normalizedSku,
+                  weight:
+                    body.weight !== undefined && body.weight !== null
+                      ? parseFloat(body.weight)
+                      : null,
+                  dimensions:
+                    body.dimensions !== undefined
+                      ? typeof body.dimensions === "string"
+                        ? body.dimensions
+                        : null
+                      : null,
+                  material:
+                    body.material !== undefined
+                      ? typeof body.material === "string"
+                        ? body.material
+                        : null
+                      : null,
+                  taxRate:
+                    body.taxRate !== undefined && body.taxRate !== null
+                      ? parseFloat(body.taxRate)
+                      : 20,
+                  metaTitle:
+                    body.metaTitle !== undefined
+                      ? typeof body.metaTitle === "string"
+                        ? body.metaTitle
+                        : null
+                      : null,
+                  metaDescription:
+                    body.metaDescription !== undefined
+                      ? typeof body.metaDescription === "string"
+                        ? body.metaDescription
+                        : null
+                      : null,
+                },
+                include: {
+                  category: {
+                    select: {
+                      id: true,
+                      name: true,
+                      slug: true,
+                    },
                   },
                 },
-              },
-            });
-            break;
+              });
+              break; // Success
+            } catch (finalError: any) {
+              // If final attempt also fails with slug collision, generate another unique slug
+              if (
+                finalError?.code === "P2002" &&
+                finalError?.meta?.target?.includes("slug")
+              ) {
+                slug = await generateUniqueSlug(
+                  `${baseSlug}-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+                  async (newSlug) => {
+                    const existing = await prisma.product.findUnique({
+                      where: { slug: newSlug },
+                    });
+                    return !existing;
+                  }
+                );
+                // One more attempt with random suffix
+                product = await prisma.product.create({
+                  data: {
+                    name: body.name,
+                    nameEn:
+                      body.nameEn !== undefined
+                        ? typeof body.nameEn === "string"
+                          ? body.nameEn
+                          : null
+                        : null,
+                    slug,
+                    description:
+                      body.description !== undefined
+                        ? typeof body.description === "string"
+                          ? body.description
+                          : null
+                        : null,
+                    descriptionEn:
+                      body.descriptionEn !== undefined
+                        ? typeof body.descriptionEn === "string"
+                          ? body.descriptionEn
+                          : null
+                        : null,
+                    price,
+                    priceUsd:
+                      body.priceUsd !== undefined && body.priceUsd !== null
+                        ? parseFloat(body.priceUsd)
+                        : null,
+                    priceEur:
+                      body.priceEur !== undefined && body.priceEur !== null
+                        ? parseFloat(body.priceEur)
+                        : null,
+                    comparePrice:
+                      body.comparePrice !== undefined &&
+                      body.comparePrice !== null
+                        ? parseFloat(body.comparePrice)
+                        : null,
+                    stock:
+                      body.stock !== undefined && body.stock !== null
+                        ? parseInt(body.stock, 10)
+                        : 0,
+                    categoryId: body.categoryId,
+                    isActive:
+                      body.isActive !== undefined ? body.isActive : true,
+                    isFeatured:
+                      body.isFeatured !== undefined ? body.isFeatured : false,
+                    sku: normalizedSku,
+                    weight:
+                      body.weight !== undefined && body.weight !== null
+                        ? parseFloat(body.weight)
+                        : null,
+                    dimensions:
+                      body.dimensions !== undefined
+                        ? typeof body.dimensions === "string"
+                          ? body.dimensions
+                          : null
+                        : null,
+                    material:
+                      body.material !== undefined
+                        ? typeof body.material === "string"
+                          ? body.material
+                          : null
+                        : null,
+                    taxRate:
+                      body.taxRate !== undefined && body.taxRate !== null
+                        ? parseFloat(body.taxRate)
+                        : 20,
+                    metaTitle:
+                      body.metaTitle !== undefined
+                        ? typeof body.metaTitle === "string"
+                          ? body.metaTitle
+                          : null
+                        : null,
+                    metaDescription:
+                      body.metaDescription !== undefined
+                        ? typeof body.metaDescription === "string"
+                          ? body.metaDescription
+                          : null
+                        : null,
+                  },
+                  include: {
+                    category: {
+                      select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                      },
+                    },
+                  },
+                });
+                break; // Success after final retry
+              } else {
+                // Re-throw non-slug constraint errors
+                throw finalError;
+              }
+            }
           } else {
             // Retry with a new slug
             slug = await generateUniqueSlug(

@@ -364,32 +364,79 @@ export async function PATCH(
                 return !existing || existing.id === id;
               }
             );
-            // Final attempt with timestamp-based slug
-            updatedProduct = await prisma.product.update({
-              where: { id },
-              data: updateData,
-              include: {
-                category: {
-                  select: {
-                    id: true,
-                    name: true,
-                    slug: true,
+            // Final attempt with timestamp-based slug (wrapped in try-catch)
+            try {
+              updatedProduct = await prisma.product.update({
+                where: { id },
+                data: updateData,
+                include: {
+                  category: {
+                    select: {
+                      id: true,
+                      name: true,
+                      slug: true,
+                    },
+                  },
+                  images: {
+                    select: {
+                      id: true,
+                      url: true,
+                      altText: true,
+                      order: true,
+                    },
+                    orderBy: {
+                      order: "asc",
+                    },
                   },
                 },
-                images: {
-                  select: {
-                    id: true,
-                    url: true,
-                    altText: true,
-                    order: true,
+              });
+              break; // Success
+            } catch (finalError: any) {
+              // If final attempt also fails with slug collision, generate another unique slug
+              if (
+                finalError?.code === "P2002" &&
+                finalError?.meta?.target?.includes("slug")
+              ) {
+                updateData.slug = await generateUniqueSlug(
+                  `${baseSlug}-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+                  async (newSlug) => {
+                    const existing = await prisma.product.findUnique({
+                      where: { slug: newSlug },
+                    });
+                    return !existing || existing.id === id;
+                  }
+                );
+                // One more attempt with random suffix
+                updatedProduct = await prisma.product.update({
+                  where: { id },
+                  data: updateData,
+                  include: {
+                    category: {
+                      select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                      },
+                    },
+                    images: {
+                      select: {
+                        id: true,
+                        url: true,
+                        altText: true,
+                        order: true,
+                      },
+                      orderBy: {
+                        order: "asc",
+                      },
+                    },
                   },
-                  orderBy: {
-                    order: "asc",
-                  },
-                },
-              },
-            });
-            break;
+                });
+                break; // Success after final retry
+              } else {
+                // Re-throw non-slug constraint errors
+                throw finalError;
+              }
+            }
           } else {
             // Retry with a new slug
             const { generateSlug } = await import("@/lib/utils/slug");
