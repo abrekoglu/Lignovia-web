@@ -210,7 +210,6 @@ export async function POST(request: NextRequest) {
       }
       return forbiddenResponse();
     }
-    const session = adminCheck.session;
 
     const body = await request.json();
 

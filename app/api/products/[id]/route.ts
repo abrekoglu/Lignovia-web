@@ -8,7 +8,7 @@ import {
 
 // GET /api/products/[id] - Get product by ID or slug
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -100,7 +100,6 @@ export async function PATCH(
       }
       return forbiddenResponse();
     }
-    const session = adminCheck.session;
 
     const { id } = params;
     const body = await request.json();
@@ -501,7 +500,7 @@ export async function PATCH(
 
 // DELETE /api/products/[id] - Delete product (Admin only - soft delete)
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
