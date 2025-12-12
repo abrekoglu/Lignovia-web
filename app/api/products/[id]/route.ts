@@ -127,7 +127,8 @@ export async function PATCH(
 
       // Validate name contains at least one alphanumeric character
       // This prevents names with only special characters that would generate empty slugs
-      const nameHasAlphanumeric = /[a-zA-Z0-9]/.test(body.name.trim());
+      const trimmedName = body.name.trim();
+      const nameHasAlphanumeric = /[a-zA-Z0-9]/.test(trimmedName);
       if (!nameHasAlphanumeric) {
         return NextResponse.json(
           { error: "Ürün adı en az bir harf veya rakam içermelidir." },
@@ -135,11 +136,11 @@ export async function PATCH(
         );
       }
 
-      updateData.name = body.name;
+      updateData.name = trimmedName;
       // Auto-generate slug if name changed
-      if (body.name !== existingProduct.name) {
+      if (trimmedName !== existingProduct.name) {
         const { generateSlug } = await import("@/lib/utils/slug");
-        const baseSlug = generateSlug(body.name);
+        const baseSlug = generateSlug(trimmedName);
         const { generateUniqueSlug } = await import("@/lib/utils/slug");
         updateData.slug = await generateUniqueSlug(baseSlug, async (slug) => {
           const existing = await prisma.product.findUnique({

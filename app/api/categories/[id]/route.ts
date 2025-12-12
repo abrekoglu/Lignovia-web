@@ -123,10 +123,11 @@ export async function PATCH(
         );
       }
 
-      updateData.name = body.name.trim();
+      const trimmedName = body.name.trim();
+      updateData.name = trimmedName;
       // Auto-generate slug if name changed
-      if (body.name !== existingCategory.name) {
-        const baseSlug = generateSlug(body.name);
+      if (trimmedName !== existingCategory.name) {
+        const baseSlug = generateSlug(trimmedName);
         updateData.slug = await generateUniqueSlug(baseSlug, async (slug) => {
           const existing = await prisma.category.findUnique({
             where: { slug },

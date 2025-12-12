@@ -283,8 +283,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique slug
-    const baseSlug = generateSlug(body.name);
+    // Generate unique slug (use trimmed name for consistency)
+    const trimmedName = body.name.trim();
+    const baseSlug = generateSlug(trimmedName);
     let slug = await generateUniqueSlug(baseSlug, async (slug) => {
       const existing = await prisma.product.findUnique({
         where: { slug },
@@ -374,7 +375,7 @@ export async function POST(request: NextRequest) {
       try {
         product = await prisma.product.create({
           data: {
-            name: body.name,
+            name: trimmedName,
             nameEn:
               body.nameEn !== undefined
                 ? typeof body.nameEn === "string"
