@@ -319,50 +319,49 @@ export default function TestAPIPage() {
     }
   };
 
-  const testInvalidPriceRange = async () => {
-    setIsLoading("invalid-price-range");
+  const testInvalidMinPrice = async () => {
+    setIsLoading("invalid-min-price");
     try {
-      // Test with invalid minPrice (non-numeric string)
-      const res1 = await fetch("/api/products?minPrice=abc&maxPrice=500");
-      const data1 = await res1.json();
+      const res = await fetch("/api/products?minPrice=abc&maxPrice=500");
+      const data = await res.json();
       addResult(
         "GET /api/products (Invalid MinPrice)",
-        res1.status,
+        res.status,
         {
-          ...data1,
+          ...data,
           note: "Invalid minPrice should be ignored (not cause error)",
-        },
-        "Products"
-      );
-
-      // Test with invalid maxPrice (non-numeric string)
-      const res2 = await fetch("/api/products?minPrice=100&maxPrice=xyz");
-      const data2 = await res2.json();
-      addResult(
-        "GET /api/products (Invalid MaxPrice)",
-        res2.status,
-        {
-          ...data2,
-          note: "Invalid maxPrice should be ignored (not cause error)",
-        },
-        "Products"
-      );
-
-      // Test with both invalid
-      const res3 = await fetch("/api/products?minPrice=abc&maxPrice=xyz");
-      const data3 = await res3.json();
-      addResult(
-        "GET /api/products (Invalid Both Prices)",
-        res3.status,
-        {
-          ...data3,
-          note: "Both invalid prices should be ignored",
         },
         "Products"
       );
     } catch (error) {
       addResult(
-        "GET /api/products (Invalid Price Range)",
+        "GET /api/products (Invalid MinPrice)",
+        0,
+        { error: String(error) },
+        "Products"
+      );
+    } finally {
+      setIsLoading(null);
+    }
+  };
+
+  const testInvalidMaxPrice = async () => {
+    setIsLoading("invalid-max-price");
+    try {
+      const res = await fetch("/api/products?minPrice=100&maxPrice=xyz");
+      const data = await res.json();
+      addResult(
+        "GET /api/products (Invalid MaxPrice)",
+        res.status,
+        {
+          ...data,
+          note: "Invalid maxPrice should be ignored (not cause error)",
+        },
+        "Products"
+      );
+    } catch (error) {
+      addResult(
+        "GET /api/products (Invalid MaxPrice)",
         0,
         { error: String(error) },
         "Products"
@@ -1389,159 +1388,187 @@ export default function TestAPIPage() {
               </div>
             )}
 
-            {/* Bug Fix Tests */}
-            <div className="mt-4 rounded-md border-2 border-yellow-200 bg-yellow-50/50 p-4 dark:border-yellow-800 dark:bg-yellow-900/10">
-              <h4 className="mb-3 text-sm font-semibold text-yellow-800 dark:text-yellow-300">
-                🐛 Bug Fix Tests
-              </h4>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {renderTestButton(
-                  "Search + Category",
-                  testSearchWithCategory,
-                  "search-category",
-                  false,
-                  "Filter combo test"
-                )}
-                {renderTestButton(
-                  "Search + Price Range",
-                  testSearchWithPriceRange,
-                  "search-price",
-                  false,
-                  "Filter combo test"
-                )}
-                {renderTestButton(
-                  "Invalid Pagination",
-                  testInvalidPagination,
-                  "invalid-pagination",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "Invalid SortBy",
-                  testInvalidSortBy,
-                  "invalid-sortby",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "Invalid SortOrder",
-                  testInvalidSortOrder,
-                  "invalid-sortorder",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "Invalid Price Range",
-                  testInvalidPriceRange,
-                  "invalid-price-range",
-                  false,
-                  "Invalid prices should be ignored"
-                )}
-                {renderTestButton(
-                  "PATCH Invalid Price",
-                  testPatchInvalidPrice,
-                  "patch-invalid-price",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "PATCH Negative Stock",
-                  testPatchNegativeStock,
-                  "patch-negative-stock",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "PATCH Empty Name",
-                  testPatchEmptyName,
-                  "patch-empty-name",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "POST Stock Radix",
-                  testPostStockWithRadix,
-                  "post-stock-radix",
-                  false,
-                  "Should parse as decimal 10"
-                )}
-                {renderTestButton(
-                  "POST Invalid Stock",
-                  testPostInvalidStock,
-                  "post-invalid-stock",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "PATCH Invalid CategoryId",
-                  testPatchInvalidCategoryId,
-                  "patch-invalid-category",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "PATCH Duplicate SKU",
-                  testPatchDuplicateSku,
-                  "patch-duplicate-sku",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "POST Name Special Chars",
-                  testPostNameOnlySpecialChars,
-                  "post-name-special",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "PATCH Name Special Chars",
-                  testPatchNameOnlySpecialChars,
-                  "patch-name-special",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "PATCH Empty SKU",
-                  testPatchEmptySku,
-                  "patch-empty-sku",
-                  false,
-                  productId ? "Should normalize to null" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "POST Name Non-String",
-                  testPostNameNonString,
-                  "post-name-non-string",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "PATCH Name Non-String",
-                  testPatchNameNonString,
-                  "patch-name-non-string",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "POST CategoryId Non-String",
-                  testPostCategoryIdNonString,
-                  "post-category-id-non-string",
-                  false,
-                  "Should return 400"
-                )}
-                {renderTestButton(
-                  "PATCH CategoryId Non-String",
-                  testPatchCategoryIdNonString,
-                  "patch-category-id-non-string",
-                  false,
-                  productId ? "Should return 400" : "Önce ürün oluştur"
-                )}
-                {renderTestButton(
-                  "PATCH SKU Non-String",
-                  testPatchSkuNonString,
-                  "patch-sku-non-string",
-                  false,
-                  productId ? "Should normalize to null" : "Önce ürün oluştur"
-                )}
+            {/* Validation Tests - Organized by Category */}
+            <div className="mt-6 space-y-6">
+              {/* GET Endpoint Validation */}
+              <div className="rounded-md border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-900/10">
+                <h4 className="mb-3 text-sm font-semibold text-blue-800 dark:text-blue-300">
+                  🔍 GET Endpoint Validation (Query Parameters)
+                </h4>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {renderTestButton(
+                    "Search + Category",
+                    testSearchWithCategory,
+                    "search-category",
+                    false,
+                    "Filter combo test"
+                  )}
+                  {renderTestButton(
+                    "Search + Price Range",
+                    testSearchWithPriceRange,
+                    "search-price",
+                    false,
+                    "Filter combo test"
+                  )}
+                  {renderTestButton(
+                    "Invalid Pagination",
+                    testInvalidPagination,
+                    "invalid-pagination",
+                    false,
+                    "Should return 400"
+                  )}
+                  {renderTestButton(
+                    "Invalid SortBy",
+                    testInvalidSortBy,
+                    "invalid-sortby",
+                    false,
+                    "Should return 400"
+                  )}
+                  {renderTestButton(
+                    "Invalid SortOrder",
+                    testInvalidSortOrder,
+                    "invalid-sortorder",
+                    false,
+                    "Should return 400"
+                  )}
+                  {renderTestButton(
+                    "Invalid MinPrice",
+                    testInvalidMinPrice,
+                    "invalid-min-price",
+                    false,
+                    "Should be ignored"
+                  )}
+                  {renderTestButton(
+                    "Invalid MaxPrice",
+                    testInvalidMaxPrice,
+                    "invalid-max-price",
+                    false,
+                    "Should be ignored"
+                  )}
+                </div>
+              </div>
+
+              {/* POST Endpoint Validation */}
+              <div className="rounded-md border border-green-200 bg-green-50/50 p-4 dark:border-green-800 dark:bg-green-900/10">
+                <h4 className="mb-3 text-sm font-semibold text-green-800 dark:text-green-300">
+                  ➕ POST Endpoint Validation (Input Data)
+                </h4>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {renderTestButton(
+                    "Invalid Stock",
+                    testPostInvalidStock,
+                    "post-invalid-stock",
+                    false,
+                    "Should return 400"
+                  )}
+                  {renderTestButton(
+                    "Stock Radix",
+                    testPostStockWithRadix,
+                    "post-stock-radix",
+                    false,
+                    "Should parse as decimal 10"
+                  )}
+                  {renderTestButton(
+                    "Name Special Chars",
+                    testPostNameOnlySpecialChars,
+                    "post-name-special",
+                    false,
+                    "Should return 400"
+                  )}
+                  {renderTestButton(
+                    "Name Non-String",
+                    testPostNameNonString,
+                    "post-name-non-string",
+                    false,
+                    "Should return 400"
+                  )}
+                  {renderTestButton(
+                    "CategoryId Non-String",
+                    testPostCategoryIdNonString,
+                    "post-category-id-non-string",
+                    false,
+                    "Should return 400"
+                  )}
+                </div>
+              </div>
+
+              {/* PATCH Endpoint Validation */}
+              <div className="rounded-md border border-purple-200 bg-purple-50/50 p-4 dark:border-purple-800 dark:bg-purple-900/10">
+                <h4 className="mb-3 text-sm font-semibold text-purple-800 dark:text-purple-300">
+                  ✏️ PATCH Endpoint Validation (Input Data)
+                </h4>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {renderTestButton(
+                    "Invalid Price",
+                    testPatchInvalidPrice,
+                    "patch-invalid-price",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Negative Stock",
+                    testPatchNegativeStock,
+                    "patch-negative-stock",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Empty Name",
+                    testPatchEmptyName,
+                    "patch-empty-name",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Invalid CategoryId",
+                    testPatchInvalidCategoryId,
+                    "patch-invalid-category",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Duplicate SKU",
+                    testPatchDuplicateSku,
+                    "patch-duplicate-sku",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Name Special Chars",
+                    testPatchNameOnlySpecialChars,
+                    "patch-name-special",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Empty SKU",
+                    testPatchEmptySku,
+                    "patch-empty-sku",
+                    false,
+                    productId ? "Should normalize to null" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "Name Non-String",
+                    testPatchNameNonString,
+                    "patch-name-non-string",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "CategoryId Non-String",
+                    testPatchCategoryIdNonString,
+                    "patch-category-id-non-string",
+                    false,
+                    productId ? "Should return 400" : "Önce ürün oluştur"
+                  )}
+                  {renderTestButton(
+                    "SKU Non-String",
+                    testPatchSkuNonString,
+                    "patch-sku-non-string",
+                    false,
+                    productId ? "Should normalize to null" : "Önce ürün oluştur"
+                  )}
+                </div>
               </div>
             </div>
           </div>

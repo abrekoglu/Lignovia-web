@@ -279,9 +279,15 @@ export async function POST(request: NextRequest) {
     });
 
     // Check SKU uniqueness if provided
-    if (body.sku) {
+    // Normalize empty string to null and validate SKU is a string
+    const normalizedSku =
+      typeof body.sku === "string" && body.sku.trim() !== ""
+        ? body.sku.trim()
+        : null;
+
+    if (normalizedSku) {
       const existingSku = await prisma.product.findUnique({
-        where: { sku: body.sku },
+        where: { sku: normalizedSku },
       });
       if (existingSku) {
         return NextResponse.json(
@@ -310,7 +316,7 @@ export async function POST(request: NextRequest) {
         categoryId: body.categoryId,
         isActive: body.isActive !== undefined ? body.isActive : true,
         isFeatured: body.isFeatured !== undefined ? body.isFeatured : false,
-        sku: body.sku || null,
+        sku: normalizedSku,
         weight: body.weight ? parseFloat(body.weight) : null,
         dimensions: body.dimensions || null,
         material: body.material || null,
